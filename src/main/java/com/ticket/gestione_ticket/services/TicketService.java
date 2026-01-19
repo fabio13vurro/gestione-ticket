@@ -21,9 +21,11 @@ public class TicketService {
     }
 
     public void deleteById(int id) {
-        ticketRepository.deleteById(id);
-    }
+        Ticket ticket = ticketRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Ticket non trovato: " + id));
 
+        ticket.setDeleted(true);
+    }
 
     @Transactional
     public Ticket update(Integer id, Ticket new_ticket) {

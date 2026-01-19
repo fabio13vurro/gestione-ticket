@@ -5,7 +5,7 @@ import com.ticket.gestione_ticket.services.TicketService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/tickets")
+@RequestMapping("/api/tickets")
 public class TicketController {
 
     private TicketService ticketService;

@@ -30,6 +30,7 @@ public class Ticket {
     private LocalDateTime data_ora_chiusura;
     private Integer sla;
     private Boolean over_sla;
+    private Boolean deleted = false;
 
     @OneToMany(mappedBy = "ticket")
     private List<Commento> commenti;
