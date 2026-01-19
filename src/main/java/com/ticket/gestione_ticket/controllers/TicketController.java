@@ -4,6 +4,8 @@ import com.ticket.gestione_ticket.entities.Ticket;
 import com.ticket.gestione_ticket.services.TicketService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/tickets")
 public class TicketController {
@@ -31,7 +33,7 @@ public class TicketController {
     }
 
     @GetMapping
-    public Iterable<Ticket> findAll() {
+    public List<Ticket> findAll() {
         return ticketService.findAll();
     }
 
