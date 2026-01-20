@@ -14,12 +14,13 @@ public class Storico_Stato {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idStorico_Stato;
+    private Integer idStorico_Stato;
 
     private String stato_precedente;
     private String stato_nuovo;
     private LocalDateTime data_ora;
 
-    @OneToOne(mappedBy = "storico_stato")
+    @OneToOne
+    @JoinColumn(name = "cod_ticket")
     private Ticket ticket;
 }

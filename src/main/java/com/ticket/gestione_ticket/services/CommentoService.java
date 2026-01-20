@@ -1,6 +1,7 @@
 package com.ticket.gestione_ticket.services;
 
 import com.ticket.gestione_ticket.entities.Commento;
+import com.ticket.gestione_ticket.entities.Tipo;
 import com.ticket.gestione_ticket.repositories.CommentoRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,7 +46,7 @@ public class CommentoService {
                 .orElseThrow(() -> new RuntimeException("Commento non trovato: " + id));
     }
 
-    public Commento findByTipo(String tipo){
+    public Commento findByTipo(Tipo tipo){
         return commentoRepository.findByTipo(tipo);
     }
 }

@@ -1,6 +1,7 @@
 package com.ticket.gestione_ticket.controllers;
 
 import com.ticket.gestione_ticket.entities.Commento;
+import com.ticket.gestione_ticket.entities.Tipo;
 import com.ticket.gestione_ticket.services.CommentoService;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,7 +43,7 @@ public class CommentoController {
     }
 
     @GetMapping("/find/tipo/{tipo}")
-    public Commento findByTipo(@RequestParam String tipo){
+    public Commento findByTipo(@RequestParam Tipo tipo){
         return commentoService.findByTipo(tipo);
     }
 }

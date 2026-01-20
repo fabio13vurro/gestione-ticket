@@ -1,5 +1,6 @@
 package com.ticket.gestione_ticket.services;
 
+import com.ticket.gestione_ticket.entities.Ruolo;
 import com.ticket.gestione_ticket.entities.Utente;
 import com.ticket.gestione_ticket.repositories.UtenteRepository;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,7 @@ public class UtenteService {
         if(new_utente.getEmail()!=null) utente.setEmail(new_utente.getEmail());
         if(new_utente.getPassword()!=null) utente.setPassword(new_utente.getPassword());
         if(new_utente.getRuolo()!=null) utente.setRuolo(new_utente.getRuolo());
-        utente.setLibero(new_utente.isLibero());
+        if(new_utente.getLibero()!=null) utente.setLibero(new_utente.getLibero());
         return utenteRepository.save(utente);
     }
 
@@ -49,7 +50,7 @@ public class UtenteService {
         return utenteRepository.findByUsername(username);
     }
 
-    public Utente findByRuolo(String ruolo){
+    public Utente findByRuolo(Ruolo ruolo){
         return utenteRepository.findByRuolo(ruolo);
     }
 }

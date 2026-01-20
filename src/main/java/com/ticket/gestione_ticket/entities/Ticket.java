@@ -1,12 +1,13 @@
 package com.ticket.gestione_ticket.entities;
 
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import lombok.ToString;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -33,13 +34,14 @@ public class Ticket {
     private Boolean deleted = false;
 
     @OneToMany(mappedBy = "ticket")
-    private List<Commento> commenti;
+    @JsonIgnore
+    private List<Commento> commenti = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "cod_utente")
     private Utente utente;
 
-    @OneToOne
-    @JoinColumn(name = "cod_storico_stato")
+    @OneToOne(mappedBy = "ticket")
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private Storico_Stato storico_stato;
 }

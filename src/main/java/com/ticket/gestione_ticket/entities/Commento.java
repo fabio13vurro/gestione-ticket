@@ -3,7 +3,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import java.time.LocalDateTime;
 
@@ -15,10 +14,11 @@ public class Commento {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idCommento;
+    private Integer idCommento;
 
     private String testo;
-    private String tipo;
+    @Enumerated(EnumType.STRING)
+    private Tipo tipo;
     private LocalDateTime data_ora;
 
     @ManyToOne

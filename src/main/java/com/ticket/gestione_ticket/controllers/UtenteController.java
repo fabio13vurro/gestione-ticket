@@ -1,5 +1,6 @@
 package com.ticket.gestione_ticket.controllers;
 
+import com.ticket.gestione_ticket.entities.Ruolo;
 import com.ticket.gestione_ticket.entities.Utente;
 import com.ticket.gestione_ticket.services.UtenteService;
 import org.springframework.web.bind.annotation.*;
@@ -47,7 +48,7 @@ public class UtenteController {
     }
 
     @GetMapping("/find/ruolo/{ruolo}")
-    public Utente findByRuolo(@PathVariable String ruolo){
+    public Utente findByRuolo(@PathVariable Ruolo ruolo){
         return utenteService.findByRuolo(ruolo);
     }
 }
