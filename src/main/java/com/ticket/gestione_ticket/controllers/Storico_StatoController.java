@@ -36,7 +36,7 @@ public class Storico_StatoController {
         return storico_statoService.findAll();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/admin/{id}")
     public Storico_Stato findById(@PathVariable int id) {
         return storico_statoService.findById(id);
     }
