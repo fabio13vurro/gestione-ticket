@@ -20,6 +20,7 @@ public class Commento {
     @Enumerated(EnumType.STRING)
     private Tipo tipo;
     private LocalDateTime data_ora;
+    private Boolean deleted = false;
 
     @ManyToOne
     @JoinColumn(name = "codTicket")

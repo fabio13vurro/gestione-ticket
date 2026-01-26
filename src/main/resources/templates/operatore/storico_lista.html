@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<h2>Storico Stati</h2>
+<table>
+    <thead><tr><th>ID</th><th>Ticket</th><th>Prec</th><th>Nuovo</th><th>Data/Ora</th></tr></thead>
+    <tbody>
+    <tr th:each="s : ${storico}">
+        <td th:text="${s.idStorico_Stato}">1</td>
+        <td th:text="${s.ticket != null ? s.ticket.idTicket : '-'}">1</td>
+        <td th:text="${s.stato_precedente}">APERTO</td>
+        <td th:text="${s.stato_nuovo}">IN_LAVORAZIONE</td>
+        <td th:text="${s.data_ora}">2026-01-22T10:00</td>
+    </tr>
+    </tbody>
+</table>
+<p><a th:href="@{/home}">← Torna alla Home</a></p>
+</body>
+</html>

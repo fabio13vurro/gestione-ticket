@@ -21,7 +21,11 @@ public class Storico_StatoService {
     }
 
     public void deleteById(int id){
-        storico_statoRepository.deleteById(id);
+        Storico_Stato storico_stato = storico_statoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Storico_Stato non trovato: " + id));
+
+        storico_stato.setDeleted(true);
+        storico_statoRepository.save(storico_stato);
     }
 
     @Transactional

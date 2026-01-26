@@ -1,0 +1,49 @@
+
+<!-- src/main/resources/templates/home.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Home</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        .box { border:1px solid #ddd; padding:16px; margin:16px 0; border-radius:8px }
+        ul { line-height:1.8 }
+    </style>
+</head>
+<body>
+<h1>Benvenuto, <span sec:authentication="name"></span></h1>
+<hr/>
+
+<div class="box" sec:authorize="hasAnyRole('CLIENTE','ADMIN')">
+    <h2>Area Cliente</h2>
+    <ul>
+        <li><a th:href="@{/cliente/ticket/crea}">Crea Ticket</a></li>
+        <li><a th:href="@{/cliente/ticket/cerca}">Cerca Ticket</a></li>
+        <li><a th:href="@{/cliente/commenti}">Gestione Commenti</a></li>
+    </ul>
+</div>
+
+<div class="box" sec:authorize="hasAnyRole('OPERATORE','ADMIN')">
+    <h2>Area Operatore</h2>
+    <ul>
+        <li><a th:href="@{/operatore/ticket}">Lista Ticket</a></li>
+        <li><a th:href="@{/operatore/ticket/stato}">Cambia Stato Ticket</a></li>
+        <li><a th:href="@{/operatore/storico}">Storico Stati</a></li>
+    </ul>
+</div>
+
+<div class="box" sec:authorize="hasRole('ADMIN')">
+    <h2>Area Admin</h2>
+    <ul>
+        <li><a th:href="@{/admin/utenti}">Lista Utenti</a></li>
+        <li><a th:href="@{/admin/utenti/cerca}">Cerca Utente</a></li>
+        <li><a th:href="@{/admin/utenti/cancella}">Cancella Utente</a></li>
+        <li><a th:href="@{/admin/utenti/crea}">Crea Utente</a></li>
+    </ul>
+</div>
+
+<hr/>
+<a th:href="@{/logout}">Logout</a>
+</body>
+</html>

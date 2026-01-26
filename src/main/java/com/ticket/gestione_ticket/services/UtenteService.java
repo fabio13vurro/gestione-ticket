@@ -21,7 +21,11 @@ public class UtenteService {
     }
 
     public void deleteById(int id) {
-        utenteRepository.deleteById(id);
+        Utente utente = utenteRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Utente non trovato: " + id));
+
+        utente.setDeleted(true);
+        utenteRepository.save(utente);
     }
 
     @Transactional
@@ -50,7 +54,7 @@ public class UtenteService {
         return utenteRepository.findByUsername(username);
     }
 
-    public Utente findByRuolo(Ruolo ruolo){
+    public List<Utente> findByRuolo(Ruolo ruolo){
         return utenteRepository.findByRuolo(ruolo);
     }
 }

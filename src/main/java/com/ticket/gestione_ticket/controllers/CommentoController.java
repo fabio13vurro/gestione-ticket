@@ -17,17 +17,17 @@ public class CommentoController {
         this.commentoService = commentoService;
     }
 
-    @PostMapping("/create")
+    @PostMapping("/cliente/create")
     public Commento create(@RequestBody Commento commento) {
         return commentoService.create(commento);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/cliente/update/{id}")
     public Commento update(@PathVariable int id, @RequestBody Commento commento) {
         return commentoService.update(id, commento);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/admin/delete/{id}")
     public void deleteById(@PathVariable int id) {
         commentoService.deleteById(id);
     }
@@ -37,12 +37,12 @@ public class CommentoController {
         return commentoService.findAll();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/cliente/find/{id}")
     public Commento findById(@PathVariable int id) {
         return commentoService.findById(id);
     }
 
-    @GetMapping("/find/tipo/{tipo}")
+    @GetMapping("/cliente/find/tipo/{tipo}")
     public Commento findByTipo(@RequestParam Tipo tipo){
         return commentoService.findByTipo(tipo);
     }

@@ -16,33 +16,32 @@ public class TicketController {
         this.ticketService = ticketService;
     }
 
-
-    @PostMapping("/create")
+    @PostMapping("/cliente/create")
     public Ticket create(@RequestBody Ticket ticket) {
         return ticketService.create(ticket);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/cliente/update/{id}")
     public Ticket update(@PathVariable int id, @RequestBody Ticket ticket) {
         return ticketService.update(id, ticket);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/operatore/delete/{id}")
     public void deleteById(@PathVariable int id) {
         ticketService.deleteById(id);
     }
 
-    @GetMapping
+    @GetMapping("operatore/findAll")
     public List<Ticket> findAll() {
         return ticketService.findAll();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("operatore/find/{id}")
     public Ticket findById(@PathVariable int id) {
         return ticketService.findById(id);
     }
 
-    @GetMapping("/find/{titolo}")
+    @GetMapping("/operatore/find/{titolo}")
     public Ticket findByTitolo(@PathVariable String titolo){
         return ticketService.findByTitolo(titolo);
     }

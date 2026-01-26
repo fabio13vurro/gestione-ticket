@@ -27,28 +27,28 @@ public class UtenteController {
         return utenteService.update(id, utente);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/admin/delete/{id}")
     public void deleteById(@PathVariable int id) {
         utenteService.deleteById(id);
     }
 
-    @GetMapping
+    @GetMapping("/admin/findALl")
     public List<Utente> findAll() {
         return utenteService.findAll();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/admin/find/{id}")
     public Utente findById(@PathVariable int id) {
         return utenteService.findById(id);
     }
 
-    @GetMapping("/find/username/{username}")
+    @GetMapping("/admin/find/username/{username}")
     public Utente findByUsername(@PathVariable String username){
         return utenteService.findByUsername(username);
     }
 
-    @GetMapping("/find/ruolo/{ruolo}")
-    public Utente findByRuolo(@PathVariable Ruolo ruolo){
+    @GetMapping("/admin/find/ruolo/{ruolo}")
+    public List<Utente> findByRuolo(@PathVariable Ruolo ruolo){
         return utenteService.findByRuolo(ruolo);
     }
 }

@@ -16,27 +16,27 @@ public class Storico_StatoController {
         this.storico_statoService = storico_statoService;
     }
 
-    @PostMapping("/create")
+    @PostMapping("/operatore/create")
     public Storico_Stato create(@RequestBody Storico_Stato storico_stato) {
         return storico_statoService.create(storico_stato);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/operatore/update/{id}")
     public Storico_Stato update(@PathVariable int id, @RequestBody Storico_Stato storico_stato) {
         return storico_statoService.update(id, storico_stato);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/operatore/delete/{id}")
     public void deleteById(@PathVariable int id) {
         storico_statoService.deleteById(id);
     }
 
-    @GetMapping
+    @GetMapping("/operatore/findAll")
     public List<Storico_Stato> findAll() {
         return storico_statoService.findAll();
     }
 
-    @GetMapping("/admin/{id}")
+    @GetMapping("/operatore/find/{id}")
     public Storico_Stato findById(@PathVariable int id) {
         return storico_statoService.findById(id);
     }

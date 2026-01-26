@@ -22,7 +22,11 @@ public class CommentoService {
     }
 
     public void deleteById(int id){
-        commentoRepository.deleteById(id);
+        Commento commento = commentoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Commento non trovato: " + id));
+
+        commento.setDeleted(true);
+        commentoRepository.save(commento);
     }
 
     @Transactional

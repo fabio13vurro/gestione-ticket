@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<h2>Lista Utenti</h2>
+<table>
+    <thead><tr><th>ID</th><th>Username</th><th>Email</th><th>Ruolo</th><th>Libero</th></tr></thead>
+    <tbody>
+    <tr th:each="u : ${utenti}">
+        <td th:text="${u.idUtente}">1</td>
+        <td th:text="${u.username}">admin</td>
+        <td th:text="${u.email}">admin@mail</td>
+        <td th:text="${u.ruolo}">ADMIN</td>
+        <td th:text="${u.libero}">true</td>
+    </tr>
+    </tbody>
+</table>
+<p><a th:href="@{/home}">← Torna alla Home</a></p>
+</body>
+</html>

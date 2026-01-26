@@ -19,6 +19,7 @@ public class Storico_Stato {
     private String stato_precedente;
     private String stato_nuovo;
     private LocalDateTime data_ora;
+    private Boolean deleted = false;
 
     @OneToOne
     @JoinColumn(name = "cod_ticket")

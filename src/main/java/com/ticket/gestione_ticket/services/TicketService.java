@@ -25,6 +25,7 @@ public class TicketService {
                 .orElseThrow(() -> new RuntimeException("Ticket non trovato: " + id));
 
         ticket.setDeleted(true);
+        ticketRepository.save(ticket);
     }
 
     @Transactional

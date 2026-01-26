@@ -1,10 +1,9 @@
 package com.ticket.gestione_ticket.config;
 
-
 import com.ticket.gestione_ticket.services.CustomUserDetailsService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.*;
+import org.springframework.core.annotation.Order;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,44 +15,58 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity
 public class SecurityConfig {
 
+    private final CustomUserDetailsService customUserDetailsService;
 
-    @Autowired
-    private CustomUserDetailsService customUserDetailsService;
-
+    public SecurityConfig(CustomUserDetailsService customUserDetailsService) {
+        this.customUserDetailsService = customUserDetailsService;
+    }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, CustomUserDetailsService customUserDetailsService) throws Exception {
-
+    @Order(1) //swagger
+    public SecurityFilterChain apiSecurity(HttpSecurity http) throws Exception {
         http
+                .securityMatcher("/api/**", "/v3/api-docs/**", "/swagger-ui/**")
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-
-                        // Swagger - pubblico
-                        .requestMatchers(
-                                "/swagger-ui/**",
-                                "/v3/api-docs/**"
-                        ).permitAll()
-
-                        // ADMIN
-                        .requestMatchers("/api/admin/**")
-                        .hasRole("ADMIN")
-
-                        // OPERATORI
-                        .requestMatchers("/api/operatore/**")
-                        .hasAnyRole("OPERATORE", "ADMIN")
-
-                        // CLIENTI
-                        .requestMatchers("/api/cliente/**")
-                        .hasAnyRole("CLIENTE", "ADMIN")
-
-                        // Il resto richiede login
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll()
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/operatore/**").hasAnyRole("OPERATORE", "ADMIN")
+                        .requestMatchers("/api/cliente/**").hasAnyRole("CLIENTE", "ADMIN")
                         .anyRequest().authenticated()
                 )
                 .userDetailsService(customUserDetailsService)
                 .httpBasic(Customizer.withDefaults());
-
         return http.build();
     }
 
-
+    @Bean
+    @Order(2) //form login
+    public SecurityFilterChain webSecurity(HttpSecurity http) throws Exception {
+        http
+                .securityMatcher("/**")
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/login",
+                                "/css/**", "/js/**", "/images/**"
+                        ).permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/operatore/**").hasAnyRole("OPERATORE", "ADMIN")
+                        .requestMatchers("/cliente/**").hasAnyRole("CLIENTE", "ADMIN")
+                        .anyRequest().authenticated()
+                )
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .loginProcessingUrl("/login")
+                        .defaultSuccessUrl("/home", true)
+                        .failureUrl("/login?error=true")
+                        .permitAll()
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login?logout=true")
+                        .permitAll()
+                )
+                .userDetailsService(customUserDetailsService);
+        return http.build();
+    }
 }
