@@ -4,6 +4,8 @@ import com.ticket.gestione_ticket.entities.Ruolo;
 import com.ticket.gestione_ticket.entities.Utente;
 import com.ticket.gestione_ticket.services.UtenteService;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -14,9 +16,11 @@ import org.springframework.web.bind.annotation.*;
 public class AdminPageController {
 
     private final UtenteService utenteService;
+    private final PasswordEncoder passwordEncoder;
 
-    public AdminPageController(UtenteService utenteService) {
+    public AdminPageController(UtenteService utenteService,  PasswordEncoder passwordEncoder) {
         this.utenteService = utenteService;
+        this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
     @GetMapping("/utenti/crea")
@@ -29,13 +33,13 @@ public class AdminPageController {
         Utente u = new Utente();
         u.setUsername(username);
         u.setEmail(email);
-        u.setPassword(password);
+        u.setPassword(passwordEncoder.encode(password));
         u.setRuolo(Ruolo.valueOf(ruolo));
         u.setLibero(true);
         u.setDeleted(false);
+
         model.addAttribute("createResult", utenteService.create(u));
         model.addAttribute("success", "Utente creato");
-
         return "admin/utenti_crea";
     }
 
@@ -75,4 +79,31 @@ public class AdminPageController {
         return "redirect:/admin/utenti";
     }
 
+
+    @GetMapping("/utenti/modifica")
+    public String utentiModificaPage(@RequestParam Integer id, Model model){
+        Utente utente = utenteService.findById(id);
+
+        model.addAttribute("utente", utente);
+        return "admin/utenti_modifica";
+    }
+
+    @PostMapping("/utenti/modifica")
+    public String utentiModificaSubmit(@RequestParam Integer id,
+                                       @RequestParam(required = false) String username,
+                                       @RequestParam(required = false) String email,
+                                       @RequestParam(required = false) String password,
+                                       @RequestParam(required = false) Boolean libero,
+                                       Model model) {
+
+        var u = new Utente();
+        if(username != null && !username.isBlank()) u.setUsername(username);
+        if(email != null && !email.isBlank()) u.setEmail(email);
+        if(password != null && !password.isBlank()) u.setPassword(passwordEncoder.encode(password));
+        if(libero != null) u.setLibero(libero);
+        model.addAttribute("updateResult", utenteService.update(id, u));
+        model.addAttribute("success", "Utente modificato");
+
+        return "redirect:/admin/utenti";
+    }
 }

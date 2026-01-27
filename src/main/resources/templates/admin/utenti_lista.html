@@ -1,19 +1,36 @@
 <!DOCTYPE html>
+<head>
+    <title>Lista Utenti</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 <h2>Lista Utenti</h2>
-<table>
-    <thead><tr><th>ID</th><th>Username</th><th>Email</th><th>Ruolo</th><th>Libero</th></tr></thead>
+<br>
+<table class="table table-bordered table-hover">
+    <thead>
+    <tr>
+        <th scope="col">Id</th>
+        <th scope="col">Username</th>
+        <th scope="col">Email</th>
+        <th scope="col">Ruolo</th>
+        <th scope="col">Libero</th>
+        <th scope="col">Azioni</th>
+    </tr>
+    </thead>
     <tbody>
     <tr th:each="u : ${utenti}">
-        <td th:text="${u.idUtente}">1</td>
+        <th scope="row" th:text="${u.idUtente}">1</th>
         <td th:text="${u.username}">admin</td>
         <td th:text="${u.email}">admin@mail</td>
         <td th:text="${u.ruolo}">ADMIN</td>
-        <td th:text="${u.libero}">true</td>
+        <td th:text="${u.libero} ? 'si' : 'no'">si</td>
+        <td><a class="btn btn-primary" th:href="@{/admin/utenti/modifica (id=${u.idUtente})}" role="button">Modifica</a></td>
     </tr>
     </tbody>
 </table>
-<p><a th:href="@{/home}">← Torna alla Home</a></p>
+<br>
+<a class="btn btn-secondary" th:href="@{/home}" role="button">← Torna alla Home</a>
+
 </body>
 </html>

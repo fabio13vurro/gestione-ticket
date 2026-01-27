@@ -88,7 +88,7 @@ public class ClientePageController {
                                  @RequestParam(required=false) String tipo,
                                  Model model) {
         Commento patch = new Commento();
-        patch.setTesto(testo);
+        if (testo !=null) patch.setTesto(testo);
         if (tipo != null && !tipo.isBlank()) patch.setTipo(Tipo.valueOf(tipo));
         patch.setData_ora(LocalDateTime.now());
         model.addAttribute("updateResult", commentoService.update(id, patch));

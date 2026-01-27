@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<h2>Modifica Utente</h2>
+
+<form th:action="@{/admin/utenti/modifica}" method="post">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+    <label class="field">
+        ID Utente:
+        <input type="number" name="id" th:value="${utente.getIdUtente()}" readonly/>
+    </label>
+
+    <label class="field">
+        Username:
+        <input type="text" name="username">
+    </label>
+
+    <label class="field">
+        Email:
+        <input type="email" name="email">
+    </label>
+
+    <label class="field">
+        Password:
+        <input type="password" name="password"/>
+    </label>
+
+    <label class="field">
+        Libero:
+        <input type="checkbox" name="libero" value="true"/>
+        <input type="hidden" name="libero" value="false">
+    </label>
+
+    <button type="submit">Aggiorna Utente</button>
+</form>
+
+<p>
+    <a th:href="@{/admin/utenti}">← Torna alla lista utenti</a> •
+    <a th:href="@{/home}">Home</a>
+</p>
+
+</body>
+</html>
