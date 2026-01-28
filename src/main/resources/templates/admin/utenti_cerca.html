@@ -1,23 +1,80 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Cerca Utenti</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body { font-family: Arial; padding: 20px; background-color: #f5f7fa}
+        h1{text-align: center;}
+    </style>
+</head>
 <body>
-<h2>Cerca Utenti</h2>
-
+<h1>Cerca Utenti</h1>
+<hr>
 <h3>Per ID</h3>
 <form th:action="@{/admin/utenti/cerca/id}" method="post">
     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
     <input type="number" name="id" placeholder="ID" required>
     <button type="submit">Cerca</button>
 </form>
-<pre th:if="${byId}" th:text="${byId}"></pre>
 
+<div th:if="${byId}" class="table-responsive">
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Username</th>
+            <th scope="col">Email</th>
+            <th scope="col">Ruolo</th>
+            <th scope="col">Libero</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <th scope="row" th:text="${byId.idUtente}">1</th>
+            <td th:text="${byId.username}">admin</td>
+            <td th:text="${byId.email}">admin@mail</td>
+            <td th:text="${byId.ruolo}">ADMIN</td>
+            <td th:text="${byId.libero} ? 'si' : 'no'">si</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<hr>
 <h3>Per Username</h3>
 <form th:action="@{/admin/utenti/cerca/username}" method="post">
     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
     <input name="username" placeholder="Username" required>
     <button type="submit">Cerca</button>
 </form>
-<pre th:if="${byUsername}" th:text="${byUsername}"></pre>
+
+<br>
+
+<div th:if="${byUsername}" class="table-responsive">
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Username</th>
+            <th scope="col">Email</th>
+            <th scope="col">Ruolo</th>
+            <th scope="col">Libero</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <th scope="row" th:text="${byUsername.idUtente}">1</th>
+            <td th:text="${byUsername.username}">admin</td>
+            <td th:text="${byUsername.email}">admin@mail</td>
+            <td th:text="${byUsername.ruolo}">ADMIN</td>
+            <td th:text="${byUsername.libero} ? 'si' : 'no'">si</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<hr>
 
 <h3>Per Ruolo</h3>
 <form th:action="@{/admin/utenti/cerca/ruolo}" method="post">
@@ -25,8 +82,35 @@
     <select name="ruolo"><option>ADMIN</option><option>OPERATORE</option><option>CLIENTE</option></select>
     <button type="submit">Cerca</button>
 </form>
-<pre th:if="${byRuolo}" th:text="${byRuolo}"></pre>
+<br>
 
-<p><a th:href="@{/home}">← Torna alla Home</a></p>
+
+<div th:if="${!#lists.isEmpty(utentiByRuolo)}" class="table-responsive">
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Username</th>
+            <th scope="col">Email</th>
+            <th scope="col">Ruolo</th>
+            <th scope="col">Libero</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="u : ${utentiByRuolo}">
+            <th scope="row" th:text="${u.idUtente}">1</th>
+            <td th:text="${u.username}">admin</td>
+            <td th:text="${u.email}">admin@mail</td>
+            <td th:text="${u.ruolo}">ADMIN</td>
+            <td th:text="${u.libero} ? 'si' : 'no'">si</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<hr>
+<br>
+
+<p><a class="btn btn-secondary" th:href="@{/home}" role="button">← Torna alla Home</a></p>
 </body>
 </html>

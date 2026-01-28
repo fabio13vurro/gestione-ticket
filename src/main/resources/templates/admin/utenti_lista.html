@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <head>
     <title>Lista Utenti</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body { font-family: Arial; padding: 20px; background-color: #f5f7fa}
+        h1{text-align: center;}
+    </style>
 </head>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-<h2>Lista Utenti</h2>
+<h1>Lista Utenti</h1>
 <br>
 <table class="table table-bordered table-hover">
     <thead>
@@ -25,7 +29,9 @@
         <td th:text="${u.email}">admin@mail</td>
         <td th:text="${u.ruolo}">ADMIN</td>
         <td th:text="${u.libero} ? 'si' : 'no'">si</td>
-        <td><a class="btn btn-primary" th:href="@{/admin/utenti/modifica (id=${u.idUtente})}" role="button">Modifica</a></td>
+        <td><a class="btn btn-primary" th:href="@{/admin/utenti/modifica (id=${u.idUtente})}" role="button">Modifica</a>
+            <a class="btn btn-danger" th:href="@{/admin/utenti/cancella (id=${u.idUtente})}" role="button">Cancella</a>
+        </td>
     </tr>
     </tbody>
 </table>

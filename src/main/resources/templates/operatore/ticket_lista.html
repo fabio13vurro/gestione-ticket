@@ -1,24 +1,52 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Lista Ticket</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <style>
+    body { font-family: Arial; padding: 20px; background-color: #f5f7fa}
+    h1{text-align: center;}
+  </style>
+</head>
 <body>
-<h2>Lista Ticket</h2>
-<table>
-  <thead><tr><th>ID</th><th>Titolo</th><th>Stato</th><th>Azioni</th></tr></thead>
+<h1>Lista Ticket</h1>
+<br>
+<table class="table table-bordered table-hover">
+  <thead>
+  <tr>
+    <th scope="col">Id</th>
+    <th scope="col">Titolo</th>
+    <th scope="col">Descrizione</th>
+    <th scope="col">Categoria</th>
+    <th scope="col">Priorità</th>
+    <th scope="col">Stato</th>
+    <th scope="col">Data apertura</th>
+    <th scope="col">Data chiusura</th>
+    <th scope="col">Sla</th>
+    <th scope="col">Azioni</th>
+  </tr>
+  </thead>
   <tbody>
   <tr th:each="t : ${tickets}">
-    <td th:text="${t.idTicket}">1</td>
+    <th scope="row" th:text="${t.idTicket}">1</th>
     <td th:text="${t.titolo}">Titolo</td>
+    <td th:text="${t.descrizione}">Descrizione</td>
+    <td th:text="${t.categoria}">Categoria</td>
+    <td th:text="${t.priorita}">Priorità</td>
     <td th:text="${t.stato}">APERTO</td>
+    <td th:text="${t.data_ora_apertura}">2026-01-22T10:00</td>
+    <td th:text="${t.data_ora_chiusura}">2026-01-22T10:00</td>
+    <td th:text="${t.sla}">1</td>
     <td>
       <form th:action="@{/operatore/ticket/delete}" method="post" style="display:inline">
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
         <input type="hidden" name="id" th:value="${t.idTicket}">
-        <button type="submit">Elimina</button>
+        <button class="btn btn-danger" type="submit" role="button">Elimina</button>
       </form>
     </td>
   </tr>
   </tbody>
 </table>
-<p><a th:href="@{/home}">← Torna alla Home</a></p>
+<p><a class="btn btn-secondary" th:href="@{/home}" role="button">← Torna alla Home</a></p>
 </body>
 </html>

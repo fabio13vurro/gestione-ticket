@@ -1,12 +1,33 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Cancella Utente</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body { font-family: Arial; padding: 20px; background-color: #f5f7fa}
+    </style>
+</head>
 <body>
-<h2>Cancella Utente</h2>
-<form th:action="@{/admin/utenti/cancella}" method="post">
-    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-    <input type="number" name="id" placeholder="ID" required>
-    <button type="submit">Cancella</button>
-</form>
-<p><a th:href="@{/home}">← Torna alla Home</a></p>
+<div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+    <div class="card p-4 shadow" style="width: 350px; border-radius: 10px; background-color: #ffffff; border: 1px solid #dce3ed">
+
+        <h2 class="text-center mb-4">Confermare cancellazione utente</h2>
+
+        <form th:action="@{/admin/utente/cancella}" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <div class="form-group mt-3">
+                <label class="field">
+                    ID Utente:
+                    <input type="number" name="id" th:value="${utente.idUtente}" readonly/>
+                </label>
+            </div>
+            <br>
+            <p class="text-center">
+                <a class="btn btn-secondary" th:href="@{/admin/utenti}" role="button">← Torna indietro</a>
+                <button class="btn btn-danger" type="submit" role="button">Cancella</button>
+            </p>
+        </form>
+    </div>
+</div>
 </body>
 </html>

@@ -40,7 +40,7 @@ public class AdminPageController {
 
         model.addAttribute("createResult", utenteService.create(u));
         model.addAttribute("success", "Utente creato");
-        return "admin/utenti_crea";
+        return "admin/utenti";
     }
 
     @GetMapping("/utenti")
@@ -66,12 +66,15 @@ public class AdminPageController {
 
     @PostMapping("/utenti/cerca/ruolo")
     public String cercaByRuolo(@RequestParam String ruolo, Model model) {
-        model.addAttribute("byRuolo", utenteService.findByRuolo(Ruolo.valueOf(ruolo)));
+        model.addAttribute(("ruoloSelezionato"), ruolo);
+        model.addAttribute("utentiByRuolo", utenteService.findByRuolo(Ruolo.valueOf(ruolo)));
         return "admin/utenti_cerca";
     }
 
     @GetMapping("/utenti/cancella")
-    public String utentiCancellaPage() { return "admin/utenti_cancella"; }
+    public String utentiCancellaPage(@RequestParam Integer id, Model model) {
+        model.addAttribute("utente", utenteService.findById(id));
+        return "admin/utenti_cancella"; }
 
     @PostMapping("/utenti/cancella")
     public String utentiCancellaSubmit(@RequestParam Integer id) {
@@ -79,12 +82,9 @@ public class AdminPageController {
         return "redirect:/admin/utenti";
     }
 
-
     @GetMapping("/utenti/modifica")
     public String utentiModificaPage(@RequestParam Integer id, Model model){
-        Utente utente = utenteService.findById(id);
-
-        model.addAttribute("utente", utente);
+        model.addAttribute("utente", utenteService.findById(id));
         return "admin/utenti_modifica";
     }
 
