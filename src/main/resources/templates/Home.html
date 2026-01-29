@@ -13,8 +13,9 @@
 </head>
 <body>
 
-<h1>Benvenuto, <span sec:authentication="name"></span></h1>
-<hr/>
+<div sec:authorize="isAuthenticated()">
+    <h1>Benvenuto, <span sec:authentication="name">Utente</span></h1>
+</div>
 
 <div class="box" sec:authorize="hasAnyRole('CLIENTE','ADMIN')">
     <h2>Area Cliente</h2>

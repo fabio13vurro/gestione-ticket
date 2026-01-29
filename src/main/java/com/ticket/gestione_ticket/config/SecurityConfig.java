@@ -1,15 +1,20 @@
 package com.ticket.gestione_ticket.config;
 
 import com.ticket.gestione_ticket.services.CustomUserDetailsService;
+import com.ticket.gestione_ticket.services.JwtService;
 import org.springframework.context.annotation.*;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -42,33 +47,32 @@ public class SecurityConfig {
 
     @Bean
     @Order(2) //form login
-    public SecurityFilterChain webSecurity(HttpSecurity http) throws Exception {
+    public SecurityFilterChain webSecurity(HttpSecurity http, JwtService jwtService) throws Exception {
         http
                 .securityMatcher("/**")
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/login",
-                                "/css/**", "/js/**", "/images/**"
-                        ).permitAll()
+                        .requestMatchers("/login", "/css/**", "/js/**", "/images/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/operatore/**").hasAnyRole("OPERATORE", "ADMIN")
                         .requestMatchers("/cliente/**").hasAnyRole("CLIENTE", "ADMIN")
                         .anyRequest().authenticated()
                 )
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .loginProcessingUrl("/login")
-                        .defaultSuccessUrl("/home", true)
-                        .failureUrl("/login?error=true")
-                        .permitAll()
-                )
+                .formLogin(form -> form.disable())
+                .addFilterBefore(new JwtCookieFilter(jwtService, customUserDetailsService), UsernamePasswordAuthenticationFilter.class)
                 .logout(logout -> logout
                         .logoutUrl("/logout")
+                        .deleteCookies("JWT_TOKEN")
                         .logoutSuccessUrl("/login?logout=true")
                         .permitAll()
-                )
-                .userDetailsService(customUserDetailsService);
+                );
         return http.build();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
     }
 
     @Bean
