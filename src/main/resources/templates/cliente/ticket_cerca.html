@@ -44,7 +44,7 @@
             <td th:text="${ticket.data_ora_chiusura}">2026-01-22T10:00</td>
             <td th:text="${ticket.sla}">1</td>
             <td th:text="${ticket.priorita}">1</td>
-            <td th:text="${ticket.utente.username}">admin</td>
+            <td th:if="${ticket.utente != null}" th:text="${ticket.utente.username}">admin</td>
         </tr>
         </tbody>
     </table>

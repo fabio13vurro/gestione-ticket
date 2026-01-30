@@ -17,7 +17,7 @@
     <h1>Benvenuto, <span sec:authentication="name">Utente</span></h1>
 </div>
 
-<div class="box" sec:authorize="hasAnyRole('CLIENTE','ADMIN')">
+<div class="box" sec:authorize="hasAnyRole('CLIENTE', 'OPERATORE', 'ADMIN')">
     <h2>Area Cliente</h2>
     <ul>
         <li><a class="text-dark" th:href="@{/cliente/ticket/crea}">Crea Ticket</a></li>

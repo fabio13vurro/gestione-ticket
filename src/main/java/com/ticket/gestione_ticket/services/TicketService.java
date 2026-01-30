@@ -5,6 +5,7 @@ import com.ticket.gestione_ticket.repositories.TicketRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -64,8 +65,24 @@ public class TicketService {
                 .orElseThrow(() -> new RuntimeException("Ticket non trovato: " + id));
     }
 
-
     public Ticket findByTitolo(String titolo){
         return ticketRepository.findByTitolo(titolo);
     }
+
+    public Ticket creazioneTicket(String titolo, String descrizione) {
+        Ticket t = new Ticket();
+        t.setTitolo(titolo);
+        t.setDescrizione(descrizione);
+        t.setCategoria("MONITORAGGIO");
+        t.setPriorita(3);
+        t.setStato("APERTO");
+        t.setData_ora_apertura(LocalDateTime.now());
+        t.setData_ora_chiusura(LocalDateTime.now().plusDays(1));
+        t.setOver_sla(false);
+        t.setDeleted(false);
+        t.setSla(1);
+        t.setCreated("esterno");
+        return t;
+    }
+
 }

@@ -32,6 +32,7 @@ public class Ticket {
     private Integer sla;
     private Boolean over_sla;
     private Boolean deleted = false;
+    private String created;
 
     @OneToMany(mappedBy = "ticket")
     @JsonIgnore

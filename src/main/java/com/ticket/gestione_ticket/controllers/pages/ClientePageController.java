@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 
 @Controller
 @RequestMapping("/cliente")
-@PreAuthorize("hasAnyRole('CLIENTE','ADMIN')")
+@PreAuthorize("hasAnyRole('CLIENTE', 'OPERATORE', 'ADMIN')")
 public class ClientePageController {
 
     private final TicketService ticketService;
@@ -51,6 +51,7 @@ public class ClientePageController {
         t.setSla(sla);
         t.setOver_sla(false);
         t.setDeleted(false);
+        t.setCreated("interno");
 
         Utente u = utenteService.findByUsername(principal.getName());
         t.setUtente(u);
@@ -72,8 +73,11 @@ public class ClientePageController {
     @GetMapping("/commenti")
     public String commentiPage() { return "cliente/commenti"; }
 
-    @PostMapping("/commenti/create")
-    public String createCommento(@RequestParam String testo,
+    @GetMapping("/commenti/crea")
+    public String creaCommentoPage() { return "cliente/commenti_crea"; }
+
+    @PostMapping("/commenti/crea")
+    public String creaCommentoSubmit(@RequestParam String testo,
                                  @RequestParam String tipo,
                                  @RequestParam(required=false) Integer ticketId,
                                  Model model) {
