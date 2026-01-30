@@ -29,6 +29,14 @@ public class CommentoService {
         commentoRepository.save(commento);
     }
 
+    public void ripristina(Integer id){
+        Commento commento = commentoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Commento non trovato: " + id));
+
+        commento.setDeleted(false);
+        commentoRepository.save(commento);
+    }
+
     @Transactional
     public Commento update(Integer id, Commento new_commento){
 

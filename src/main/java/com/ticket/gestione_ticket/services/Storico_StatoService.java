@@ -28,6 +28,14 @@ public class Storico_StatoService {
         storico_statoRepository.save(storico_stato);
     }
 
+    public void ripristina(Integer id){
+        Storico_Stato storico_stato = storico_statoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Storico_Stato non trovato: " + id));
+
+        storico_stato.setDeleted(false);
+        storico_statoRepository.save(storico_stato);
+    }
+
     @Transactional
     public Storico_Stato update(Integer id, Storico_Stato new_storico_stato){
         Storico_Stato storico_stato = storico_statoRepository.findById(id)

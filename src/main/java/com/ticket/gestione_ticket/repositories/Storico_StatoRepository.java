@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface Storico_StatoRepository extends JpaRepository<Storico_Stato, Integer> {
+
 }

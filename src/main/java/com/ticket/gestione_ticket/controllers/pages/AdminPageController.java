@@ -82,6 +82,17 @@ public class AdminPageController {
         return "redirect:/admin/utenti";
     }
 
+    @GetMapping("/utenti/ripristina")
+    public String utentiRipristinaPage(@RequestParam Integer id, Model model) {
+        model.addAttribute("utente", utenteService.findById(id));
+        return "admin/utenti_ripristina"; }
+
+    @PostMapping("/utenti/ripristina")
+    public String utentiRipristinaSubmit(@RequestParam Integer id) {
+        utenteService.restoreDeletedColumn(id);
+        return "redirect:/admin/utenti";
+    }
+
     @GetMapping("/utenti/modifica")
     public String utentiModificaPage(@RequestParam Integer id, Model model){
         model.addAttribute("utente", utenteService.findById(id));

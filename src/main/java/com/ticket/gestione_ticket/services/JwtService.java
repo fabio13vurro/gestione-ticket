@@ -10,6 +10,7 @@ import java.security.Key;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class JwtService {
@@ -22,9 +23,11 @@ public class JwtService {
     }
 
     public String generateToken(String username, List<String> roles) {
+        List<String> rolesWithPrefix = roles.stream().map(role -> role.startsWith("ROLE_") ? role : "ROLE_" + role).collect(Collectors.toList());
+
         return Jwts.builder()
                 .setSubject(username)
-                .claim("roles", roles)
+                .claim("roles", rolesWithPrefix)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)

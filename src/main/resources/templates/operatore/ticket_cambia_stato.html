@@ -1,16 +1,37 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Cambia stato</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        body{font-family: Arial; padding: 20px; background-color: #f5f7fa}
+    </style>
+</head>
 <body>
-<h2>Cambia Stato Ticket</h2>
-<form th:action="@{/operatore/ticket/stato}" method="post">
-    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-    <input type="number" name="ticketId" placeholder="ID Ticket" required>
-    <input name="statoPrecedente" placeholder="Stato precedente" required>
-    <input name="statoNuovo" placeholder="Stato nuovo" required>
-    <button type="submit">Registra</button>
-</form>
-<p th:if="${success}" th:text="${success}" style="color:green"></p>
-<pre th:if="${result}" th:text="${result}"></pre>
-<p><a th:href="@{/home}">← Torna alla Home</a></p>
+<div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+    <div class="card p-4 shadow" style="width: 350px; border-radius: 10px; background-color: #ffffff; border: 1px solid #dce3ed">
+        <h2 class="text-center mb-4">
+            Cambia stato
+            <a th:href="@{/home}" class="text-primary" style="text-decoration: none">
+                <i class="bi bi-house-door-fill"></i>
+            </a>
+        </h2>
+        <form th:action="@{/operatore/ticket/stato}" method="post">
+            <div class="form-group">
+                <label for="ticketId">Id Ticket</label>
+                <input type="number" class="form-control" id="ticketId" name="ticketId" required>
+            </div>
+            <div class="form-group">
+                <label for="stato">Nuovo stato</label>
+                <select class="form-control" id="stato" name="statoNuovo">
+                    <option value="">-- Stato --</option>
+                    <option>IN_LAVORAZIONE</option><option>IN_ATTESA</option><option>RISOLTO</option><option>CHIUSO</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block mt-3">Registra</button>
+        </form>
+    </div>
+</div>
 </body>
 </html>

@@ -3,13 +3,16 @@ package com.ticket.gestione_ticket.controllers.pages;
 import com.ticket.gestione_ticket.entities.Commento;
 import com.ticket.gestione_ticket.entities.Ticket;
 import com.ticket.gestione_ticket.entities.Tipo;
+import com.ticket.gestione_ticket.entities.Utente;
 import com.ticket.gestione_ticket.services.CommentoService;
 import com.ticket.gestione_ticket.services.TicketService;
+import com.ticket.gestione_ticket.services.UtenteService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 
 @Controller
@@ -19,11 +22,12 @@ public class ClientePageController {
 
     private final TicketService ticketService;
     private final CommentoService commentoService;
+    private final UtenteService utenteService;
 
-    public ClientePageController(TicketService ticketService,
-                                 CommentoService commentoService) {
+    public ClientePageController(TicketService ticketService,CommentoService commentoService, UtenteService utenteService) {
         this.ticketService = ticketService;
         this.commentoService = commentoService;
+        this.utenteService = utenteService;
     }
 
     @GetMapping("/ticket/crea")
@@ -34,7 +38,7 @@ public class ClientePageController {
                                    @RequestParam String categoria, @RequestParam Integer priorita,
                                    @RequestParam LocalDateTime data_ora_chiusura,
                                    @RequestParam Integer sla,
-                                   Model model) {
+                                   Model model, Principal principal) {
 
         Ticket t = new Ticket();
         t.setTitolo(titolo);
@@ -47,6 +51,10 @@ public class ClientePageController {
         t.setSla(sla);
         t.setOver_sla(false);
         t.setDeleted(false);
+
+        Utente u = utenteService.findByUsername(principal.getName());
+        t.setUtente(u);
+
         model.addAttribute("result", ticketService.create(t));
         model.addAttribute("success", "Ticket creato con successo.");
         return "cliente/ticket_crea";
@@ -57,7 +65,7 @@ public class ClientePageController {
 
     @PostMapping("/ticket/cerca")
     public String cercaTicketSubmit(@RequestParam Integer id, Model model) {
-        model.addAttribute("result", ticketService.findById(id));
+        model.addAttribute("ticket", ticketService.findById(id));
         return "cliente/ticket_cerca";
     }
 

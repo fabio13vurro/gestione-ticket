@@ -28,6 +28,14 @@ public class TicketService {
         ticketRepository.save(ticket);
     }
 
+    public void ripristina(Integer id){
+        Ticket ticket = ticketRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Ticket non trovato: " + id));
+
+        ticket.setDeleted(false);
+        ticketRepository.save(ticket);
+    }
+
     @Transactional
     public Ticket update(Integer id, Ticket new_ticket) {
 

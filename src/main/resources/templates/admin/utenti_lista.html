@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Lista Utenti</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
@@ -7,7 +8,6 @@
         h1{text-align: center;}
     </style>
 </head>
-<html xmlns:th="http://www.thymeleaf.org">
 <body>
 <h1>Lista Utenti</h1>
 <br>
@@ -29,8 +29,10 @@
         <td th:text="${u.email}">admin@mail</td>
         <td th:text="${u.ruolo}">ADMIN</td>
         <td th:text="${u.libero} ? 'si' : 'no'">si</td>
-        <td><a class="btn btn-primary" th:href="@{/admin/utenti/modifica (id=${u.idUtente})}" role="button">Modifica</a>
-            <a class="btn btn-danger" th:href="@{/admin/utenti/cancella (id=${u.idUtente})}" role="button">Cancella</a>
+        <td>
+            <a class="btn btn-primary" th:href="@{/admin/utenti/modifica (id=${u.idUtente})}" role="button">Modifica</a>
+            <a class="btn btn-danger" th:href="@{/admin/utenti/cancella (id=${u.idUtente})}" th:if="${!u.deleted}" role="button">Cancella</a>
+            <a class="btn btn-success" th:href="@{/admin/utenti/ripristina (id=${u.idUtente})}" th:if="${u.deleted}" role="button">Ripristina</a>
         </td>
     </tr>
     </tbody>

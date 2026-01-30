@@ -28,6 +28,14 @@ public class UtenteService {
         utenteRepository.save(utente);
     }
 
+    public void restoreDeletedColumn(Integer id){
+        Utente utente = utenteRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Utente non trovato: " + id));
+
+        utente.setDeleted(false);
+        utenteRepository.save(utente);
+    }
+
     @Transactional
     public Utente update(Integer id, Utente new_utente) {
         Utente utente = utenteRepository.findById(id)

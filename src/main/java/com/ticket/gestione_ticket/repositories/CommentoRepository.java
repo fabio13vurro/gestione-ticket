@@ -8,4 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 @Repository
 public interface CommentoRepository extends JpaRepository<Commento, Integer>{
     Commento findByTipo(Tipo tipo);
+
 }

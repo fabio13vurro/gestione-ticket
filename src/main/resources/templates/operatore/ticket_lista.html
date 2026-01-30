@@ -38,11 +38,9 @@
     <td th:text="${t.data_ora_chiusura}">2026-01-22T10:00</td>
     <td th:text="${t.sla}">1</td>
     <td>
-      <form th:action="@{/operatore/ticket/delete}" method="post" style="display:inline">
-        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-        <input type="hidden" name="id" th:value="${t.idTicket}">
-        <button class="btn btn-danger" type="submit" role="button">Elimina</button>
-      </form>
+      <a class="btn btn-primary" th:href="@{/operatore/ticket/modifica (id=${t.idTicket})}" role="button">Modifica</a>
+      <a class="btn btn-danger" th:href="@{/operatore/ticket/cancella (id=${t.idTicket})}" th:if="${!t.deleted}" role="button">Cancella</a>
+      <a class="btn btn-success" th:href="@{/operatore/ticket/ripristina (id=${t.idTicket})}" th:if="${t.deleted}" role="button">Ripristina</a>
     </td>
   </tr>
   </tbody>

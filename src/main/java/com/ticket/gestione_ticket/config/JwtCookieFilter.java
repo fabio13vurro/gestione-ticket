@@ -51,6 +51,8 @@ public class JwtCookieFilter extends OncePerRequestFilter {
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
 
+                System.out.println("DEBUG - Utente: " +  username + " | Authorities: " + authorities);
+
                 // Autenticazione utente
                 UsernamePasswordAuthenticationToken auth =
                         new UsernamePasswordAuthenticationToken(username, null, authorities);

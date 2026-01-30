@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Ripristina storico stato</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body { font-family: Arial; padding: 20px; background-color: #f5f7fa}
+    </style>
+</head>
+<body>
+<div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+    <div class="card p-4 shadow" style="width: 350px; border-radius: 10px; background-color: #ffffff; border: 1px solid #dce3ed">
+        <h2 class="text-center mb-4">Confermare ripristino ticket</h2>
+
+        <form th:action="@{/operatore/storico/ripristina}" method="post">
+            <div class="form-group mt-3">
+                <label class="field">
+                    ID Storico stato:
+                    <input type="number" th:value="${storico.getIdStorico_Stato()}" name="id" readonly>
+                </label>
+            </div>
+            <br>
+            <p class="text-center">
+                <a class="btn btn-secondary" th:href="@{/operatore/storico}" role="button">← Torna indietro</a>
+                <button class="btn btn-success" type="submit" role="button">Ripristina</button>
+            </p>
+        </form>
+    </div>
+</div>
+</body>
+</html>

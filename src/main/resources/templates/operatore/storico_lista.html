@@ -1,19 +1,39 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Storico Stati</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body{font-family: Arial; padding: 20px; background-color: #f5f7fa}
+        h1{text-align: center}
+    </style>
+</head>
 <body>
 <h2>Storico Stati</h2>
-<table>
-    <thead><tr><th>ID</th><th>Ticket</th><th>Prec</th><th>Nuovo</th><th>Data/Ora</th></tr></thead>
+<table class="table table-bordered table-hover">
+    <thead>
+    <tr>
+        <th scope="col">Id</th>
+        <th scope="col">Stato Precedente</th>
+        <th scope="col">Stato Nuovo</th>
+        <th scope="col">Data e Ora</th>
+        <th scope="col">codTicket associato</th>
+    </tr>
+    </thead>
     <tbody>
     <tr th:each="s : ${storico}">
-        <td th:text="${s.idStorico_Stato}">1</td>
-        <td th:text="${s.ticket != null ? s.ticket.idTicket : '-'}">1</td>
+        <th scope="row" th:text="${s.idStorico_Stato}">1</th>
         <td th:text="${s.stato_precedente}">APERTO</td>
         <td th:text="${s.stato_nuovo}">IN_LAVORAZIONE</td>
         <td th:text="${s.data_ora}">2026-01-22T10:00</td>
+        <td th:text="${s.ticket != null ? s.ticket.idTicket : '-'}">1</td>
+        <td>
+            <a class="btn btn-danger" th:href="@{/operatore/storico/cancella (id=${s.idStorico_Stato})}" th:if="${!s.deleted}" role="button">Cancella</a>
+            <a class="btn btn-success" th:href="@{/operatore/storico/ripristina (id=${s.idStorico_Stato})}" th:if="${s.deleted}" role="button">Ripristina</a>
+        </td>
     </tr>
     </tbody>
 </table>
-<p><a th:href="@{/home}">← Torna alla Home</a></p>
+<p><a class="btn btn-secondary" th:href="@{/home}" role="button">← Torna alla Home</a></p>
 </body>
 </html>
