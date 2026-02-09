@@ -58,7 +58,7 @@ public class CommentoService {
                 .orElseThrow(() -> new RuntimeException("Commento non trovato: " + id));
     }
 
-    public Commento findByTipo(Tipo tipo){
+    public List<Commento> findByTipo(Tipo tipo){
         return commentoRepository.findByTipo(tipo);
     }
 }

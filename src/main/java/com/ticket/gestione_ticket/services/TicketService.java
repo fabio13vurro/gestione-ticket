@@ -1,6 +1,7 @@
 package com.ticket.gestione_ticket.services;
 
 import com.ticket.gestione_ticket.entities.Ticket;
+import com.ticket.gestione_ticket.jobs.JobProducer;
 import com.ticket.gestione_ticket.repositories.TicketRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,13 +13,19 @@ import java.util.List;
 public class TicketService {
 
     private final TicketRepository ticketRepository;
+    private final JobProducer jobProducer;
 
-    public TicketService(TicketRepository ticketRepository) {
+    public TicketService(TicketRepository ticketRepository, JobProducer jobProducer) {
         this.ticketRepository = ticketRepository;
+        this.jobProducer = jobProducer;
     }
 
     public Ticket create(Ticket ticket) {
-        return ticketRepository.save(ticket);
+        Ticket saved = ticketRepository.save(ticket);
+
+        jobProducer.sendJob("GENERA_PDF");
+
+        return saved;
     }
 
     public void deleteById(int id) {

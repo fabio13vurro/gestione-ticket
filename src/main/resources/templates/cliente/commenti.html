@@ -1,43 +1,45 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lista Commenti</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body { font-family: Arial; padding: 20px; background-color: #f5f7fa}
+        h1{text-align: center;}
+    </style>
+</head>
 <body>
-<h2>Commenti</h2>
-
-<h3>Crea</h3>
-<form th:action="@{/cliente/commenti/create}" method="post">
-    <input name="testo" placeholder="Testo" required>
-    <select name="tipo">
-        <option value="">-- Tipo --</option>
-        <option>INTERNO</option><option>ESTERNO</option>
-    </select>
-    <input type="number" name="ticketId" placeholder="ID Ticket (opz)">
-    <button type="submit">Crea</button>
-</form>
-<pre th:if="${createResult}" th:text="${createResult}"></pre>
-
-<h3>Aggiorna</h3>
-<form th:action="@{/cliente/commenti/update}" method="post">
-    <input type="number" name="id" placeholder="ID" required>
-    <input name="testo" placeholder="Nuovo testo">
-    <select name="tipo"><option value="">-- Tipo --</option><option>INTERNO</option><option>ESTERNO</option></select>
-    <button type="submit">Aggiorna</button>
-</form>
-<pre th:if="${updateResult}" th:text="${updateResult}"></pre>
-
-<h3>Trova per ID</h3>
-<form th:action="@{/cliente/commenti/findById}" method="post">
-    <input type="number" name="id" placeholder="ID" required>
-    <button type="submit">Cerca</button>
-</form>
-<pre th:if="${findResult}" th:text="${findResult}"></pre>
-
-<h3>Trova per Tipo</h3>
-<form th:action="@{/cliente/commenti/findByTipo}" method="post">
-    <select name="tipo" required><option>INTERNO</option><option>ESTERNO</option></select>
-    <button type="submit">Cerca</button>
-</form>
-<pre th:if="${findByTipoResult}" th:text="${findByTipoResult}"></pre>
-
-<p><a th:href="@{/home}">← Torna alla Home</a></p>
+<h1>Lista Commenti</h1>
+<br>
+<table class="table table-bordered table-hover">
+    <thead>
+    <tr>
+        <th scope="col">Id</th>
+        <th scope="col">Testo</th>
+        <th scope="col">Tipo</th>
+        <th scope="col">Data</th>
+        <th scope="col">Codice Ticket</th>
+        <th scope="col">Azioni</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="c : ${commenti}">
+        <th scope="row" th:text="${c.idCommento}">1</th>
+        <td th:text="${c.testo}">testo</td>
+        <td th:text="${c.tipo}">tipo</td>
+        <td th:text="${c.data_ora}">data</td>
+        <td th:text="${c.ticket != null ? c.ticket.idTicket : '-'}">1</td>
+        <td>
+            <a class="btn btn-primary" th:href="@{/cliente/commenti/modifica (id=${c.idCommento})}" role="button">Modifica</a>
+            <a class="btn btn-danger" th:href="@{/cliente/commenti/cancella (id=${c.idCommento})}" th:if="${!c.deleted}" role="button">Cancella</a>
+            <a class="btn btn-success" th:href="@{/cliente/commenti/ripristina (id=${c.idCommento})}" th:if="${c.deleted}" role="button">Ripristina</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<br>
+<a class="btn btn-success" th:href="@{/cliente/commenti/crea}" role="button">Nuovo commento</a>
+<a class="btn btn-primary" th:href="@{/cliente/commenti/cerca}" role="button">Cerca commenti</a>
+<a class="btn btn-secondary" th:href="@{/home}" role="button">← Torna alla Home</a>
 </body>
 </html>

@@ -43,7 +43,7 @@ public class CommentoController {
     }
 
     @GetMapping("/cliente/find/tipo/{tipo}")
-    public Commento findByTipo(@RequestParam Tipo tipo){
+    public List<Commento> findByTipo(@RequestParam Tipo tipo){
         return commentoService.findByTipo(tipo);
     }
 }

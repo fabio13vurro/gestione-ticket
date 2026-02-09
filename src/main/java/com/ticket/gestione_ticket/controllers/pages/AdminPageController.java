@@ -113,7 +113,6 @@ public class AdminPageController {
         if(password != null && !password.isBlank()) u.setPassword(passwordEncoder.encode(password));
         if(libero != null) u.setLibero(libero);
         model.addAttribute("updateResult", utenteService.update(id, u));
-        model.addAttribute("success", "Utente modificato");
 
         return "redirect:/admin/utenti";
     }

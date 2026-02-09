@@ -71,7 +71,9 @@ public class ClientePageController {
     }
 
     @GetMapping("/commenti")
-    public String commentiPage() { return "cliente/commenti"; }
+    public String commentiPage(Model model) {
+        model.addAttribute("commenti", commentoService.findAll());
+        return "cliente/commenti"; }
 
     @GetMapping("/commenti/crea")
     public String creaCommentoPage() { return "cliente/commenti_crea"; }
@@ -90,33 +92,65 @@ public class ClientePageController {
             c.setTicket(t);
         }
         model.addAttribute("createResult", commentoService.create(c));
-        model.addAttribute("createMsg", "Commento creato");
         return "cliente/commenti";
     }
 
-    @PostMapping("/commenti/update")
-    public String updateCommento(@RequestParam Integer id,
+    @GetMapping("/commenti/modifica")
+    public String modificaCommentoPage(@RequestParam Integer id, Model model) {
+        model.addAttribute("commento", commentoService.findById(id));
+        return "cliente/commenti_modifica";
+    }
+
+    @PostMapping("/commenti/modifica")
+    public String modificaCommentoSubmit(@RequestParam Integer id,
                                  @RequestParam(required=false) String testo,
                                  @RequestParam(required=false) String tipo,
                                  Model model) {
-        Commento patch = new Commento();
-        if (testo !=null) patch.setTesto(testo);
-        if (tipo != null && !tipo.isBlank()) patch.setTipo(Tipo.valueOf(tipo));
-        patch.setData_ora(LocalDateTime.now());
-        model.addAttribute("updateResult", commentoService.update(id, patch));
-        model.addAttribute("updateMsg", "Commento aggiornato");
+        Commento c = new Commento();
+        if (testo !=null) c.setTesto(testo);
+        if (tipo != null && !tipo.isBlank()) c.setTipo(Tipo.valueOf(tipo));
+        c.setData_ora(LocalDateTime.now());
+        model.addAttribute("updateResult", commentoService.update(id, c));
         return "cliente/commenti";
     }
 
-    @PostMapping("/commenti/findById")
-    public String findCommentoById(@RequestParam Integer id, Model model) {
-        model.addAttribute("findResult", commentoService.findById(id));
-        return "cliente/commenti";
+    @GetMapping("/commenti/cancella")
+    public String commentiCancellaPage(@RequestParam Integer id, Model model) {
+        model.addAttribute("commento", commentoService.findById(id));
+        return "cliente/commenti_cancella";
     }
 
-    @PostMapping("/commenti/findByTipo")
+    @PostMapping("/commenti/cancella")
+    public String commentiCancellaSubmit(@RequestParam Integer id) {
+        commentoService.deleteById(id);
+        return "redirect:/cliente/commenti";
+    }
+
+    @GetMapping("/commenti/ripristina")
+    public String commentiRipristinaPage(@RequestParam Integer id, Model model) {
+        model.addAttribute("commento", commentoService.findById(id));
+        return "cliente/commenti_ripristina";
+    }
+
+    @PostMapping("/commenti/ripristina")
+    public String commentiRipristinaSubmit(@RequestParam Integer id) {
+        commentoService.ripristina(id);
+        return "redirect:/cliente/commenti";
+    }
+
+    @GetMapping("/commenti/cerca")
+    public String cercaCommentiPage() { return "cliente/commenti_cerca"; }
+
+    @PostMapping("/commenti/cerca/id")
+    public String cercaById(@RequestParam Integer id, Model model) {
+        model.addAttribute("byId", commentoService.findById(id));
+        return "cliente/commenti_cerca";
+    }
+
+    @PostMapping("/commenti/cerca/tipo")
     public String findCommentoByTipo(@RequestParam String tipo, Model model) {
-        model.addAttribute("findByTipoResult", commentoService.findByTipo(Tipo.valueOf(tipo)));
-        return "cliente/commenti";
+        model.addAttribute(("tipoSelezionato"), tipo);
+        model.addAttribute("commentiByTipo", commentoService.findByTipo(Tipo.valueOf(tipo)));
+        return "cliente/commenti_cerca";
     }
 }
