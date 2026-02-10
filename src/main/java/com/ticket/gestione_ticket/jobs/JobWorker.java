@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class JobWorker {
 
-    @RabbitListener(queues = JobQueueConfig.JOB_QUEUE)
+    //@RabbitListener(queues = JobQueueConfig.JOB_QUEUE)
     public void processJob(String messaggio) {
         System.out.println("Job ricevuto: " + messaggio);
     }

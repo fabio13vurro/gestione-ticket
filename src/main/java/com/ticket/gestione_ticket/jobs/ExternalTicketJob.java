@@ -11,7 +11,7 @@ public class ExternalTicketJob {
 
     private final TicketService ticketService;
 
-    //@Scheduled(fixedRate = 300000)
+    //@Scheduled(fixedRateString = "${scheduler.fixedrate}")
     public void creazioneTicket() {
 
         for (int i = 1; i <= 5; i++) {
