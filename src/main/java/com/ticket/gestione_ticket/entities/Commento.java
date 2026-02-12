@@ -1,4 +1,5 @@
 package com.ticket.gestione_ticket.entities;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,6 +23,7 @@ public class Commento {
     private LocalDateTime data_ora;
     private Boolean deleted = false;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "codTicket")
     private Ticket ticket;
