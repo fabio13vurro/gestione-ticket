@@ -1,5 +1,6 @@
 package com.ticket.gestione_ticket.jobs;
 
+import com.ticket.gestione_ticket.config.JobQueueConfig;
 import com.ticket.gestione_ticket.entities.Ticket;
 import com.ticket.gestione_ticket.repositories.TicketRepository;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -18,7 +19,7 @@ public class TicketSlaScheduler {
         this.jobProducer = jobProducer;
     }
 
-    @Scheduled(fixedRateString = "${scheduler.fixedrate}")
+    //@Scheduled(fixedRateString = "${scheduler.fixedrate}")
     public void checkOverSlaTickets(){
         System.out.println("Controllo ticket over SLA");
 
@@ -26,7 +27,7 @@ public class TicketSlaScheduler {
 
         lista.forEach(ticket -> {
             String messaggio = "Ticket Id " + ticket.getIdTicket() + " è over SLA";
-            jobProducer.sendJob(messaggio);
+            jobProducer.sendJob(JobQueueConfig.JOB_QUEUE, messaggio);
             System.out.println("Job inviato per ticket " + ticket.getIdTicket() + " con messaggio: " + messaggio);
         });
     }

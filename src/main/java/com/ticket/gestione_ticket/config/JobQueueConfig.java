@@ -8,9 +8,15 @@ import org.springframework.context.annotation.Configuration;
 public class JobQueueConfig {
 
     public static final String JOB_QUEUE = "ticket.jobs.queue";
+    public static final String MONGO_QUEUE = "mongo.queue";
 
     @Bean
     public Queue jobQueue() {
         return new Queue(JOB_QUEUE, true);
+    }
+
+    @Bean
+    public Queue mongoQueue(){
+        return new Queue(MONGO_QUEUE, true);
     }
 }

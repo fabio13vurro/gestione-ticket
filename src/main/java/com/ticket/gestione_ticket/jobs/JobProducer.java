@@ -13,7 +13,7 @@ public class JobProducer {
         this.amqpTemplate = amqpTemplate;
     }
 
-    public void sendJob(String messaggio) {
-        amqpTemplate.convertAndSend(JobQueueConfig.JOB_QUEUE, messaggio);
+    public void sendJob(String coda, String messaggio) {
+        amqpTemplate.convertAndSend(coda, messaggio);
     }
 }

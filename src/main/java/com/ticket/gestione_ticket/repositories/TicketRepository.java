@@ -14,4 +14,12 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
 
     @Query("SELECT t FROM Ticket t WHERE t.over_sla = true")
     List<Ticket> findByOverSlaTrue();
+
+    @Query("""
+       SELECT DISTINCT t
+       FROM Ticket t
+       LEFT JOIN FETCH t.commenti
+       LEFT JOIN FETCH t.storico_stato
+       """)
+    List<Ticket> findAllWithCommentiAndStorico();
 }

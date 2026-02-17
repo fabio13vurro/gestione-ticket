@@ -21,11 +21,7 @@ public class TicketService {
     }
 
     public Ticket create(Ticket ticket) {
-        Ticket saved = ticketRepository.save(ticket);
-
-        jobProducer.sendJob("GENERA_PDF");
-
-        return saved;
+        return ticketRepository.save(ticket);
     }
 
     public void deleteById(int id) {
