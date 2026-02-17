@@ -1,6 +1,6 @@
 package com.ticket.gestione_ticket.jobs;
 
-import com.mongodb.DuplicateKeyException;
+import org.springframework.dao.DuplicateKeyException;
 import com.ticket.gestione_ticket.config.JobQueueConfig;
 import com.ticket.gestione_ticket.mongodb.documents.OverSlaTicketDocument;
 import com.ticket.gestione_ticket.mongodb.repositories.OverSlaTicketRepository;
@@ -14,6 +14,7 @@ import tools.jackson.databind.ObjectMapper;
 public class MongoWorker {
     private final OverSlaTicketRepository mongoRepository;
     private final ObjectMapper objectMapper;
+    private final JobProducer jobProducer;
 
     @RabbitListener(queues = JobQueueConfig.MONGO_QUEUE)
     public void processSnapshot(String json) {
@@ -24,9 +25,10 @@ public class MongoWorker {
             System.out.println("Snapshot salvato su MongoDB");
         }catch (DuplicateKeyException dup){
             System.out.println("Documento già esistente");
+            return;
         } catch (Exception e){
             System.out.println("Errore nel salvataggio dello snapshot su MongoDB");
-            throw new RuntimeException(e);
+            throw e;
         }
     }
 }
