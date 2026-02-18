@@ -7,7 +7,7 @@ import com.ticket.gestione_ticket.mongodb.repositories.OverSlaTicketRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
-import tools.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RequiredArgsConstructor
 @Component
@@ -28,7 +28,6 @@ public class MongoWorker {
             return;
         } catch (Exception e){
             System.out.println("Errore nel salvataggio dello snapshot su MongoDB");
-            throw e;
         }
     }
 }
