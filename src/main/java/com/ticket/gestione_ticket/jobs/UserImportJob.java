@@ -2,6 +2,7 @@ package com.ticket.gestione_ticket.jobs;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ticket.gestione_ticket.config.HttpClientProperties;
 import com.ticket.gestione_ticket.entities.Ruolo;
 import com.ticket.gestione_ticket.entities.Utente;
 import com.ticket.gestione_ticket.repositories.UtenteRepository;
@@ -24,14 +25,13 @@ public class UserImportJob{
     private final Random random = new Random();
     private final ObjectMapper mapper = new ObjectMapper();
     private final PasswordEncoder passwordEncoder;
+    private final HttpClientProperties properties;
 
     @Scheduled(fixedRateString = "${scheduler.fixedrate}")
     public void importUsers() {
-        String url = "https://jsonplaceholder.typicode.com/users";
-
         try {
-            String json = httpClientService.getJson(url);
-            List<Map<String, Object>> lista = mapper.readValue(json, new TypeReference<List<Map<String, Object>>>(){});
+            String json = httpClientService.getJson(properties.getUrl());
+            List<Map<String, Object>> lista = mapper.readValue(json, new TypeReference<>(){});
 
             for (Map<String, Object> utenteJson : lista) {
                 Utente utente = new Utente();

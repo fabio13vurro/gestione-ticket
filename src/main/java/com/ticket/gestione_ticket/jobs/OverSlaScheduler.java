@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class OverSlaScheduler {
     private final OverSlaService overSlaService;
 
-    @Scheduled(fixedRateString = "${scheduler.fixedrate}")
+    //@Scheduled(fixedRateString = "${scheduler.fixedrate}")
     public void controlloOverSla(){
         overSlaService.controlloOverSla();
     }
