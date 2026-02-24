@@ -55,7 +55,7 @@ public class UtenteService {
 
     public Utente findById(Integer id) {
         return utenteRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Ticket non trovato: " + id));
+                .orElseThrow(() -> new RuntimeException("Utente non trovato: " + id));
     }
 
     public Utente findByUsername(String username) {

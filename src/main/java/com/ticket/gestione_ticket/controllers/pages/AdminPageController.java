@@ -40,7 +40,7 @@ public class AdminPageController {
 
         model.addAttribute("createResult", utenteService.create(u));
         model.addAttribute("success", "Utente creato");
-        return "admin/utenti";
+        return "redirect:/admin/utenti";
     }
 
     @GetMapping("/utenti")
