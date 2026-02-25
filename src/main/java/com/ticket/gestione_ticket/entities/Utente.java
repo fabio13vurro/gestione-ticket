@@ -28,6 +28,7 @@ public class Utente {
 
     private Boolean libero;
     private Boolean deleted = false;
+    private String address;
 
     @OneToMany(mappedBy = "utente")
     @JsonIgnore

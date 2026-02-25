@@ -1,0 +1,14 @@
+type Query{
+    users: [User]
+}
+
+type User{
+    username: String
+    email: String
+    address: Address
+}
+
+type Address{
+    street: String
+    city: String
+}
