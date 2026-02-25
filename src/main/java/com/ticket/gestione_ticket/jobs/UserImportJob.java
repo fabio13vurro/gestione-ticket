@@ -2,11 +2,9 @@ package com.ticket.gestione_ticket.jobs;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ticket.gestione_ticket.config.HttpClientProperties;
 import com.ticket.gestione_ticket.entities.Ruolo;
 import com.ticket.gestione_ticket.entities.Utente;
 import com.ticket.gestione_ticket.repositories.UtenteRepository;
-import com.ticket.gestione_ticket.services.HttpClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -15,12 +13,12 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.json.*;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.Random;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @RequiredArgsConstructor
 @Service
@@ -30,6 +28,7 @@ public class UserImportJob{
     private final PasswordEncoder passwordEncoder;
     private final Random random = new Random();
     private final RestTemplate restTemplate = new RestTemplate();
+    private static final Logger log = LogManager.getLogger(UserImportJob.class);
 
     @Scheduled(fixedRateString = "${scheduler.fixedrate}")
     public void importUsers() {
@@ -44,7 +43,9 @@ public class UserImportJob{
             HttpEntity<String> entity = new HttpEntity<>(payload, headers);
 
             String url = "http://localhost:8085/graphql";
+            log.info("Invio richiesta GraphQL a {}", url);
             String response = restTemplate.postForObject(url, entity, String.class);
+            log.info("Risposta GraphQL ricevuta: {}", response);
 
             JsonNode root = mapper.readTree(response);
             JsonNode users = root.path("data").path("users");
@@ -71,9 +72,9 @@ public class UserImportJob{
                 utenteRepository.save(utente);
             }
 
-            System.out.println("Importazione utenti completata");
+            log.info("Importazione utenti completata");
         }catch (Exception e){
-            System.err.println("Errore nel recupero dei dati utente: " + e.getMessage());
+            log.error("Errore nel recupero dei dati utente: " + e.getMessage());
         }
     }
 }

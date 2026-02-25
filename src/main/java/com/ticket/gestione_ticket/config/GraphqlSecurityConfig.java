@@ -13,7 +13,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class GraphqlSecurityConfig {
 
     @Bean
-    @Order(0) // 🔝 Prima di tutte le altre chain
+    @Order(0)
     SecurityFilterChain graphqlChain(HttpSecurity http) throws Exception {
         http
                 .securityMatcher("/graphql", "/graphiql", "/graphiql/**")
