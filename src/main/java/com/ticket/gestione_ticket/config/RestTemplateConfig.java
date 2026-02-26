@@ -1,6 +1,8 @@
 package com.ticket.gestione_ticket.config;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.actuate.metrics.web.client.ObservationRestTemplateCustomizer;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
@@ -10,13 +12,8 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class RestTemplateConfig {
 
-    private final HttpClientProperties properties;
-
     @Bean
-    public RestTemplate restTemplate() {
-        var factory = new SimpleClientHttpRequestFactory();
-        factory.setConnectTimeout(properties.getConnectTimeout());
-        factory.setReadTimeout(properties.getReadTimeout());
-        return new RestTemplate(factory);
+    public RestTemplate restTemplate(ObservationRestTemplateCustomizer customizer) {
+        return new RestTemplateBuilder().customizers(customizer).build();
     }
 }

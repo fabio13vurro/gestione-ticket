@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ticket.gestione_ticket.entities.Ruolo;
 import com.ticket.gestione_ticket.entities.Utente;
 import com.ticket.gestione_ticket.repositories.UtenteRepository;
+import io.micrometer.observation.annotation.Observed;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -27,10 +28,11 @@ public class UserImportJob{
     private final UtenteRepository utenteRepository;
     private final PasswordEncoder passwordEncoder;
     private final Random random = new Random();
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
     private static final Logger log = LogManager.getLogger(UserImportJob.class);
 
-    @Scheduled(fixedRateString = "${scheduler.fixedrate}")
+    @Observed(name = "userImportJob.importUsers")
+    @Scheduled(fixedRate = 1000)
     public void importUsers() {
         try {
             String query = Files.readString(Paths.get("src/main/resources/graphql/queries/user-import.graphql"));
@@ -45,7 +47,7 @@ public class UserImportJob{
             String url = "http://localhost:8085/graphql";
             log.info("Invio richiesta GraphQL a {}", url);
             String response = restTemplate.postForObject(url, entity, String.class);
-            log.info("Risposta GraphQL ricevuta: {}", response);
+            log.debug("Risposta GraphQL ricevuta: {}", response);
 
             JsonNode root = mapper.readTree(response);
             JsonNode users = root.path("data").path("users");

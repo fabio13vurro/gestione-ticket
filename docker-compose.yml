@@ -12,5 +12,23 @@ services:
       - rabbitmq_data:/var/lib/rabbitmq
     restart: unless-stopped
 
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.97.0
+    command: [ "--config=/etc/otel-collector.yaml" ]
+    volumes:
+      - ./otel-collector.yaml:/etc/otel-collector.yaml
+    ports:
+      - "4320:4317"
+      - "4321:4318"
+    restart: unless-stopped
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.47
+    ports:
+        - "16686:16686"      # Jaeger UI
+    restart: unless-stopped
+
+
 volumes:
   rabbitmq_data:
