@@ -2,7 +2,8 @@ package com.ticket.gestione_ticket.config;
 
 import com.ticket.gestione_ticket.services.CustomUserDetailsService;
 import com.ticket.gestione_ticket.services.JwtService;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
@@ -26,6 +27,19 @@ public class SecurityConfig {
     public SecurityConfig(CustomUserDetailsService customUserDetailsService) {
         this.customUserDetailsService = customUserDetailsService;
     }
+
+    @Bean
+    @Order(0)
+    public SecurityFilterChain actuatorSecurity(HttpSecurity http) throws Exception {
+        http
+                .securityMatcher("/actuator/**")
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().permitAll()
+                )
+                .csrf(csrf -> csrf.disable());
+        return http.build();
+    }
+
 
     @Bean
     @Order(1) //swagger
