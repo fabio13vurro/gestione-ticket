@@ -27,8 +27,12 @@ public class Utente {
     private Ruolo ruolo;
 
     private Boolean libero;
-    private Boolean deleted = false;
+    private Boolean deleted;
     private String address;
+
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
+    private String fileData;
 
     @OneToMany(mappedBy = "utente")
     @JsonIgnore

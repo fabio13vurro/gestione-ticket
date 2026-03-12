@@ -1,5 +1,6 @@
 package com.ticket.gestione_ticket.services;
 
+import com.ticket.gestione_ticket.DTOs.UtenteFileUploadRequest;
 import com.ticket.gestione_ticket.entities.Ruolo;
 import com.ticket.gestione_ticket.entities.Utente;
 import com.ticket.gestione_ticket.repositories.UtenteRepository;
@@ -18,6 +19,13 @@ public class UtenteService {
 
     public Utente create(Utente utente) {
         return utenteRepository.save(utente);
+    }
+
+    public Utente aggiungiFileBase64(UtenteFileUploadRequest req){
+        Utente u = utenteRepository.findByUsername(req.getUsername());
+        if(u == null) throw new RuntimeException("Utente non trovato: " + req.getUsername());
+        u.setFileData(req.getFileBase64());
+        return utenteRepository.save(u);
     }
 
     public void deleteById(int id) {
