@@ -42,7 +42,7 @@ public class Ticket {
     @JoinColumn(name = "cod_utente")
     private Utente utente;
 
-    @OneToOne(mappedBy = "ticket")
+    @OneToMany(mappedBy = "ticket", fetch = FetchType.LAZY)
     @com.fasterxml.jackson.annotation.JsonIgnore
-    private Storico_Stato storico_stato;
+    private List<Storico_Stato> storici = new ArrayList<>();
 }
