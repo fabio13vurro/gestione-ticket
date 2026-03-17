@@ -1,25 +1,23 @@
 package com.ticket.gestione_ticket.services;
 
+import com.ticket.gestione_ticket.entities.StoricoStato;
 import com.ticket.gestione_ticket.entities.Ticket;
 import com.ticket.gestione_ticket.entities.Utente;
 import com.ticket.gestione_ticket.jobs.JobProducer;
 import com.ticket.gestione_ticket.repositories.TicketRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class TicketService {
 
     private final TicketRepository ticketRepository;
-    private final JobProducer jobProducer;
-
-    public TicketService(TicketRepository ticketRepository, JobProducer jobProducer) {
-        this.ticketRepository = ticketRepository;
-        this.jobProducer = jobProducer;
-    }
+    private final StoricoStatoService storicoService;
 
     public Ticket create(Ticket ticket) {
         return ticketRepository.save(ticket);
@@ -87,6 +85,37 @@ public class TicketService {
 
     public List<Ticket> findByUtente_Username(String username){
         return ticketRepository.findByUtente_Username(username);
+    }
+
+    public Ticket cambiaStato(Integer id){
+        Ticket t = findById(id);
+        if(t == null) return null;
+
+        String statoNuovo, statoAttuale = t.getStato();
+
+        if(statoAttuale.equals("CHIUSO")) return t;
+
+        switch (statoAttuale) {
+            case "APERTO":
+                statoNuovo = "IN_LAVORAZIONE";
+                break;
+            case "IN_LAVORAZIONE":
+                statoNuovo = "IN_ATTESA";
+                break;
+            case "IN_ATTESA":
+                statoNuovo = "RISOLTO";
+                break;
+            case "RISOLTO":
+                statoNuovo = "CHIUSO";
+                t.setData_ora_chiusura(LocalDateTime.now());
+                break;
+            default:
+                statoNuovo = statoAttuale;
+        }
+
+        storicoService.create(t, statoAttuale, statoNuovo);
+        t.setStato(statoNuovo);
+        return ticketRepository.save(t);
     }
 
     public Ticket creazioneTicket(String titolo, String descrizione) {

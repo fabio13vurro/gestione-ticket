@@ -1,6 +1,7 @@
 package com.ticket.gestione_ticket.controllers;
 
 import com.ticket.gestione_ticket.entities.StoricoStato;
+import com.ticket.gestione_ticket.entities.Ticket;
 import com.ticket.gestione_ticket.services.StoricoStatoService;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,8 +18,8 @@ public class StoricoStatoController {
     }
 
     @PostMapping("/operatore/create")
-    public StoricoStato create(@RequestBody StoricoStato storicoStato) {
-        return storicoStatoService.create(storicoStato);
+    public StoricoStato create(Ticket t, String statoAttuale, String statoNuovo) {
+        return storicoStatoService.create(t, statoAttuale, statoNuovo);
     }
 
     @PutMapping("/operatore/update/{id}")

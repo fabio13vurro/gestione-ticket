@@ -16,6 +16,10 @@
     <i class="bi bi-house-door-fill"></i>
   </a>
 </h2>
+
+<div th:if="${warning}" class="alert alert-warning" th:text="${warning}"></div>
+<div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
 <table class="table table-bordered table-hover">
   <thead>
   <tr>
@@ -39,14 +43,16 @@
     <td th:text="${t.categoria}">Categoria</td>
     <td th:text="${t.priorita}">Priorità</td>
     <td th:text="${t.stato}">APERTO</td>
-    <td th:text="${t.data_ora_apertura}">2026-01-22T10:00</td>
-    <td th:text="${t.data_ora_chiusura}">2026-01-22T10:00</td>
+    <td th:text="${#temporals.format(t.data_ora_apertura, 'dd/MM/yyyy HH:mm')}"></td>
+    <td th:text="${t.data_ora_chiusura != null ? #temporals.format(t.data_ora_chiusura, 'dd/MM/yyyy HH:mm') : '-'}"></td>
     <td th:text="${t.sla}">1</td>
     <td>
-      <a class="btn btn-primary" th:href="@{/operatore/ticket/modifica (id=${t.idTicket})}" role="button">Modifica</a>
-      <a class="btn btn-danger" th:href="@{/operatore/ticket/cancella (id=${t.idTicket})}" th:if="${!t.deleted}" role="button">Cancella</a>
-      <a class="btn btn-success" th:href="@{/operatore/ticket/ripristina (id=${t.idTicket})}" th:if="${t.deleted}" role="button">Ripristina</a>
-      <a class="btn btn-info" th:href="@{/operatore/ticket/commenti (id=${t.idTicket})}" role="button">Commenti</a>
+      <a class="btn btn-primary" th:href="@{/operatore/ticket/modifica (id=${t.idTicket})}" role="button"><i class="bi bi-pencil-square"></i></a>
+      <a class="btn btn-danger" th:href="@{/operatore/ticket/cancella (id=${t.idTicket})}" th:if="${!t.deleted}" role="button"><i class="bi bi-trash"></i></a>
+      <a class="btn btn-success" th:href="@{/operatore/ticket/ripristina (id=${t.idTicket})}" th:if="${t.deleted}" role="button"><i class="bi bi-arrow-repeat"></i></a>
+      <a class="btn btn-info" th:href="@{/operatore/ticket/commenti (id=${t.idTicket})}" role="button"><i class="bi bi-chat-square-text"></i></a>
+      <a class="btn btn-warning" th:href="@{/operatore/ticket/stato (id=${t.idTicket})}" role="button"><i class="bi bi-ticket-perforated"></i></a>
+      <a class="btn btn-secondary" th:href="@{/operatore/ticket/storico (id=${t.idTicket})}" role="button"><i class="bi bi-archive"></i></a>
     </td>
   </tr>
   </tbody>

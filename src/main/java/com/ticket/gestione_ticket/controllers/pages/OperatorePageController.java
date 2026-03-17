@@ -1,7 +1,6 @@
 package com.ticket.gestione_ticket.controllers.pages;
 
 import com.ticket.gestione_ticket.entities.Commento;
-import com.ticket.gestione_ticket.entities.StoricoStato;
 import com.ticket.gestione_ticket.entities.Ticket;
 import com.ticket.gestione_ticket.entities.Tipo;
 import com.ticket.gestione_ticket.services.CommentoService;
@@ -11,7 +10,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
 
@@ -117,26 +120,23 @@ public class OperatorePageController {
     }
 
     @GetMapping("/ticket/stato")
-    public String cambiaStatoPage() { return "operatore/ticket_cambia_stato"; }
+    public String cambiaStato(@RequestParam Integer id, RedirectAttributes redirectAttributes) {
+        Ticket t = ticketService.findById(id);
 
-    @PostMapping("/ticket/stato")
-    public String cambiaStatoSubmit(@RequestParam Integer ticketId, @RequestParam String statoNuovo, Model model) {
-        StoricoStato s = new StoricoStato();
-        s.setStato_nuovo(statoNuovo);
-        s.setData_ora(LocalDateTime.now());
-        s.setDeleted(false);
-        Ticket t = ticketService.findById(ticketId);
-        s.setStato_precedente(t.getStato());
-        t.setStato(statoNuovo);
-        s.setTicket(t);
-        model.addAttribute("result", storicoService.create(s));
-        model.addAttribute("success", "Stato cambiato e storico registrato");
-        return "operatore/ticket_cambia_stato";
+        if (t.getStato().equals("CHIUSO")) {
+            redirectAttributes.addFlashAttribute("warning", "Non è possibile cambiare lo stato di un ticket chiuso.");
+            return "redirect:/operatore/ticket";
+        }
+
+        ticketService.cambiaStato(id);
+        redirectAttributes.addFlashAttribute("success", "Stato del ticket modificato con successo.");
+        return "redirect:/operatore/ticket";
     }
 
-    @GetMapping("/storico")
-    public String storicoLista(Model model) {
-        model.addAttribute("storico", storicoService.findAll());
+    @GetMapping("/ticket/storico")
+    public String storicoLista(@RequestParam Integer id, Model model) {
+        model.addAttribute("ticketId", id);
+        model.addAttribute("storico", storicoService.findByTicketId(id));
         return "operatore/storico_lista";
     }
 

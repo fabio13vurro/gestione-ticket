@@ -1,10 +1,12 @@
 package com.ticket.gestione_ticket.services;
 
 import com.ticket.gestione_ticket.entities.StoricoStato;
+import com.ticket.gestione_ticket.entities.Ticket;
 import com.ticket.gestione_ticket.repositories.StoricoStatoRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -16,8 +18,16 @@ public class StoricoStatoService {
         this.storicoStatoRepository = storicoStatoRepository;
     }
 
-    public StoricoStato create(StoricoStato storicoStato){
-        return storicoStatoRepository.save(storicoStato);
+    public StoricoStato create(Ticket ticket, String statoPrecedente, String statoNuovo){
+        StoricoStato s = new StoricoStato();
+
+        s.setStato_precedente(statoPrecedente);
+        s.setStato_nuovo(statoNuovo);
+        s.setDeleted(false);
+        s.setData_ora(LocalDateTime.now());
+        s.setTicket(ticket);
+
+        return storicoStatoRepository.save(s);
     }
 
     public void deleteById(int id){
@@ -54,5 +64,9 @@ public class StoricoStatoService {
 
     public List<StoricoStato> findAll(){
         return storicoStatoRepository.findAll();
+    }
+
+    public List<StoricoStato> findByTicketId(Integer ticketId){
+        return storicoStatoRepository.findByTicketId(ticketId);
     }
 }
