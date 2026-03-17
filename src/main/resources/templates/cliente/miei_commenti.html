@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="it">
+<head>
+    <meta charset="UTF-8"/>
+    <title>I miei commenti</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body { font-family: Arial; padding: 20px; background-color: #f5f7fa }
+        h1 { text-align: center; }
+        .nowrap { white-space: nowrap; }
+    </style>
+</head>
+<body>
+
+<h1>I miei commenti</h1>
+<hr/>
+
+<div th:if="${#lists.isEmpty(mieiCommenti)}" class="alert alert-info">
+    Non hai ancora commenti.
+</div>
+
+<div th:if="${!#lists.isEmpty(mieiCommenti)}" class="table-responsive">
+    <table class="table table-bordered table-hover">
+        <thead class="thead-light">
+        <tr>
+            <th>ID</th>
+            <th>Data/Ora</th>
+            <th>Tipo</th>
+            <th>Testo</th>
+            <th>ID Ticket</th>
+            <th>Titolo Ticket</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="c : ${mieiCommenti}">
+            <td th:text="${c.idCommento}">1</td>
+            <td class="nowrap" th:text="${#temporals.format(c.data_ora, 'dd/MM/yyyy HH:mm')}">01/01/2026 10:00</td>
+            <td th:text="${c.tipo}">ESTERNO</td>
+            <td th:text="${c.testo}">Testo</td>
+            <td th:text="${c.ticket != null ? c.ticket.idTicket : '—'}">12</td>
+            <td th:text="${(c.ticket != null && c.ticket.titolo != null) ? c.ticket.titolo : '—'}">Titolo</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<p><a class="btn btn-secondary" th:href="@{/home}" role="button">← Torna alla Home</a></p>
+</body>
+</html>

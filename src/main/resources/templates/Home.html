@@ -21,8 +21,8 @@
     <h2>Area Cliente</h2>
     <ul>
         <li><a class="text-dark" th:href="@{/cliente/ticket/crea}">Crea Ticket</a></li>
-        <li><a class="text-dark" th:href="@{/cliente/ticket/cerca}">Cerca Ticket</a></li>
-        <li><a class="text-dark" th:href="@{/cliente/commenti}">Gestione Commenti</a></li>
+        <li><a class="text-dark" th:href="@{/cliente/miei-ticket}">I miei Ticket</a></li>
+        <li><a class="text-dark" th:href="@{/cliente/miei-commenti}">I miei Commenti</a></li>
     </ul>
 </div>
 
@@ -30,6 +30,8 @@
     <h2>Area Operatore</h2>
     <ul>
         <li><a class="text-dark" th:href="@{/operatore/ticket}">Lista Ticket</a></li>
+        <li><a class="text-dark" th:href="@{/operatore/ticket/cerca}">Cerca Ticket</a></li>
+        <li><a class="text-dark" th:href="@{/operatore/commenti}">Gestione Commenti</a></li>
         <li><a class="text-dark" th:href="@{/operatore/ticket/stato}">Cambia Stato Ticket</a></li>
         <li><a class="text-dark" th:href="@{/operatore/storico}">Storico Stati</a></li>
     </ul>

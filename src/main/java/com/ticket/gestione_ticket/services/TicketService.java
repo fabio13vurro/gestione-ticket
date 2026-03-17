@@ -1,6 +1,7 @@
 package com.ticket.gestione_ticket.services;
 
 import com.ticket.gestione_ticket.entities.Ticket;
+import com.ticket.gestione_ticket.entities.Utente;
 import com.ticket.gestione_ticket.jobs.JobProducer;
 import com.ticket.gestione_ticket.repositories.TicketRepository;
 import org.springframework.stereotype.Service;
@@ -70,6 +71,22 @@ public class TicketService {
 
     public Ticket findByTitolo(String titolo){
         return ticketRepository.findByTitolo(titolo);
+    }
+
+    public List<Ticket> findByStato(String stato){
+        return ticketRepository.findByStato(stato);
+    }
+
+    public List<Ticket> findByPriorita(int priorita){
+        return ticketRepository.findByPriorita(priorita);
+    }
+
+    public List<Ticket> findByCategoria(String categoria){
+        return ticketRepository.findByCategoria(categoria);
+    }
+
+    public List<Ticket> findByUtente_Username(String username){
+        return ticketRepository.findByUtente_Username(username);
     }
 
     public Ticket creazioneTicket(String titolo, String descrizione) {

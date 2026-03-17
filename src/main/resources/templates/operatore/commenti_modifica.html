@@ -14,12 +14,12 @@
     <div class="card p-4 shadow" style="width: 350px; border-radius: 10px; background-color: #ffffff; border: 1px solid #dce3ed">
         <h2 class="text-center mb-4">
             Modifica Commento &nbsp;
-            <a th:href="@{/cliente/commenti}" class="text-primary" style="text-decoration:none;">
+            <a th:href="@{/operatore/commenti}" class="text-primary" style="text-decoration:none;">
                 <i class="bi bi-arrow-left"></i>
             </a>
         </h2>
 
-        <form th:action="@{/cliente/commenti/modifica}" method="post">
+        <form th:action="@{/operatore/commenti/modifica}" method="post">
             <div class="form group">
                 <label class="field">
                     ID Commento:

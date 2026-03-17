@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="it">
+<head>
+    <title>Miei Ticket</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body { font-family: Arial; padding: 20px; background-color: #f5f7fa}
+        h1{text-align: center;}
+    </style>
+</head>
+<body>
+
+<h1>I miei ticket</h1>
+<hr>
+
+<div th:if="${#lists.isEmpty(mieiTicket)}">
+    <p>Non hai ancora ticket.</p>
+</div>
+
+<div th:if="${!#lists.isEmpty(mieiTicket)}" class="table-responsive">
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Titolo</th>
+            <th>Descrizione</th>
+            <th>Categoria</th>
+            <th>Priorità</th>
+            <th>Stato</th>
+            <th>Data apertura</th>
+            <th>Data chiusura</th>
+            <th>Azioni</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="t : ${mieiTicket}">
+            <td th:text="${t.idTicket}"></td>
+            <td th:text="${t.titolo}"></td>
+            <td th:text="${t.descrizione}"></td>
+            <td th:text="${t.categoria}"></td>
+            <td th:text="${t.priorita}"></td>
+            <td th:text="${t.stato}"></td>
+            <td th:text="${#temporals.format(t.data_ora_apertura, 'dd/MM/yyyy HH:mm')}"></td>
+            <td th:text="${t.data_ora_chiusura != null ? #temporals.format(t.data_ora_chiusura, 'dd/MM/yyyy HH:mm') : '-'}"></td>
+            <td> <a class="btn btn-success" th:href="@{/cliente/commenti/crea (ticketId=${t.idTicket})}" role="button">Crea commento</a></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<p><a class="btn btn-secondary" th:href="@{/home}" role="button">← Torna alla Home</a></p>
+</body>
+</html>

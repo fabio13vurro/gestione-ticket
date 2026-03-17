@@ -30,16 +30,15 @@
         <td th:text="${c.data_ora}">data</td>
         <td th:text="${c.ticket != null ? c.ticket.idTicket : '-'}">1</td>
         <td>
-            <a class="btn btn-primary" th:href="@{/cliente/commenti/modifica (id=${c.idCommento})}" role="button">Modifica</a>
-            <a class="btn btn-danger" th:href="@{/cliente/commenti/cancella (id=${c.idCommento})}" th:if="${!c.deleted}" role="button">Cancella</a>
-            <a class="btn btn-success" th:href="@{/cliente/commenti/ripristina (id=${c.idCommento})}" th:if="${c.deleted}" role="button">Ripristina</a>
+            <a class="btn btn-primary" th:href="@{/operatore/commenti/modifica (id=${c.idCommento})}" role="button">Modifica</a>
+            <a class="btn btn-danger" th:href="@{/operatore/commenti/cancella (id=${c.idCommento})}" th:if="${!c.deleted}" role="button">Cancella</a>
+            <a class="btn btn-success" th:href="@{/operatore/commenti/ripristina (id=${c.idCommento})}" th:if="${c.deleted}" role="button">Ripristina</a>
         </td>
     </tr>
     </tbody>
 </table>
 <br>
-<a class="btn btn-success" th:href="@{/cliente/commenti/crea}" role="button">Nuovo commento</a>
-<a class="btn btn-primary" th:href="@{/cliente/commenti/cerca}" role="button">Cerca commenti</a>
+<a class="btn btn-primary" th:href="@{/operatore/commenti/cerca}" role="button">Cerca commenti</a>
 <a class="btn btn-secondary" th:href="@{/home}" role="button">← Torna alla Home</a>
 </body>
 </html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="it">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Commenti del ticket</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body { font-family: Arial; padding: 20px; background-color: #f5f7fa }
+        h1 { text-align: center; }
+        .nowrap { white-space: nowrap; }
+    </style>
+</head>
+<body>
+
+<h1>Commenti del ticket #<span th:text="${ticketId}">0</span></h1>
+<hr/>
+
+<div th:if="${#lists.isEmpty(commenti)}" class="alert alert-info">
+    Nessun commento presente per questo ticket.
+</div>
+
+<div th:if="${!#lists.isEmpty(commenti)}" class="table-responsive">
+    <table class="table table-bordered table-hover">
+        <thead class="thead-light">
+        <tr>
+            <th>ID</th>
+            <th>Data</th>
+            <th>Tipo</th>
+            <th>Testo</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="c : ${commenti}">
+            <td th:text="${c.idCommento}">1</td>
+            <td class="nowrap" th:text="${#temporals.format(c.data_ora, 'dd/MM/yyyy HH:mm')}">01/01/2026 10:00</td>
+            <td th:text="${c.tipo}">ESTERNO</td>
+            <td th:text="${c.testo}">Testo</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<p><a class="btn btn-secondary" th:href="@{/operatore/ticket}" role="button">← Torna indietro</a></p>
+
+</body>
+</html>

@@ -12,7 +12,7 @@
 <h1>Cerca Commenti</h1>
 <hr>
 <h3>Per ID</h3>
-<form th:action="@{/cliente/commenti/cerca/id}" method="post">
+<form th:action="@{/operatore/commenti/cerca/id}" method="post">
 
     <input type="number" name="id" placeholder="ID" required>
     <button type="submit">Cerca</button>
@@ -44,7 +44,7 @@
 <hr>
 
 <h3>Per Tipo</h3>
-<form th:action="@{/cliente/commenti/cerca/tipo}" method="post">
+<form th:action="@{/operatore/commenti/cerca/tipo}" method="post">
     <select name="tipo"><option>INTERNO</option><option>ESTERNO</option></select>
     <button type="submit">Cerca</button>
 </form>
@@ -75,7 +75,6 @@
 
 <hr>
 <br>
-
-<p><a class="btn btn-secondary" th:href="@{/cliente/commenti}" role="button">← Torna indietro</a></p>
+<p><a class="btn btn-secondary" th:href="@{/operatore/commenti}" role="button">← Torna indietro</a></p>
 </body>
 </html>

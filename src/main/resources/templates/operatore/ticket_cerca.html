@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Cerca Ticket</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body{font-family: Arial; padding: 20px; background-color: #f5f7fa}
+        h1{text-align: center}
+    </style>
+</head>
+<body>
+<h1>Cerca Ticket</h1>
+<hr>
+
+<h3>Per ID</h3>
+<form th:action="@{/operatore/ticket/cerca/id}" method="post">
+    <input type="number" name="id" placeholder="ID" min="1" required>
+    <button type="submit">Cerca</button>
+</form>
+
+<div th:if="${byId}" class="table-responsive">
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Titolo</th>
+            <th scope="col">Descrizione</th>
+            <th scope="col">Categoria</th>
+            <th scope="col">Stato</th>
+            <th scope="col">Data apertura</th>
+            <th scope="col">Data chiusura</th>
+            <th scope="col">Sla</th>
+            <th scope="col">Priorità</th>
+            <th scope="col">Utente</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <th scope="row" th:text="${byId.idTicket}">1</th>
+            <td th:text="${byId.titolo}">Titolo</td>
+            <td th:text="${byId.descrizione}">Descrizione</td>
+            <td th:text="${byId.categoria}">Categoria</td>
+            <td th:text="${byId.stato}">APERTO</td>
+            <td th:text="${byId.data_ora_apertura}">2026-01-22T10:00</td>
+            <td th:text="${byId.data_ora_chiusura}">2026-01-22T10:00</td>
+            <td th:text="${byId.sla}">1</td>
+            <td th:text="${byId.priorita}">1</td>
+            <td th:if="${byId.utente != null}" th:text="${byId.utente.username}">admin</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<hr>
+
+<h3>Per stato</h3>
+<hr>
+<form th:action="@{/operatore/ticket/cerca/stato}" method="post">
+<select name="stato"><option>APERTO</option><option>IN_LAVORAZIONE</option><option>IN_ATTESA</option><option>RISOLTO</option><option>CHIUSO</option></select>
+<button type="submit">Cerca</button>
+</form>
+<br>
+
+<div th:if="${!#lists.isEmpty(ticketsByStato)}" class="table-responsive">
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Titolo</th>
+            <th scope="col">Descrizione</th>
+            <th scope="col">Categoria</th>
+            <th scope="col">Stato</th>
+            <th scope="col">Data apertura</th>
+            <th scope="col">Data chiusura</th>
+            <th scope="col">Sla</th>
+            <th scope="col">Priorità</th>
+            <th scope="col">Utente</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="t : ${ticketsByStato}">
+            <th scope="row" th:text="${t.idTicket}">1</th>
+            <td th:text="${t.titolo}">Titolo</td>
+            <td th:text="${t.descrizione}">Descrizione</td>
+            <td th:text="${t.categoria}">Categoria</td>
+            <td th:text="${t.stato}">APERTO</td>
+            <td th:text="${t.data_ora_apertura}">2026-01-22T10:00</td>
+            <td th:text="${t.data_ora_chiusura}">2026-01-22T10:00</td>
+            <td th:text="${t.sla}">1</td>
+            <td th:text="${t.priorita}">1</td>
+            <td th:if="${t.utente != null}" th:text="${t.utente.username}">admin</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<hr>
+
+<h3>Per categoria</h3>
+<hr>
+<form th:action="@{/operatore/ticket/cerca/categoria}" method="post">
+    <input type="text" name="categoria" placeholder="categoria" required>
+    <button type="submit">Cerca</button>
+</form>
+<br>
+
+<div th:if="${!#lists.isEmpty(ticketsByCategoria)}" class="table-responsive">
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Titolo</th>
+            <th scope="col">Descrizione</th>
+            <th scope="col">Categoria</th>
+            <th scope="col">Stato</th>
+            <th scope="col">Data apertura</th>
+            <th scope="col">Data chiusura</th>
+            <th scope="col">Sla</th>
+            <th scope="col">Priorità</th>
+            <th scope="col">Utente</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="t : ${ticketsByCategoria}">
+            <th scope="row" th:text="${t.idTicket}">1</th>
+            <td th:text="${t.titolo}">Titolo</td>
+            <td th:text="${t.descrizione}">Descrizione</td>
+            <td th:text="${t.categoria}">Categoria</td>
+            <td th:text="${t.stato}">APERTO</td>
+            <td th:text="${t.data_ora_apertura}">2026-01-22T10:00</td>
+            <td th:text="${t.data_ora_chiusura}">2026-01-22T10:00</td>
+            <td th:text="${t.sla}">1</td>
+            <td th:text="${t.priorita}">1</td>
+            <td th:if="${t.utente != null}" th:text="${t.utente.username}">admin</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<hr>
+
+<h3>Per priorità</h3>
+<hr>
+<form th:action="@{/operatore/ticket/cerca/priorita}" method="post">
+<input type="number" name="priorita" placeholder="priorità (1..4)" min="1" max="4" required>
+<button type="submit">Cerca</button>
+</form>
+<br>
+
+<div th:if="${!#lists.isEmpty(ticketsByPriorita)}" class="table-responsive">
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Titolo</th>
+            <th scope="col">Descrizione</th>
+            <th scope="col">Categoria</th>
+            <th scope="col">Stato</th>
+            <th scope="col">Data apertura</th>
+            <th scope="col">Data chiusura</th>
+            <th scope="col">Sla</th>
+            <th scope="col">Priorità</th>
+            <th scope="col">Utente</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="t : ${ticketsByPriorita}">
+            <th scope="row" th:text="${t.idTicket}">1</th>
+            <td th:text="${t.titolo}">Titolo</td>
+            <td th:text="${t.descrizione}">Descrizione</td>
+            <td th:text="${t.categoria}">Categoria</td>
+            <td th:text="${t.stato}">APERTO</td>
+            <td th:text="${#temporals.format(t.data_ora_apertura, 'dd/MM/yyyy HH:mm')}">2026-01-22 10:00</td>
+            <td th:text="${t.data_ora_chiusura != null ? #temporals.format(t.data_ora_chiusura, 'dd/MM/yyyy HH:mm') : '—'}">—</td>
+            <td th:text="${t.sla}">1</td>
+            <td th:text="${t.priorita}">1</td>
+            <td th:text="${t.utente != null ? t.utente.username : 'N/D'}">utente</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<hr>
+
+<h3>Per utente</h3>
+<hr>
+<form th:action="@{/operatore/ticket/cerca/utente}" method="post"></form>
+<input type="text" name="username" placeholder="username" required>
+<button type="submit">Cerca</button>
+</form>
+<br>
+
+<div th:if="${!#lists.isEmpty(ticketsByUtente)}" class="table-responsive">
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Titolo</th>
+            <th scope="col">Descrizione</th>
+            <th scope="col">Categoria</th>
+            <th scope="col">Stato</th>
+            <th scope="col">Data apertura</th>
+            <th scope="col">Data chiusura</th>
+            <th scope="col">Sla</th>
+            <th scope="col">Priorità</th>
+            <th scope="col">Utente</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="t : ${ticketsByUtente}">
+            <th scope="row" th:text="${t.idTicket}">1</th>
+            <td th:text="${t.titolo}">Titolo</td>
+            <td th:text="${t.descrizione}">Descrizione</td>
+            <td th:text="${t.categoria}">Categoria</td>
+            <td th:text="${t.stato}">APERTO</td>
+            <td th:text="${#temporals.format(t.data_ora_apertura, 'dd/MM/yyyy HH:mm')}">2026-01-22 10:00</td>
+            <td th:text="${t.data_ora_chiusura != null ? #temporals.format(t.data_ora_chiusura, 'dd/MM/yyyy HH:mm') : '—'}">—</td>
+            <td th:text="${t.sla}">1</td>
+            <td th:text="${t.priorita}">1</td>
+            <td th:text="${t.utente != null ? t.utente.username : 'N/D'}">utente</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<hr>
+
+<p><a class="btn btn-secondary" th:href="@{/home}" role="button">← Torna alla Home</a></p>
+</body>
+</html>

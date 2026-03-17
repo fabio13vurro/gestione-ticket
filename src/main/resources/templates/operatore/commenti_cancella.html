@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Ripristina commento</title>
+    <title>Cancella Commento</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <style>
         body { font-family: Arial; padding: 20px; background-color: #f5f7fa}
@@ -9,20 +9,22 @@
 </head>
 <body>
 <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
-    <div class="card p-4 shadow" style="width: 350px; border-radius: 10px; background-color: #ffffff; border: 1px solid #dce3ed">
-        <h2 class="text-center mb-4">Confermare ripristino commento</h2>
+    <div class="card p-4 shadow" style=" width: 350px; border-radius: 10px; background-color: #ffffff; border: 1px solid #dce3ed">
 
-        <form th:action="@{/cliente/commenti/ripristina}" method="post">
+        <h2 class="text-center mb-4">Confermare cancellazione commento</h2>
+
+        <form th:action="@{/operatore/commenti/cancella}" method="post">
+
             <div class="form-group mt-3">
                 <label class="field">
                     ID Commento:
-                    <input type="number" th:value="${commento.getIdCommento()}" name="id" readonly>
+                    <input type="number" name="id" th:value="${commento.getIdCommento()}" readonly/>
                 </label>
             </div>
             <br>
             <p class="text-center">
-                <a class="btn btn-secondary" th:href="@{/cliente/commenti}" role="button">← Torna indietro</a>
-                <button class="btn btn-success" type="submit" role="button">Ripristina</button>
+                <a class="btn btn-secondary" th:href="@{/operatore/commenti}" role="button">← Torna indietro</a>
+                <button class="btn btn-danger" type="submit" role="button">Cancella</button>
             </p>
         </form>
     </div>

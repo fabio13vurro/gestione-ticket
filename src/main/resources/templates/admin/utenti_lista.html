@@ -3,14 +3,19 @@
 <head>
     <title>Lista Utenti</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <style>
         body { font-family: Arial; padding: 20px; background-color: #f5f7fa}
         h1{text-align: center;}
     </style>
 </head>
 <body>
-<h1>Lista Utenti</h1>
-<br>
+<h2 class="text-center mb-4">
+    Lista Utenti &nbsp;
+    <a th:href="@{/home}" class="text-primary" style="text-decoration:none;">
+        <i class="bi bi-house-door-fill"></i>
+    </a>
+</h2>
 <table class="table table-bordered table-hover">
     <thead>
     <tr>
@@ -37,8 +42,5 @@
     </tr>
     </tbody>
 </table>
-<br>
-<a class="btn btn-secondary" th:href="@{/home}" role="button">← Torna alla Home</a>
-
 </body>
 </html>

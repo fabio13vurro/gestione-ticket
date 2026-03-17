@@ -1,9 +1,6 @@
 package com.ticket.gestione_ticket.controllers.pages;
 
-import com.ticket.gestione_ticket.entities.Commento;
-import com.ticket.gestione_ticket.entities.Ticket;
-import com.ticket.gestione_ticket.entities.Tipo;
-import com.ticket.gestione_ticket.entities.Utente;
+import com.ticket.gestione_ticket.entities.*;
 import com.ticket.gestione_ticket.services.CommentoService;
 import com.ticket.gestione_ticket.services.TicketService;
 import com.ticket.gestione_ticket.services.UtenteService;
@@ -14,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Controller
 @RequestMapping("/cliente")
@@ -37,7 +35,6 @@ public class ClientePageController {
     public String creaTicketSubmit(@RequestParam String titolo, @RequestParam String descrizione,
                                    @RequestParam String categoria, @RequestParam Integer priorita,
                                    @RequestParam LocalDateTime data_ora_chiusura,
-                                   @RequestParam Integer sla,
                                    Model model, Principal principal) {
 
         Ticket t = new Ticket();
@@ -48,7 +45,7 @@ public class ClientePageController {
         t.setStato("APERTO");
         t.setData_ora_apertura(LocalDateTime.now());
         t.setData_ora_chiusura(data_ora_chiusura);
-        t.setSla(sla);
+        t.setSla(2);
         t.setOver_sla(false);
         t.setDeleted(false);
         t.setCreated("interno");
@@ -61,96 +58,49 @@ public class ClientePageController {
         return "cliente/ticket_crea";
     }
 
-    @GetMapping("/ticket/cerca")
-    public String cercaTicketPage() { return "cliente/ticket_cerca"; }
-
-    @PostMapping("/ticket/cerca")
-    public String cercaTicketSubmit(@RequestParam Integer id, Model model) {
-        model.addAttribute("ticket", ticketService.findById(id));
-        return "cliente/ticket_cerca";
-    }
-
-    @GetMapping("/commenti")
-    public String commentiPage(Model model) {
-        model.addAttribute("commenti", commentoService.findAll());
-        return "cliente/commenti"; }
-
     @GetMapping("/commenti/crea")
-    public String creaCommentoPage() { return "cliente/commenti_crea"; }
+    public String creaCommentoPage(@RequestParam Integer ticketId, Model model) {
+        model.addAttribute("ticketSelezionato", ticketService.findById(ticketId));
+        return "cliente/commenti_crea";
+    }
 
     @PostMapping("/commenti/crea")
     public String creaCommentoSubmit(@RequestParam String testo,
                                  @RequestParam String tipo,
-                                 @RequestParam(required=false) Integer ticketId,
-                                 Model model) {
+                                 @RequestParam Integer ticketId,
+                                 Model model, Principal principal) {
+        Ticket t = ticketService.findById(ticketId);
+
         Commento c = new Commento();
         c.setTesto(testo);
-        c.setTipo(Tipo.valueOf(tipo));
-        c.setData_ora(LocalDateTime.now());
-        if (ticketId != null) {
-            Ticket t = ticketService.findById(ticketId);
-            c.setTicket(t);
+        Utente u = utenteService.findByUsername(principal.getName());
+        if (u.getRuolo() == Ruolo.CLIENTE) {
+            c.setTipo(Tipo.ESTERNO);
+        } else {
+            c.setTipo(Tipo.valueOf(tipo));
         }
-        model.addAttribute("createResult", commentoService.create(c));
-        return "cliente/commenti";
-    }
-
-    @GetMapping("/commenti/modifica")
-    public String modificaCommentoPage(@RequestParam Integer id, Model model) {
-        model.addAttribute("commento", commentoService.findById(id));
-        return "cliente/commenti_modifica";
-    }
-
-    @PostMapping("/commenti/modifica")
-    public String modificaCommentoSubmit(@RequestParam Integer id,
-                                 @RequestParam(required=false) String testo,
-                                 @RequestParam(required=false) String tipo,
-                                 Model model) {
-        Commento c = new Commento();
-        if (testo !=null) c.setTesto(testo);
-        if (tipo != null && !tipo.isBlank()) c.setTipo(Tipo.valueOf(tipo));
+        c.setTicket(t);
         c.setData_ora(LocalDateTime.now());
-        model.addAttribute("updateResult", commentoService.update(id, c));
-        return "cliente/commenti";
+        c.setDeleted(false);
+        commentoService.create(c);
+        model.addAttribute("ticketSelezionato", t);
+        model.addAttribute("success", "Commento creato con successo.");
+        return "cliente/commenti_crea";
     }
 
-    @GetMapping("/commenti/cancella")
-    public String commentiCancellaPage(@RequestParam Integer id, Model model) {
-        model.addAttribute("commento", commentoService.findById(id));
-        return "cliente/commenti_cancella";
+    @GetMapping("/miei-ticket")
+    public String mieiTicketPage(Model model, Principal principal) {
+        String username = principal.getName();
+        List<Ticket> t = ticketService.findByUtente_Username(username);
+        model.addAttribute("mieiTicket", t);
+        return "cliente/miei_ticket";
     }
 
-    @PostMapping("/commenti/cancella")
-    public String commentiCancellaSubmit(@RequestParam Integer id) {
-        commentoService.deleteById(id);
-        return "redirect:/cliente/commenti";
-    }
-
-    @GetMapping("/commenti/ripristina")
-    public String commentiRipristinaPage(@RequestParam Integer id, Model model) {
-        model.addAttribute("commento", commentoService.findById(id));
-        return "cliente/commenti_ripristina";
-    }
-
-    @PostMapping("/commenti/ripristina")
-    public String commentiRipristinaSubmit(@RequestParam Integer id) {
-        commentoService.ripristina(id);
-        return "redirect:/cliente/commenti";
-    }
-
-    @GetMapping("/commenti/cerca")
-    public String cercaCommentiPage() { return "cliente/commenti_cerca"; }
-
-    @PostMapping("/commenti/cerca/id")
-    public String cercaById(@RequestParam Integer id, Model model) {
-        model.addAttribute("byId", commentoService.findById(id));
-        return "cliente/commenti_cerca";
-    }
-
-    @PostMapping("/commenti/cerca/tipo")
-    public String findCommentoByTipo(@RequestParam String tipo, Model model) {
-        model.addAttribute(("tipoSelezionato"), tipo);
-        model.addAttribute("commentiByTipo", commentoService.findByTipo(Tipo.valueOf(tipo)));
-        return "cliente/commenti_cerca";
+    @GetMapping("/miei-commenti")
+    public String mieiCommenti(Model model, Principal principal) {
+        String username = principal.getName();
+        model.addAttribute("mieiCommenti",
+                commentoService.findByTicket_Utente_Username(username));
+        return "cliente/miei_commenti";
     }
 }

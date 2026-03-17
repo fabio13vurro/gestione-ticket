@@ -1,6 +1,8 @@
 package com.ticket.gestione_ticket.repositories;
 
 import com.ticket.gestione_ticket.entities.Tipo;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import com.ticket.gestione_ticket.entities.Commento;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,4 +13,8 @@ import java.util.List;
 public interface CommentoRepository extends JpaRepository<Commento, Integer>{
     List<Commento> findByTipo(Tipo tipo);
 
+    List<Commento> findByTicket_Utente_Username(String username);
+
+    @Query("SELECT c FROM Commento c WHERE c.ticket.idTicket = :ticketId order by c.data_ora asc")
+    List<Commento> findByTicketIdOrderByData_oraAsc(@Param("ticketId") Integer ticketId);
 }

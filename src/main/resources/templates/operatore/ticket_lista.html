@@ -3,14 +3,19 @@
 <head>
   <title>Lista Ticket</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
   <style>
     body { font-family: Arial; padding: 20px; background-color: #f5f7fa}
     h1{text-align: center;}
   </style>
 </head>
 <body>
-<h1>Lista Ticket</h1>
-<br>
+<h2 class="text-center mb-4">
+  Lista ticket &nbsp;
+  <a th:href="@{/home}" class="text-primary" style="text-decoration:none;">
+    <i class="bi bi-house-door-fill"></i>
+  </a>
+</h2>
 <table class="table table-bordered table-hover">
   <thead>
   <tr>
@@ -41,10 +46,10 @@
       <a class="btn btn-primary" th:href="@{/operatore/ticket/modifica (id=${t.idTicket})}" role="button">Modifica</a>
       <a class="btn btn-danger" th:href="@{/operatore/ticket/cancella (id=${t.idTicket})}" th:if="${!t.deleted}" role="button">Cancella</a>
       <a class="btn btn-success" th:href="@{/operatore/ticket/ripristina (id=${t.idTicket})}" th:if="${t.deleted}" role="button">Ripristina</a>
+      <a class="btn btn-info" th:href="@{/operatore/ticket/commenti (id=${t.idTicket})}" role="button">Commenti</a>
     </td>
   </tr>
   </tbody>
 </table>
-<p><a class="btn btn-secondary" th:href="@{/home}" role="button">← Torna alla Home</a></p>
 </body>
 </html>
