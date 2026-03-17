@@ -6,7 +6,7 @@ Progetto backend realizzato con **Spring Boot**, che gestisce le operazioni CRUD
 
 - **Utente**
 - **Ticket**
-- **Storico_Stato**
+- **StoricoStato**
 - **Commento**
 
 Il progetto è attualmente in fase iniziale e implementa solo le funzionalità fondamentali.  
@@ -28,7 +28,7 @@ Il progetto è attualmente in fase iniziale e implementa solo le funzionalità f
 ## 📦 Funzionalità attuali
 ✔️ CRUD **Utente**  
 ✔️ CRUD **Ticket**  
-✔️ CRUD **Storico_Stato**  
+✔️ CRUD **StoricoStato**  
 ✔️ CRUD **Commento**
 
 Ogni entità ha:

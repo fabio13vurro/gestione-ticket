@@ -1,11 +1,11 @@
 package com.ticket.gestione_ticket.controllers.pages;
 
 import com.ticket.gestione_ticket.entities.Commento;
-import com.ticket.gestione_ticket.entities.Storico_Stato;
+import com.ticket.gestione_ticket.entities.StoricoStato;
 import com.ticket.gestione_ticket.entities.Ticket;
 import com.ticket.gestione_ticket.entities.Tipo;
 import com.ticket.gestione_ticket.services.CommentoService;
-import com.ticket.gestione_ticket.services.Storico_StatoService;
+import com.ticket.gestione_ticket.services.StoricoStatoService;
 import com.ticket.gestione_ticket.services.TicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 public class OperatorePageController {
 
     private final TicketService ticketService;
-    private final Storico_StatoService storicoService;
+    private final StoricoStatoService storicoService;
     private final CommentoService commentoService;
 
     @GetMapping("/ticket")
@@ -121,7 +121,7 @@ public class OperatorePageController {
 
     @PostMapping("/ticket/stato")
     public String cambiaStatoSubmit(@RequestParam Integer ticketId, @RequestParam String statoNuovo, Model model) {
-        Storico_Stato s = new Storico_Stato();
+        StoricoStato s = new StoricoStato();
         s.setStato_nuovo(statoNuovo);
         s.setData_ora(LocalDateTime.now());
         s.setDeleted(false);

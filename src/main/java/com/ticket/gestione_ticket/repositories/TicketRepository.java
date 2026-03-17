@@ -20,7 +20,7 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
        SELECT DISTINCT t
        FROM Ticket t
        LEFT JOIN FETCH t.commenti
-       LEFT JOIN FETCH t.storico_stato
+       LEFT JOIN FETCH t.storici
        """)
     List<Ticket> findAllWithCommentiAndStorico();
 

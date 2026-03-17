@@ -2,19 +2,20 @@ package com.ticket.gestione_ticket.services;
 
 
 import com.ticket.gestione_ticket.config.JobQueueConfig;
+import com.ticket.gestione_ticket.entities.StoricoStato;
 import com.ticket.gestione_ticket.entities.Ticket;
 import com.ticket.gestione_ticket.jobs.JobProducer;
 import com.ticket.gestione_ticket.mappers.TicketMapper;
 import com.ticket.gestione_ticket.mongodb.documents.OverSlaTicketDocument;
 import com.ticket.gestione_ticket.mongodb.repositories.OverSlaTicketRepository;
 import com.ticket.gestione_ticket.repositories.TicketRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
@@ -33,12 +34,28 @@ public class OverSlaService {
 
         for(Ticket t : tickets){
 
-            LocalDateTime ultimoAgg;
+            LocalDateTime ultimoAgg = t.getData_ora_apertura();
 
-            if(t.getStorico_stato() != null && t.getStorico_stato().getData_ora() != null){
-                ultimoAgg = t.getStorico_stato().getData_ora();
-            }else{
-                ultimoAgg = t.getData_ora_apertura();
+            if(t.getStorici() != null && !t.getStorici().isEmpty()){
+                LocalDateTime maxStorico = t.getStorici().stream()
+                        .map(StoricoStato::getData_ora)
+                        .filter(Objects::nonNull)
+                        .max(LocalDateTime::compareTo)
+                        .orElse(null);
+                if (maxStorico != null && (ultimoAgg == null || ultimoAgg.isAfter(maxStorico))) {
+                    ultimoAgg = maxStorico;
+                }
+            }
+
+            if (t.getCommenti() != null && !t.getCommenti().isEmpty()) {
+                LocalDateTime maxCommento = t.getCommenti().stream()
+                        .map(commento -> commento.getData_ora())
+                        .filter(Objects::nonNull)
+                        .max(LocalDateTime::compareTo)
+                        .orElse(null);
+                if (maxCommento != null && (ultimoAgg == null || ultimoAgg.isAfter(maxCommento))) {
+                    ultimoAgg = maxCommento;
+                }
             }
 
             if(t.getOver_sla().equals(true)) {

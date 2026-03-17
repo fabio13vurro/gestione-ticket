@@ -13,7 +13,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(exclude = {"commenti", "storico_stato", "utente"})
+@ToString(exclude = {"commenti", "storici", "utente"})
 
 @Entity
 public class Ticket {
@@ -43,6 +43,6 @@ public class Ticket {
     private Utente utente;
 
     @OneToMany(mappedBy = "ticket", fetch = FetchType.LAZY)
-    @com.fasterxml.jackson.annotation.JsonIgnore
-    private List<Storico_Stato> storici = new ArrayList<>();
+    @JsonIgnore
+    private List<StoricoStato> storici = new ArrayList<>();
 }

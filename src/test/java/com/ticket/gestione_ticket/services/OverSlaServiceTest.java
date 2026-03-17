@@ -2,7 +2,7 @@ package com.ticket.gestione_ticket.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ticket.gestione_ticket.config.JobQueueConfig;
-import com.ticket.gestione_ticket.entities.Storico_Stato;
+import com.ticket.gestione_ticket.entities.StoricoStato;
 import com.ticket.gestione_ticket.entities.Ticket;
 import com.ticket.gestione_ticket.jobs.JobProducer;
 import com.ticket.gestione_ticket.mappers.TicketMapper;
@@ -40,9 +40,9 @@ class OverSlaServiceTest {
         t.setDeleted(false);
 
         if (ultimoAgg != null) {
-            Storico_Stato ss = new Storico_Stato();
+            StoricoStato ss = new StoricoStato();
             ss.setData_ora(ultimoAgg);
-            t.setStorico_stato(ss);
+            t.setStorici(List.of(ss));
         }
 
         return t;

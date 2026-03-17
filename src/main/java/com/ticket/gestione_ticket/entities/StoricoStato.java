@@ -11,11 +11,13 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Storico_Stato {
+@Table(name = "storico_stato")
+public class StoricoStato {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer idStorico_Stato;
+    @Column(name = "id_storico_stato")
+    private Integer idStoricoStato;
 
     private String stato_precedente;
     private String stato_nuovo;
