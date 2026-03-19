@@ -1,5 +1,7 @@
 package com.ticket.gestione_ticket.controllers;
 
+import com.ticket.gestione_ticket.DTOs.creates.CommentoCreateDTO;
+import com.ticket.gestione_ticket.DTOs.updates.CommentoUpdateDTO;
 import com.ticket.gestione_ticket.entities.Commento;
 import com.ticket.gestione_ticket.entities.Tipo;
 import com.ticket.gestione_ticket.services.CommentoService;
@@ -18,13 +20,13 @@ public class CommentoController {
     }
 
     @PostMapping("/cliente/create")
-    public Commento create(String testo, String tipo, Integer ticketId, String username) {
-        return commentoService.create(testo, tipo, ticketId, username);
+    public Commento create(@RequestBody CommentoCreateDTO dto) {
+        return commentoService.create(dto.testo(), dto.tipo(), dto.ticketId(), dto.username());
     }
 
     @PutMapping("/cliente/update/{id}")
-    public Commento update(@PathVariable int id, String testo) {
-        return commentoService.update(id, testo);
+    public Commento update(@PathVariable int id, @RequestBody CommentoUpdateDTO dto) {
+        return commentoService.update(id, dto.testo());
     }
 
     @DeleteMapping("/admin/delete/{id}")

@@ -1,5 +1,6 @@
 package com.ticket.gestione_ticket.controllers;
 
+import com.ticket.gestione_ticket.DTOs.creates.StoricoStatoCreateDTO;
 import com.ticket.gestione_ticket.entities.StoricoStato;
 import com.ticket.gestione_ticket.entities.Ticket;
 import com.ticket.gestione_ticket.services.StoricoStatoService;
@@ -18,8 +19,8 @@ public class StoricoStatoController {
     }
 
     @PostMapping("/operatore/create")
-    public StoricoStato create(Ticket t, String statoAttuale, String statoNuovo) {
-        return storicoStatoService.create(t, statoAttuale, statoNuovo);
+    public StoricoStato create(@RequestBody StoricoStatoCreateDTO dto) {
+        return storicoStatoService.create(dto.ticket(), dto.statoAttuale(), dto.statoNuovo());
     }
 
     @PutMapping("/operatore/update/{id}")

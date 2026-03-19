@@ -1,5 +1,7 @@
 package com.ticket.gestione_ticket.controllers;
 
+import com.ticket.gestione_ticket.DTOs.creates.TicketCreateDTO;
+import com.ticket.gestione_ticket.DTOs.updates.TicketUpdateDTO;
 import com.ticket.gestione_ticket.entities.Ticket;
 import com.ticket.gestione_ticket.services.TicketService;
 import org.springframework.web.bind.annotation.*;
@@ -17,13 +19,13 @@ public class TicketController {
     }
 
     @PostMapping("/cliente/create")
-    public Ticket create(String titolo, String descr, String categoria, Integer priorita, String username) {
-        return ticketService.create(titolo, descr, categoria, priorita, username);
+    public Ticket create(@RequestBody TicketCreateDTO dto) {
+        return ticketService.create(dto.titolo(), dto.descr(), dto.categoria(), dto.priorita(), dto.username());
     }
 
     @PutMapping("/cliente/update/{id}")
-    public Ticket update(@PathVariable int id, String titolo, String descr, String categoria, Integer priorita) {
-        return ticketService.update(id, titolo, descr, categoria, priorita);
+    public Ticket update(@PathVariable int id, TicketUpdateDTO dto) {
+        return ticketService.update(id, dto.titolo(), dto.descr(), dto.categoria(), dto.priorita());
     }
 
     @DeleteMapping("/operatore/delete/{id}")

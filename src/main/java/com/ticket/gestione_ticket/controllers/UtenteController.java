@@ -1,5 +1,7 @@
 package com.ticket.gestione_ticket.controllers;
 
+import com.ticket.gestione_ticket.DTOs.creates.UtenteCreateDTO;
+import com.ticket.gestione_ticket.DTOs.updates.UtenteUpdateDTO;
 import com.ticket.gestione_ticket.entities.Ruolo;
 import com.ticket.gestione_ticket.entities.Utente;
 import com.ticket.gestione_ticket.services.UtenteService;
@@ -18,13 +20,13 @@ public class UtenteController {
     }
 
     @PostMapping("/create")
-    public Utente create(String username, String email, String password, String ruolo) {
-        return utenteService.create(username, email, password, ruolo);
+    public Utente create(@RequestBody UtenteCreateDTO dto) {
+        return utenteService.create(dto.username(), dto.email(), dto.password(), dto.ruolo());
     }
 
     @PutMapping("/update/{id}")
-    public Utente update(@PathVariable int id, String username, String email, String password, boolean libero) {
-        return utenteService.update(id, username, email, password, libero);
+    public Utente update(@PathVariable int id, @RequestBody UtenteUpdateDTO dto) {
+        return utenteService.update(id, dto.username(), dto.email(), dto.password(), dto.libero());
     }
 
     @GetMapping("/admin/findALl")
