@@ -29,7 +29,6 @@ public class TicketService {
         t.setPriorita(priorita);
         t.setStato("APERTO");
         t.setData_ora_apertura(LocalDateTime.now());
-        t.setSla(2);
         t.setOver_sla(false);
         t.setCreated("interno");
 
@@ -57,7 +56,7 @@ public class TicketService {
 
     @Transactional
     public Ticket update(Integer id, @Nullable String titolo, @Nullable String descrizione, @Nullable String categoria,
-                        @Nullable Integer priorita, @Nullable Integer sla) {
+                        @Nullable Integer priorita) {
         Ticket ticket = findById(id);
 
         boolean modifica = false;
@@ -80,12 +79,6 @@ public class TicketService {
         if (priorita != null && !priorita.equals(ticket.getPriorita())
                 && priorita > 0 && priorita < 5) {
             ticket.setPriorita(priorita);
-            modifica = true;
-        }
-
-        if (sla != null && !sla.equals(ticket.getSla())
-                && sla > 0) {
-            ticket.setSla(sla);
             modifica = true;
         }
 
@@ -164,7 +157,6 @@ public class TicketService {
         t.setData_ora_apertura(LocalDateTime.now());
         t.setOver_sla(false);
         t.setDeleted(false);
-        t.setSla(2);
         t.setCreated("esterno");
 
         return ticketRepository.save(t);

@@ -82,7 +82,10 @@ class OverSlaServiceTest {
 
     @Test
     void ticketNonOverSlaNonVecchio() {
-        Ticket t = makeTicket(3, false, LocalDateTime.now().minusHours(5));
+        Ticket t = new Ticket();
+        t.setIdTicket(3);
+        t.setOver_sla(false);
+        t.setData_ora_apertura(LocalDateTime.now().minusHours(5));
 
         when(ticketRepository.findAllWithCommentiAndStorico()).thenReturn(List.of(t));
 

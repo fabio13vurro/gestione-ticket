@@ -104,8 +104,8 @@ public class OperatorePageController {
     @PostMapping("/ticket/modifica")
     public String ticketModificaSubmit(@RequestParam Integer id, @RequestParam(required = false) String titolo,
                                        @RequestParam(required = false) String descrizione, @RequestParam(required = false) String categoria,
-                                       @RequestParam(required = false) Integer priorita, @RequestParam(required = false) Integer sla, Model model) {
-        model.addAttribute("updateResults", ticketService.update(id, titolo, descrizione, categoria, priorita, sla));
+                                       @RequestParam(required = false) Integer priorita, @RequestParam(required = false) Model model) {
+        model.addAttribute("updateResults", ticketService.update(id, titolo, descrizione, categoria, priorita));
         model.addAttribute("success", "Ticket modificato");
         return "redirect:/operatore/ticket";
     }

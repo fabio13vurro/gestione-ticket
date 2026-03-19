@@ -22,8 +22,8 @@ public class TicketController {
     }
 
     @PutMapping("/cliente/update/{id}")
-    public Ticket update(@PathVariable int id, String titolo, String descr, String categoria, Integer priorita, Integer sla) {
-        return ticketService.update(id, titolo, descr, categoria, priorita, sla);
+    public Ticket update(@PathVariable int id, String titolo, String descr, String categoria, Integer priorita) {
+        return ticketService.update(id, titolo, descr, categoria, priorita);
     }
 
     @DeleteMapping("/operatore/delete/{id}")

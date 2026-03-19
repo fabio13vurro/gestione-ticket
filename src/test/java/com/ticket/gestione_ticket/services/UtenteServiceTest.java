@@ -5,9 +5,11 @@ import com.ticket.gestione_ticket.entities.Utente;
 import com.ticket.gestione_ticket.repositories.UtenteRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,18 +23,32 @@ public class UtenteServiceTest {
     @Mock
     private UtenteRepository utenteRepository;
 
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
     @InjectMocks
     private UtenteService utenteService;
 
     @Test
-    void createUtente(){
-        Utente u = new Utente();
-        u.setUsername("test");
-        given(utenteRepository.save(u)).willReturn(u);
+    void createUtente() {
 
-        Utente utente = utenteService.create(u);
-        assertThat(utente).isSameAs(u);
-        then(utenteRepository).should().save(u);
+        given(passwordEncoder.encode("pass")).willReturn("ENC"); // il service codifica la password
+        given(utenteRepository.save(any(Utente.class)))
+                .willAnswer(inv -> inv.getArgument(0));
+
+        Utente result = utenteService.create("test", "email", "pass", "CLIENTE");
+
+        ArgumentCaptor<Utente> captor = ArgumentCaptor.forClass(Utente.class);
+        then(utenteRepository).should().save(captor.capture());
+        Utente saved = captor.getValue();
+
+        assertThat(saved.getUsername()).isEqualTo("test");
+        assertThat(saved.getEmail()).isEqualTo("email");
+        assertThat(saved.getPassword()).isEqualTo("ENC");
+        assertThat(saved.getRuolo()).isEqualTo(Ruolo.CLIENTE);
+        assertThat(saved.getLibero()).isTrue();
+        assertThat(saved.getDeleted()).isFalse();
+        assertThat(result).isSameAs(saved);
     }
 
     @Test
@@ -84,11 +100,7 @@ public class UtenteServiceTest {
         given(utenteRepository.findById(7)).willReturn(Optional.of(old));
         given(utenteRepository.save(any(Utente.class))).willAnswer(inv -> inv.getArgument(0));
 
-        Utente newUtente = new Utente();
-        newUtente.setEmail("email2");
-        newUtente.setUsername("username2");
-
-        Utente updated = utenteService.update(7, newUtente);
+        Utente updated = utenteService.update(7,"username2", "email2", null, null);
         assertThat(updated.getEmail()).isEqualTo("email2");
         assertThat(updated.getUsername()).isEqualTo("username2");
         assertThat(updated.getPassword()).isEqualTo("PASSWORD");

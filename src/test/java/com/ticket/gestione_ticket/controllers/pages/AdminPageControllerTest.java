@@ -12,7 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -43,9 +43,8 @@ class AdminPageControllerTest {
     @Test
     @WithMockUser(roles = "ADMIN")
     void utentiCreaSubmit() throws Exception {
-        Utente newUser = new Utente();
-        given(utenteService.create(any(Utente.class))).willReturn(newUser);
-        given(passwordEncoder.encode("pass")).willReturn("encodedPass");
+
+        given(utenteService.create(anyString(), anyString(), anyString(), anyString())).willReturn(new Utente());
 
         mockMvc.perform(post("/admin/utenti/crea")
                         .param("username", "mario")
@@ -55,7 +54,7 @@ class AdminPageControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/admin/utenti"));
 
-        then(utenteService).should().create(any(Utente.class));
+        then(utenteService).should().create("mario", "mario@mail.com", "pass", "ADMIN");
     }
 
     @Test
@@ -181,6 +180,8 @@ class AdminPageControllerTest {
     @WithMockUser(roles = "ADMIN")
     void utentiModificaSubmit() throws Exception {
 
+        given(utenteService.update(anyInt(), any(), any(), any(), any())).willReturn(new Utente());
+
         mockMvc.perform(post("/admin/utenti/modifica")
                         .param("id", "1")
                         .param("username", "new")
@@ -188,6 +189,6 @@ class AdminPageControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/admin/utenti"));
 
-        then(utenteService).should().update(any(Integer.class), any(Utente.class));
+        then(utenteService).should().update(1, "new", "mail@mail.com", null, null);
     }
 }

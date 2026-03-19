@@ -1,10 +1,11 @@
 package com.ticket.gestione_ticket.services;
 
 import com.ticket.gestione_ticket.entities.Ticket;
-import com.ticket.gestione_ticket.jobs.JobProducer;
+import com.ticket.gestione_ticket.entities.Utente;
 import com.ticket.gestione_ticket.repositories.TicketRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -21,20 +22,36 @@ public class TicketServiceTest {
     private TicketRepository ticketRepository;
 
     @Mock
-    private JobProducer jobProducer;
+    private UtenteService utenteService;
 
     @InjectMocks
     private TicketService ticketService;
 
     @Test
-    void createTicket(){
-        Ticket t = new Ticket();
-        t.setTitolo("Test");
-        given(ticketRepository.save(t)).willReturn(t);
+    void createTicket() {
+        var u = new Utente();
+        u.setUsername("Username");
+        given(utenteService.findByUsername("Username")).willReturn(u);
 
-        Ticket ticket = ticketService.create(t);
-        assertThat(ticket).isSameAs(t);
-        then(ticketRepository).should().save(t);
+        given(ticketRepository.save(any(Ticket.class)))
+                .willAnswer(inv -> inv.getArgument(0));
+
+        Ticket result = ticketService.create("Test", "Descrizione", "Categoria", 3, "Username");
+
+        ArgumentCaptor<Ticket> captor = ArgumentCaptor.forClass(Ticket.class);
+        then(ticketRepository).should().save(captor.capture());
+        Ticket saved = captor.getValue();
+
+        assertThat(saved.getTitolo()).isEqualTo("Test");
+        assertThat(saved.getDescrizione()).isEqualTo("Descrizione");
+        assertThat(saved.getCategoria()).isEqualTo("Categoria");
+        assertThat(saved.getPriorita()).isEqualTo(3);
+        assertThat(saved.getStato()).isEqualTo("APERTO");
+        assertThat(saved.getData_ora_apertura()).isNotNull();
+        assertThat(saved.getOver_sla()).isFalse();
+        assertThat(saved.getCreated()).isEqualTo("interno");
+        assertThat(saved.getUtente()).isSameAs(u);
+        assertThat(result).isSameAs(saved);
     }
 
     @Test
@@ -88,17 +105,15 @@ public class TicketServiceTest {
         given(ticketRepository.findById(7)).willReturn(Optional.of(old));
         given(ticketRepository.save(any(Ticket.class))).willAnswer(inv -> inv.getArgument(0));
 
-        Ticket newTicket = new Ticket();
-        newTicket.setTitolo("Nuovo");
-        newTicket.setStato("CHIUSO");
-
-        Ticket updated = ticketService.update(7, newTicket);
+        Ticket updated = ticketService.update(7, "Nuovo", null, null, 3);
         assertThat(updated.getTitolo()).isEqualTo("Nuovo");
-        assertThat(updated.getStato()).isEqualTo("CHIUSO");
+        assertThat(updated.getPriorita()).isEqualTo(3);
 
         assertThat(updated.getDescrizione()).isEqualTo("Vecchia descrizione");
         assertThat(updated.getCategoria()).isEqualTo("Vecchia categoria");
-        assertThat(updated.getPriorita()).isEqualTo(2);
+        assertThat(updated.getStato()).isEqualTo("APERTO");
+
+        then(ticketRepository).should().save(updated);
     }
 
     @Test
@@ -132,18 +147,23 @@ public class TicketServiceTest {
     }
 
     @Test
-    void creazioneTicketScheduled(){
+    void creazioneTicketScheduled() {
+        given(ticketRepository.save(any(Ticket.class)))
+                .willAnswer(inv -> inv.getArgument(0));
+
         Ticket t = ticketService.creazioneTicket("titolo", "descrizione");
+
         assertThat(t.getTitolo()).isEqualTo("titolo");
         assertThat(t.getDescrizione()).isEqualTo("descrizione");
         assertThat(t.getCategoria()).isEqualTo("MONITORAGGIO");
         assertThat(t.getPriorita()).isEqualTo(3);
         assertThat(t.getStato()).isEqualTo("APERTO");
         assertThat(t.getData_ora_apertura()).isNotNull();
-        assertThat(t.getData_ora_chiusura()).isNotNull();
+        assertThat(t.getData_ora_chiusura()).isNull();
         assertThat(t.getOver_sla()).isFalse();
         assertThat(t.getDeleted()).isFalse();
-        assertThat(t.getSla()).isEqualTo(1);
         assertThat(t.getCreated()).isEqualTo("esterno");
+
+        then(ticketRepository).should().save(any(Ticket.class));
     }
 }

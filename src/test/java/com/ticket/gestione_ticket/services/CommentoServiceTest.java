@@ -1,7 +1,6 @@
 package com.ticket.gestione_ticket.services;
 
-import com.ticket.gestione_ticket.entities.Commento;
-import com.ticket.gestione_ticket.entities.Tipo;
+import com.ticket.gestione_ticket.entities.*;
 import com.ticket.gestione_ticket.repositories.CommentoRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,21 +16,38 @@ import static org.assertj.core.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 public class CommentoServiceTest {
-    @Mock
-    private CommentoRepository commentoRepository;
+    @Mock private CommentoRepository commentoRepository;
+    @Mock private TicketService ticketService;
+    @Mock private UtenteService utenteService;
 
     @InjectMocks
     private CommentoService commentoService;
 
     @Test
     void createCommento(){
-        Commento c = new Commento();
-        c.setTesto("testo");
-        given(commentoRepository.save(c)).willReturn(c);
+        Integer idTicket = 7;
+        String testo = "testo";
+        String tipo = "ESTERNO";
+        String username = "Username";
 
-        Commento commento = commentoService.create(c);
-        assertThat(commento).isSameAs(c);
-        then(commentoRepository).should().save(c);
+        Ticket t = new Ticket();
+        t.setIdTicket(idTicket);
+
+        Utente u = new Utente();
+        u.setUsername(username);
+        u.setRuolo(Ruolo.OPERATORE);
+
+        given(ticketService.findById(idTicket)).willReturn(t);
+        given(utenteService.findByUsername(username)).willReturn(u);
+        given(commentoRepository.save(any(Commento.class))).willAnswer(inv -> inv.getArgument(0));
+
+        Commento c = commentoService.create(testo, tipo, idTicket, username);
+        assertThat(c.getTesto()).isEqualTo(testo);
+        assertThat(c.getTipo()).isEqualTo(Tipo.valueOf(tipo));
+        assertThat(c.getTicket()).isSameAs(t);
+        then(ticketService).should().findById(idTicket);
+        then(utenteService).should().findByUsername(username);
+        then(commentoRepository).should().save(any(Commento.class));
     }
 
     @Test
@@ -76,19 +92,13 @@ public class CommentoServiceTest {
     void updateCommento(){
         Commento old = new Commento();
         old.setTesto("vecchio");
-        old.setTipo(Tipo.ESTERNO);
         old.setDeleted(false);
 
         given(commentoRepository.findById(7)).willReturn(Optional.of(old));
         given(commentoRepository.save(any(Commento.class))).willAnswer(inv -> inv.getArgument(0));
 
-        Commento newCommento = new Commento();
-        newCommento.setTesto("nuovo");
-        newCommento.setTipo(Tipo.INTERNO);
-
-        Commento updated = commentoService.update(7, newCommento);
+        Commento updated = commentoService.update(7, "nuovo");
         assertThat(updated.getTesto()).isEqualTo("nuovo");
-        assertThat(updated.getTipo()).isEqualTo(Tipo.INTERNO);
         assertThat(updated.getDeleted()).isFalse();
     }
 

@@ -29,7 +29,6 @@ public class Ticket {
     private String stato;
     private LocalDateTime data_ora_apertura;
     private LocalDateTime data_ora_chiusura;
-    private Integer sla;
     private Boolean over_sla;
     private Boolean deleted = false;
     private String created;
