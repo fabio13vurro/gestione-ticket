@@ -1,6 +1,5 @@
 package com.ticket.gestione_ticket.controllers.pages;
 
-import com.ticket.gestione_ticket.entities.Commento;
 import com.ticket.gestione_ticket.entities.Ticket;
 import com.ticket.gestione_ticket.entities.Tipo;
 import com.ticket.gestione_ticket.services.CommentoService;
@@ -15,8 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
 @Controller
@@ -108,14 +105,8 @@ public class OperatorePageController {
     public String ticketModificaSubmit(@RequestParam Integer id, @RequestParam(required = false) String titolo,
                                        @RequestParam(required = false) String descrizione, @RequestParam(required = false) String categoria,
                                        @RequestParam(required = false) Integer priorita, @RequestParam(required = false) Integer sla, Model model) {
-        var t = new Ticket();
-        if(titolo != null && !titolo.isBlank()) t.setTitolo(titolo);
-        if(descrizione != null && !descrizione.isBlank())  t.setDescrizione(descrizione);
-        if(categoria != null && !categoria.isBlank()) t.setCategoria(categoria);
-        if(priorita != null && priorita != 0)  t.setPriorita(priorita);
-        if(sla != null && sla != 0)  t.setSla(sla);
-        model.addAttribute("updateResults", ticketService.update(id, t));
-        model.addAttribute("success", "Utente modificato");
+        model.addAttribute("updateResults", ticketService.update(id, titolo, descrizione, categoria, priorita, sla));
+        model.addAttribute("success", "Ticket modificato");
         return "redirect:/operatore/ticket";
     }
 
@@ -178,13 +169,8 @@ public class OperatorePageController {
     @PostMapping("/commenti/modifica")
     public String modificaCommentoSubmit(@RequestParam Integer id,
                                          @RequestParam(required=false) String testo,
-                                         @RequestParam(required=false) String tipo,
                                          Model model) {
-        Commento c = new Commento();
-        if (testo !=null) c.setTesto(testo);
-        if (tipo != null && !tipo.isBlank()) c.setTipo(Tipo.valueOf(tipo));
-        c.setData_ora(LocalDateTime.now());
-        model.addAttribute("updateResult", commentoService.update(id, c));
+        model.addAttribute("updateResult", commentoService.update(id, testo));
         return "operatore/commenti";
     }
 

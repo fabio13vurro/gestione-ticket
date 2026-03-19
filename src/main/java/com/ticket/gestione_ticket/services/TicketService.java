@@ -1,5 +1,6 @@
 package com.ticket.gestione_ticket.services;
 
+import com.mongodb.lang.Nullable;
 import com.ticket.gestione_ticket.entities.StoricoStato;
 import com.ticket.gestione_ticket.entities.Ticket;
 import com.ticket.gestione_ticket.entities.Utente;
@@ -18,9 +19,24 @@ public class TicketService {
 
     private final TicketRepository ticketRepository;
     private final StoricoStatoService storicoService;
+    private final UtenteService utenteService;
 
-    public Ticket create(Ticket ticket) {
-        return ticketRepository.save(ticket);
+    public Ticket create(String titolo, String descr, String categoria, Integer priorita, String username) {
+        Ticket t = new Ticket();
+        t.setTitolo(titolo);
+        t.setDescrizione(descr);
+        t.setCategoria(categoria);
+        t.setPriorita(priorita);
+        t.setStato("APERTO");
+        t.setData_ora_apertura(LocalDateTime.now());
+        t.setSla(2);
+        t.setOver_sla(false);
+        t.setCreated("interno");
+
+        Utente u = utenteService.findByUsername(username);
+        t.setUtente(u);
+
+        return ticketRepository.save(t);
     }
 
     public void deleteById(int id) {
@@ -40,20 +56,40 @@ public class TicketService {
     }
 
     @Transactional
-    public Ticket update(Integer id, Ticket new_ticket) {
+    public Ticket update(Integer id, @Nullable String titolo, @Nullable String descrizione, @Nullable String categoria,
+                        @Nullable Integer priorita, @Nullable Integer sla) {
+        Ticket ticket = findById(id);
 
-        Ticket ticket = ticketRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Ticket non trovato: " + id));
+        boolean modifica = false;
 
-        if (new_ticket.getTitolo() != null) ticket.setTitolo(new_ticket.getTitolo());
-        if (new_ticket.getDescrizione() != null) ticket.setDescrizione(new_ticket.getDescrizione());
-        if (new_ticket.getCategoria() != null) ticket.setCategoria(new_ticket.getCategoria());
-        if (new_ticket.getPriorita() != null) ticket.setPriorita(new_ticket.getPriorita());
-        if (new_ticket.getStato() != null) ticket.setStato(new_ticket.getStato());
-        if (new_ticket.getData_ora_apertura() != null) ticket.setData_ora_apertura(new_ticket.getData_ora_apertura());
-        if (new_ticket.getData_ora_chiusura() != null) ticket.setData_ora_chiusura(new_ticket.getData_ora_chiusura());
-        if (new_ticket.getSla() != null) ticket.setSla(new_ticket.getSla());
-        if (new_ticket.getOver_sla() != null) ticket.setOver_sla(new_ticket.getOver_sla());
+        if (titolo != null && !titolo.isBlank() && !titolo.equals(ticket.getTitolo())) {
+            ticket.setTitolo(titolo);
+            modifica = true;
+        }
+
+        if (descrizione != null && !descrizione.isBlank() && !descrizione.equals(ticket.getDescrizione())) {
+            ticket.setDescrizione(descrizione);
+            modifica = true;
+        }
+
+        if (categoria != null && !categoria.isBlank() && !categoria.equals(ticket.getCategoria())) {
+            ticket.setCategoria(categoria);
+            modifica = true;
+        }
+
+        if (priorita != null && !priorita.equals(ticket.getPriorita())
+                && priorita > 0 && priorita < 5) {
+            ticket.setPriorita(priorita);
+            modifica = true;
+        }
+
+        if (sla != null && !sla.equals(ticket.getSla())
+                && sla > 0) {
+            ticket.setSla(sla);
+            modifica = true;
+        }
+
+        if(!modifica) return ticket;
 
         return ticketRepository.save(ticket);
     }
@@ -126,12 +162,12 @@ public class TicketService {
         t.setPriorita(3);
         t.setStato("APERTO");
         t.setData_ora_apertura(LocalDateTime.now());
-        t.setData_ora_chiusura(LocalDateTime.now().plusDays(1));
         t.setOver_sla(false);
         t.setDeleted(false);
-        t.setSla(1);
+        t.setSla(2);
         t.setCreated("esterno");
-        return t;
+
+        return ticketRepository.save(t);
     }
 
 }

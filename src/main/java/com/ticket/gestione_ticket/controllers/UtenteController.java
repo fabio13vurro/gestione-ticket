@@ -18,18 +18,13 @@ public class UtenteController {
     }
 
     @PostMapping("/create")
-    public Utente create(@RequestBody Utente utente) {
-        return utenteService.create(utente);
+    public Utente create(String username, String email, String password, String ruolo) {
+        return utenteService.create(username, email, password, ruolo);
     }
 
     @PutMapping("/update/{id}")
-    public Utente update(@PathVariable int id, @RequestBody Utente utente) {
-        return utenteService.update(id, utente);
-    }
-
-    @DeleteMapping("/admin/delete/{id}")
-    public void deleteById(@PathVariable int id) {
-        utenteService.deleteById(id);
+    public Utente update(@PathVariable int id, String username, String email, String password, boolean libero) {
+        return utenteService.update(id, username, email, password, libero);
     }
 
     @GetMapping("/admin/findALl")

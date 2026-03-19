@@ -27,6 +27,7 @@
             <th>Data</th>
             <th>Tipo</th>
             <th>Testo</th>
+            <th>Azioni</th>
         </tr>
         </thead>
         <tbody>
@@ -35,6 +36,11 @@
             <td class="nowrap" th:text="${#temporals.format(c.data_ora, 'dd/MM/yyyy HH:mm')}">01/01/2026 10:00</td>
             <td th:text="${c.tipo}">ESTERNO</td>
             <td th:text="${c.testo}">Testo</td>
+            <td>
+                <a class="btn btn-primary" th:href="@{/operatore/commenti/modifica (id=${c.idCommento})}" role="button">Modifica</a>
+                <a class="btn btn-danger" th:href="@{/operatore/commenti/cancella (id=${c.idCommento})}" th:if="${!c.deleted}" role="button">Cancella</a>
+                <a class="btn btn-success" th:href="@{/operatore/commenti/ripristina (id=${c.idCommento})}" th:if="${c.deleted}" role="button">Ripristina</a>
+            </td>
         </tr>
         </tbody>
     </table>

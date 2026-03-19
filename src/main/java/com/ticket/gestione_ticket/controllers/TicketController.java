@@ -17,13 +17,13 @@ public class TicketController {
     }
 
     @PostMapping("/cliente/create")
-    public Ticket create(@RequestBody Ticket ticket) {
-        return ticketService.create(ticket);
+    public Ticket create(String titolo, String descr, String categoria, Integer priorita, String username) {
+        return ticketService.create(titolo, descr, categoria, priorita, username);
     }
 
     @PutMapping("/cliente/update/{id}")
-    public Ticket update(@PathVariable int id, @RequestBody Ticket ticket) {
-        return ticketService.update(id, ticket);
+    public Ticket update(@PathVariable int id, String titolo, String descr, String categoria, Integer priorita, Integer sla) {
+        return ticketService.update(id, titolo, descr, categoria, priorita, sla);
     }
 
     @DeleteMapping("/operatore/delete/{id}")

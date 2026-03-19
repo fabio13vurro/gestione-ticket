@@ -4,21 +4,31 @@ import com.ticket.gestione_ticket.DTOs.UtenteFileUploadRequest;
 import com.ticket.gestione_ticket.entities.Ruolo;
 import com.ticket.gestione_ticket.entities.Utente;
 import com.ticket.gestione_ticket.repositories.UtenteRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class UtenteService {
 
     private final UtenteRepository utenteRepository;
-    public UtenteService(UtenteRepository utenteRepository) {
-        this.utenteRepository = utenteRepository;
-    }
+    private final PasswordEncoder passwordEncoder;
 
-    public Utente create(Utente utente) {
-        return utenteRepository.save(utente);
+    public Utente create(String username, String email, String password, String ruolo) {
+        Utente u = new Utente();
+
+        u.setUsername(username);
+        u.setEmail(email);
+        u.setPassword(passwordEncoder.encode(password));
+        u.setRuolo(Ruolo.valueOf(ruolo));
+        u.setLibero(true);
+        u.setDeleted(false);
+
+        return utenteRepository.save(u);
     }
 
     public Utente aggiungiFileBase64(UtenteFileUploadRequest req){
@@ -45,15 +55,32 @@ public class UtenteService {
     }
 
     @Transactional
-    public Utente update(Integer id, Utente new_utente) {
-        Utente utente = utenteRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Utente non trovato: " + id));
+    public Utente update(Integer id, String username, String email, String password, Boolean libero) {
+        Utente utente = findById(id);
+        boolean modifica = false;
 
-        if(new_utente.getUsername()!=null) utente.setUsername(new_utente.getUsername());
-        if(new_utente.getEmail()!=null) utente.setEmail(new_utente.getEmail());
-        if(new_utente.getPassword()!=null) utente.setPassword(new_utente.getPassword());
-        if(new_utente.getRuolo()!=null) utente.setRuolo(new_utente.getRuolo());
-        if(new_utente.getLibero()!=null) utente.setLibero(new_utente.getLibero());
+        if(username != null && !username.isBlank() && !username.equals(utente.getUsername())) {
+            utente.setUsername(username);
+            modifica = true;
+        }
+
+        if(email != null && !email.isBlank() && !email.equals(utente.getEmail())) {
+            utente.setEmail(email);
+            modifica = true;
+        }
+
+        if(password != null && !password.isBlank() && !password.equals(utente.getPassword())) {
+            modifica = true;
+            utente.setPassword(passwordEncoder.encode(password));
+        }
+
+        if(libero != null && !libero.equals(utente.getLibero())) {
+            modifica = true;
+            utente.setLibero(libero);
+        }
+
+        if(!modifica) return utente;
+
         return utenteRepository.save(utente);
     }
 

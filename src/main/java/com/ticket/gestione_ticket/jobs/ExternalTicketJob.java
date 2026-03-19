@@ -15,12 +15,10 @@ public class ExternalTicketJob {
     public void creazioneTicket() {
 
         for (int i = 1; i <= 5; i++) {
-
             var t = ticketService.creazioneTicket(
                     "Ticket esterno automatico numero ",
                     "Creato dal job schedulato"
             );
-            ticketService.create(t);
         }
     }
 }

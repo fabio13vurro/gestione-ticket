@@ -18,13 +18,13 @@ public class CommentoController {
     }
 
     @PostMapping("/cliente/create")
-    public Commento create(@RequestBody Commento commento) {
-        return commentoService.create(commento);
+    public Commento create(String testo, String tipo, Integer ticketId, String username) {
+        return commentoService.create(testo, tipo, ticketId, username);
     }
 
     @PutMapping("/cliente/update/{id}")
-    public Commento update(@PathVariable int id, @RequestBody Commento commento) {
-        return commentoService.update(id, commento);
+    public Commento update(@PathVariable int id, String testo) {
+        return commentoService.update(id, testo);
     }
 
     @DeleteMapping("/admin/delete/{id}")

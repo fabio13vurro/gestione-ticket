@@ -1,15 +1,18 @@
 package com.ticket.gestione_ticket.controllers.pages;
 
 import com.ticket.gestione_ticket.entities.Ruolo;
-import com.ticket.gestione_ticket.entities.Utente;
 import com.ticket.gestione_ticket.services.UtenteService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+@RequiredArgsConstructor
 @Controller
 @RequestMapping("/admin")
 @PreAuthorize("hasRole('ADMIN')")
@@ -18,11 +21,6 @@ public class AdminPageController {
     private final UtenteService utenteService;
     private final PasswordEncoder passwordEncoder;
 
-    public AdminPageController(UtenteService utenteService,  PasswordEncoder passwordEncoder) {
-        this.utenteService = utenteService;
-        this.passwordEncoder = new BCryptPasswordEncoder();
-    }
-
     @GetMapping("/utenti/crea")
     public String utentiCreaPage() { return "admin/utenti_crea"; }
 
@@ -30,15 +28,7 @@ public class AdminPageController {
     public String utentiCreaSubmit(@RequestParam String username, @RequestParam String email,
                                    @RequestParam String password, @RequestParam String ruolo,
                                    Model model) {
-        Utente u = new Utente();
-        u.setUsername(username);
-        u.setEmail(email);
-        u.setPassword(passwordEncoder.encode(password));
-        u.setRuolo(Ruolo.valueOf(ruolo));
-        u.setLibero(true);
-        u.setDeleted(false);
-
-        model.addAttribute("createResult", utenteService.create(u));
+        model.addAttribute("createResult", utenteService.create(username, email, password, ruolo));
         model.addAttribute("success", "Utente creato");
         return "redirect:/admin/utenti";
     }
@@ -106,14 +96,7 @@ public class AdminPageController {
                                        @RequestParam(required = false) String password,
                                        @RequestParam(required = false) Boolean libero,
                                        Model model) {
-
-        var u = new Utente();
-        if(username != null && !username.isBlank()) u.setUsername(username);
-        if(email != null && !email.isBlank()) u.setEmail(email);
-        if(password != null && !password.isBlank()) u.setPassword(passwordEncoder.encode(password));
-        if(libero != null) u.setLibero(libero);
-        model.addAttribute("updateResult", utenteService.update(id, u));
-
+        model.addAttribute("updateResult", utenteService.update(id, username, email, password, libero));
         return "redirect:/admin/utenti";
     }
 }

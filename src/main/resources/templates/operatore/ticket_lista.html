@@ -50,6 +50,7 @@
       <a class="btn btn-primary" th:href="@{/operatore/ticket/modifica (id=${t.idTicket})}" role="button"><i class="bi bi-pencil-square"></i></a>
       <a class="btn btn-danger" th:href="@{/operatore/ticket/cancella (id=${t.idTicket})}" th:if="${!t.deleted}" role="button"><i class="bi bi-trash"></i></a>
       <a class="btn btn-success" th:href="@{/operatore/ticket/ripristina (id=${t.idTicket})}" th:if="${t.deleted}" role="button"><i class="bi bi-arrow-repeat"></i></a>
+      <a class="btn btn-success" th:href="@{/cliente/commenti/crea (ticketId=${t.idTicket})}" role="button"><i class="bi bi-file-plus"></i></a>
       <a class="btn btn-info" th:href="@{/operatore/ticket/commenti (id=${t.idTicket})}" role="button"><i class="bi bi-chat-square-text"></i></a>
       <a class="btn btn-warning" th:href="@{/operatore/ticket/stato (id=${t.idTicket})}" role="button"><i class="bi bi-ticket-perforated"></i></a>
       <a class="btn btn-secondary" th:href="@{/operatore/ticket/storico (id=${t.idTicket})}" role="button"><i class="bi bi-archive"></i></a>

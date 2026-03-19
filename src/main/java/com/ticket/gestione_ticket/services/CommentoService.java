@@ -1,24 +1,39 @@
 package com.ticket.gestione_ticket.services;
 
-import com.ticket.gestione_ticket.entities.Commento;
-import com.ticket.gestione_ticket.entities.Tipo;
+import com.mongodb.lang.Nullable;
+import com.ticket.gestione_ticket.entities.*;
 import com.ticket.gestione_ticket.repositories.CommentoRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class CommentoService {
 
     private final CommentoRepository commentoRepository;
+    private final TicketService ticketService;
+    private final UtenteService utenteService;
 
-    public CommentoService(CommentoRepository commentoRepository) {
-        this.commentoRepository = commentoRepository;
-    }
+    public Commento create(String testo, String tipo, Integer ticketId, String username){
+        Ticket t = ticketService.findById(ticketId);
+        Utente u = utenteService.findByUsername(username);
+        Commento c = new Commento();
 
-    public Commento create(Commento commento){
-        return commentoRepository.save(commento);
+        c.setTesto(testo);
+        if (u.getRuolo() == Ruolo.CLIENTE) {
+            c.setTipo(Tipo.ESTERNO);
+        } else {
+            c.setTipo(Tipo.valueOf(tipo));
+        }
+        c.setTicket(t);
+        c.setData_ora(LocalDateTime.now());
+        c.setDeleted(false);
+
+        return commentoRepository.save(c);
     }
 
     public void deleteById(int id){
@@ -38,14 +53,19 @@ public class CommentoService {
     }
 
     @Transactional
-    public Commento update(Integer id, Commento new_commento){
+    public Commento update(Integer id, @Nullable String testo){
+        Commento commento = findById(id);
 
-        Commento commento = commentoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Commento non trovato: " + id));
+        boolean modifica = false;
 
-        if(new_commento.getTesto() != null) commento.setTesto(new_commento.getTesto());
-        if (new_commento.getTipo() != null) commento.setTipo(new_commento.getTipo());
-        if (new_commento.getData_ora() != null) commento.setData_ora(new_commento.getData_ora());
+        if(testo != null && !testo.isBlank() && !testo.equals(commento.getTesto())) {
+            commento.setTesto(testo);
+            commento.setData_ora(LocalDateTime.now());
+            modifica = true;
+        }
+
+        if(!modifica) return commento;
+
         return commentoRepository.save(commento);
     }
 
