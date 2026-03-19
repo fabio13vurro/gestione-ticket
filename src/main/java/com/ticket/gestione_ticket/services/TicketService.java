@@ -31,11 +31,23 @@ public class TicketService {
         t.setData_ora_apertura(LocalDateTime.now());
         t.setOver_sla(false);
         t.setCreated("interno");
+        t.setDeleted(false);
+        t.setData_ora_scadenza(calcolaScadenza(priorita));
 
         Utente u = utenteService.findByUsername(username);
         t.setUtente(u);
 
         return ticketRepository.save(t);
+    }
+
+    public LocalDateTime calcolaScadenza(Integer priorita){
+        LocalDateTime apertura = LocalDateTime.now();
+        return switch (priorita){
+            case 1 -> apertura.plusHours(12);
+            case 2 -> apertura.plusDays(1);
+            case 3 -> apertura.plusHours(48);
+            default -> apertura.plusDays(2);
+        };
     }
 
     public void deleteById(int id) {
