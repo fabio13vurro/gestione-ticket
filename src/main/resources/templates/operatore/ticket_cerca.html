@@ -12,8 +12,8 @@
 <h1>Cerca Ticket</h1>
 <hr>
 
-<h3>Per ID</h3>
-<form th:action="@{/operatore/ticket/cerca/id}" method="post">
+<h3 id="anchorId">Per ID</h3>
+<form th:action="@{/operatore/ticket/cerca/id}" method="get">
     <input type="number" name="id" placeholder="ID" min="1" required>
     <button type="submit">Cerca</button>
 </form>
@@ -40,23 +40,27 @@
             <td th:text="${byId.descrizione}">Descrizione</td>
             <td th:text="${byId.categoria}">Categoria</td>
             <td th:text="${byId.stato}">APERTO</td>
-            <td th:text="${byId.data_ora_apertura}">2026-01-22T10:00</td>
-            <td th:text="${byId.data_ora_chiusura}">2026-01-22T10:00</td>
+            <td th:text="${#temporals.format(byId.data_ora_apertura, 'dd/MM/yyyy HH:mm')}">20/01/2026 10:00</td>
+            <td th:text="${byId.data_ora_chiusura != null ? #temporals.format(byId.data_ora_chiusura, 'dd/MM/yyyy HH:mm') : '-'}"> - </td>
             <td th:text="${byId.priorita}">1</td>
-            <td th:if="${byId.utente != null}" th:text="${byId.utente.username}">admin</td>
+            <td th:text="${byId.utente != null ? byId.utente.username : 'N/D'}">admin</td>
         </tr>
         </tbody>
     </table>
 </div>
 <hr>
 
-<h3>Per stato</h3>
+<h3 id="anchorStato">Per stato</h3>
 <hr>
-<form th:action="@{/operatore/ticket/cerca/stato}" method="post">
-<select name="stato"><option>APERTO</option><option>IN_LAVORAZIONE</option><option>IN_ATTESA</option><option>RISOLTO</option><option>CHIUSO</option></select>
-<button type="submit">Cerca</button>
+<form th:action="@{/operatore/ticket/cerca/stato}" method="get">
+    <select name="stato"><option>APERTO</option><option>IN_LAVORAZIONE</option><option>IN_ATTESA</option><option>RISOLTO</option><option>CHIUSO</option></select>
+    <button type="submit">Cerca</button>
 </form>
 <br>
+
+<div th:if="${#lists.isEmpty(ticketsByStato) && statoSelezionato != null}">
+    <p th:text="'Nessun ticket trovato con stato ' + ${statoSelezionato}"></p>
+</div>
 
 <div th:if="${!#lists.isEmpty(ticketsByStato)}" class="table-responsive">
     <table class="table table-bordered table-hover">
@@ -80,23 +84,27 @@
             <td th:text="${t.descrizione}">Descrizione</td>
             <td th:text="${t.categoria}">Categoria</td>
             <td th:text="${t.stato}">APERTO</td>
-            <td th:text="${t.data_ora_apertura}">2026-01-22T10:00</td>
-            <td th:text="${t.data_ora_chiusura}">2026-01-22T10:00</td>
+            <td th:text="${#temporals.format(t.data_ora_apertura, 'dd/MM/yyyy HH:mm')}">30-01-2026 10:00</td>
+            <td th:text="${t.data_ora_chiusura != null ? #temporals.format(t.data_ora_chiusura, 'dd/MM/yyyy HH:mm') : '-'}"> - </td>
             <td th:text="${t.priorita}">1</td>
-            <td th:if="${t.utente != null}" th:text="${t.utente.username}">admin</td>
+            <td th:text="${t.utente != null ? t.utente.username : 'N/D'}">admin</td>
         </tr>
         </tbody>
     </table>
 </div>
 <hr>
 
-<h3>Per categoria</h3>
+<h3 id="anchorCategoria">Per categoria</h3>
 <hr>
-<form th:action="@{/operatore/ticket/cerca/categoria}" method="post">
+<form th:action="@{/operatore/ticket/cerca/categoria}" method="get">
     <input type="text" name="categoria" placeholder="categoria" required>
     <button type="submit">Cerca</button>
 </form>
 <br>
+
+<div th:if="${#lists.isEmpty(ticketsByCategoria) && categoriaSelezionata != null}">
+    <p th:text="'Nessun ticket trovato per la categoria ' + ${categoriaSelezionata}"></p>
+</div>
 
 <div th:if="${!#lists.isEmpty(ticketsByCategoria)}" class="table-responsive">
     <table class="table table-bordered table-hover">
@@ -120,23 +128,27 @@
             <td th:text="${t.descrizione}">Descrizione</td>
             <td th:text="${t.categoria}">Categoria</td>
             <td th:text="${t.stato}">APERTO</td>
-            <td th:text="${t.data_ora_apertura}">2026-01-22T10:00</td>
-            <td th:text="${t.data_ora_chiusura}">2026-01-22T10:00</td>
+            <td th:text="${#temporals.format(t.data_ora_apertura, 'dd/MM/yyyy HH:mm')}">26/01/2026 10:00</td>
+            <td th:text="${t.data_ora_chiusura != null ? #temporals.format(t.data_ora_chiusura, 'dd/MM/yyyy HH:mm') : '-'}"> - </td>
             <td th:text="${t.priorita}">1</td>
-            <td th:if="${t.utente != null}" th:text="${t.utente.username}">admin</td>
+            <td th:text="${t.utente != null ? t.utente.username : 'N/D'}">admin</td>
         </tr>
         </tbody>
     </table>
 </div>
 <hr>
 
-<h3>Per priorità</h3>
+<h3 id="anchorPriorita">Per priorità</h3>
 <hr>
-<form th:action="@{/operatore/ticket/cerca/priorita}" method="post">
-<input type="number" name="priorita" placeholder="priorità (1..4)" min="1" max="4" required>
-<button type="submit">Cerca</button>
+<form th:action="@{/operatore/ticket/cerca/priorita}" method="get">
+    <input type="number" name="priorita" placeholder="priorità" min="1" max="4" required>
+    <button type="submit">Cerca</button>
 </form>
 <br>
+
+<div th:if="${#lists.isEmpty(ticketsByPriorita) && prioritaSelezionata != null}">
+    <p th:text="'Nessun ticket trovato con priorità ' + ${prioritaSelezionata}"></p>
+</div>
 
 <div th:if="${!#lists.isEmpty(ticketsByPriorita)}" class="table-responsive">
     <table class="table table-bordered table-hover">
@@ -160,8 +172,8 @@
             <td th:text="${t.descrizione}">Descrizione</td>
             <td th:text="${t.categoria}">Categoria</td>
             <td th:text="${t.stato}">APERTO</td>
-            <td th:text="${#temporals.format(t.data_ora_apertura, 'dd/MM/yyyy HH:mm')}">2026-01-22 10:00</td>
-            <td th:text="${t.data_ora_chiusura != null ? #temporals.format(t.data_ora_chiusura, 'dd/MM/yyyy HH:mm') : '—'}">—</td>
+            <td th:text="${#temporals.format(t.data_ora_apertura, 'dd/MM/yyyy HH:mm')}">26/01/2026 10:00</td>
+            <td th:text="${t.data_ora_chiusura != null ? #temporals.format(t.data_ora_chiusura, 'dd/MM/yyyy HH:mm') : '-'}"> - </td>
             <td th:text="${t.priorita}">1</td>
             <td th:text="${t.utente != null ? t.utente.username : 'N/D'}">utente</td>
         </tr>
@@ -170,13 +182,17 @@
 </div>
 <hr>
 
-<h3>Per utente</h3>
+<h3 id="anchorUtente">Per utente</h3>
 <hr>
-<form th:action="@{/operatore/ticket/cerca/utente}" method="post"></form>
-<input type="text" name="username" placeholder="username" required>
-<button type="submit">Cerca</button>
+<form th:action="@{/operatore/ticket/cerca/utente}" method="get">
+    <input type="text" name="username" placeholder="username" required>
+    <button type="submit">Cerca</button>
 </form>
 <br>
+
+<div th:if="${#lists.isEmpty(ticketsByUtente) && usernameSelezionato != null}">
+    <p th:text="'Nessun ticket trovato per l\'utente ' + ${usernameSelezionato}"></p>
+</div>
 
 <div th:if="${!#lists.isEmpty(ticketsByUtente)}" class="table-responsive">
     <table class="table table-bordered table-hover">
@@ -200,10 +216,10 @@
             <td th:text="${t.descrizione}">Descrizione</td>
             <td th:text="${t.categoria}">Categoria</td>
             <td th:text="${t.stato}">APERTO</td>
-            <td th:text="${#temporals.format(t.data_ora_apertura, 'dd/MM/yyyy HH:mm')}">2026-01-22 10:00</td>
-            <td th:text="${t.data_ora_chiusura != null ? #temporals.format(t.data_ora_chiusura, 'dd/MM/yyyy HH:mm') : '—'}">—</td>
+            <td th:text="${#temporals.format(t.data_ora_apertura, 'dd/MM/yyyy HH:mm')}">26/01/2026 10:00</td>
+            <td th:text="${t.data_ora_chiusura != null ? #temporals.format(t.data_ora_chiusura, 'dd/MM/yyyy HH:mm') : '-'}"> - </td>
             <td th:text="${t.priorita}">1</td>
-            <td th:text="${t.utente != null ? t.utente.username : 'N/D'}">utente</td>
+            <td th:text="${ t.utente.username}">utente</td>
         </tr>
         </tbody>
     </table>
@@ -211,5 +227,21 @@
 <hr>
 
 <p><a class="btn btn-secondary" th:href="@{/home}" role="button">← Torna alla Home</a></p>
+
+
+<script>
+    if (window.location.href.includes("cerca/")) {
+        setTimeout(() => {
+            const anchors = ["anchorId","anchorStato","anchorCategoria","anchorPriorita","anchorUtente"];
+            for (let id of anchors) {
+                if (window.location.href.includes(id.replace("anchor","").toLowerCase())) {
+                    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+                }
+            }
+        }, 300);
+    }
+</script>
+
+
 </body>
 </html>

@@ -32,7 +32,7 @@ public class ClientePageController {
                                    Model model, Principal principal) {
         model.addAttribute("result",ticketService.create(titolo, descrizione, categoria, priorita, principal.getName()));
         model.addAttribute("success", "Ticket creato con successo.");
-        return "cliente/ticket_crea";
+        return "redirect:/cliente/miei-ticket";
     }
 
     @GetMapping("/commenti/crea")
@@ -49,7 +49,7 @@ public class ClientePageController {
         Commento c = commentoService.create(testo, tipo, ticketId, principal.getName());
         model.addAttribute("ticketSelezionato", c.getTicket());
         model.addAttribute("success", "Commento creato con successo.");
-        return "cliente/commenti_crea";
+        return "redirect:/cliente/miei-commenti";
     }
 
     @GetMapping("/miei-ticket")

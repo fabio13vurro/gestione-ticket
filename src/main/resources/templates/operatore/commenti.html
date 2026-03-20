@@ -27,7 +27,7 @@
         <th scope="row" th:text="${c.idCommento}">1</th>
         <td th:text="${c.testo}">testo</td>
         <td th:text="${c.tipo}">tipo</td>
-        <td th:text="${c.data_ora}">data</td>
+        <td th:text="${#temporals.format(c.data_ora, 'dd/MM/yyyy HH:mm')}">data</td>
         <td th:text="${c.ticket != null ? c.ticket.idTicket : '-'}">1</td>
         <td>
             <a class="btn btn-primary" th:href="@{/operatore/commenti/modifica (id=${c.idCommento})}" role="button">Modifica</a>

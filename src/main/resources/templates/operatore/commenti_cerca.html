@@ -14,7 +14,7 @@
 <h3>Per ID</h3>
 <form th:action="@{/operatore/commenti/cerca/id}" method="post">
 
-    <input type="number" name="id" placeholder="ID" required>
+    <input type="number" name="id" placeholder="ID" min="1" required>
     <button type="submit">Cerca</button>
 </form>
 

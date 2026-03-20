@@ -14,7 +14,7 @@
 <h3>Per ID</h3>
 <form th:action="@{/admin/utenti/cerca/id}" method="post">
 
-    <input type="number" name="id" placeholder="ID" required>
+    <input type="number" name="id" placeholder="ID" min="1" required>
     <button type="submit">Cerca</button>
 </form>
 
@@ -47,8 +47,11 @@
     <input name="username" placeholder="Username" required>
     <button type="submit">Cerca</button>
 </form>
-
 <br>
+
+<div th:if="${byUsername == null && usernameSelezionato != null}">
+    <p th:text="'Nessun utente trovato con username ' + ${usernameSelezionato}"></p>
+</div>
 
 <div th:if="${byUsername}" class="table-responsive">
     <table class="table table-bordered table-hover">

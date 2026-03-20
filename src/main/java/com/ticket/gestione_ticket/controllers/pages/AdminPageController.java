@@ -50,6 +50,7 @@ public class AdminPageController {
 
     @PostMapping("/utenti/cerca/username")
     public String cercaByUsername(@RequestParam String username, Model model) {
+        model.addAttribute(("usernameSelezionato"), username);
         model.addAttribute("byUsername", utenteService.findByUsername(username));
         return "admin/utenti_cerca";
     }

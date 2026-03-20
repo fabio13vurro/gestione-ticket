@@ -41,32 +41,37 @@ public class OperatorePageController {
     @GetMapping("/ticket/cerca")
     public String cercaTicketPage() { return "operatore/ticket_cerca"; }
 
-    @PostMapping("/ticket/cerca/id")
+    @GetMapping("/ticket/cerca/id")
     public String cercaById(@RequestParam Integer id, Model model) {
+        model.addAttribute("idSelezionato", id);
         model.addAttribute("byId", ticketService.findById(id));
         return "operatore/ticket_cerca";
     }
 
-    @PostMapping("/ticket/cerca/stato")
+    @GetMapping("/ticket/cerca/stato")
     public String cercaByStato(@RequestParam String stato, Model model) {
+        model.addAttribute("statoSelezionato", stato);
         model.addAttribute("ticketsByStato", ticketService.findByStato(stato));
         return "operatore/ticket_cerca";
     }
 
-    @PostMapping("/ticket/cerca/categoria")
+    @GetMapping("/ticket/cerca/categoria")
     public String cercaByCategoria(@RequestParam String categoria, Model model) {
+        model.addAttribute("categoriaSelezionata", categoria);
         model.addAttribute("ticketsByCategoria", ticketService.findByCategoria(categoria));
         return "operatore/ticket_cerca";
     }
 
-    @PostMapping("/ticket/cerca/priorita")
+    @GetMapping("/ticket/cerca/priorita")
     public String cercaByPriorita(@RequestParam Integer priorita, Model model) {
+        model.addAttribute("prioritaSelezionata", priorita);
         model.addAttribute("ticketsByPriorita", ticketService.findByPriorita(priorita));
         return "operatore/ticket_cerca";
     }
 
-    @PostMapping("/ticket/cerca/utente")
+    @GetMapping("/ticket/cerca/utente")
     public String cercaByUtente(@RequestParam String username, Model model) {
+        model.addAttribute("usernameSelezionato", username);
         model.addAttribute("ticketsByUtente", ticketService.findByUtente_Username(username));
         return "operatore/ticket_cerca";
     }
