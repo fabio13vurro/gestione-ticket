@@ -23,7 +23,7 @@
         <th scope="col">Username</th>
         <th scope="col">Email</th>
         <th scope="col">Ruolo</th>
-        <th scope="col">Libero</th>
+        <th scope="col">Ticket Assegnati</th>
         <th scope="col">Azioni</th>
     </tr>
     </thead>
@@ -33,7 +33,7 @@
         <td th:text="${u.username}">admin</td>
         <td th:text="${u.email}">admin@mail</td>
         <td th:text="${u.ruolo}">ADMIN</td>
-        <td th:text="${u.libero} ? 'si' : 'no'">si</td>
+        <td th:text="${u.ticketAssegnati}">1</td>
         <td>
             <a class="btn btn-primary" th:href="@{/admin/utenti/modifica (id=${u.idUtente})}" role="button">Modifica</a>
             <a class="btn btn-danger" th:href="@{/admin/utenti/cancella (id=${u.idUtente})}" th:if="${!u.deleted}" role="button">Cancella</a>

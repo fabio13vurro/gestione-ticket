@@ -22,7 +22,7 @@ public class StoricoStato {
     private String stato_precedente;
     private String stato_nuovo;
     private LocalDateTime data_ora;
-    private Boolean deleted = false;
+    private Boolean deleted;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)

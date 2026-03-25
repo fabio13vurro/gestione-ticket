@@ -26,7 +26,7 @@
             <th scope="col">Username</th>
             <th scope="col">Email</th>
             <th scope="col">Ruolo</th>
-            <th scope="col">Libero</th>
+            <th scope="col">Ticket Assegnati</th>
         </tr>
         </thead>
         <tbody>
@@ -35,7 +35,7 @@
             <td th:text="${byId.username}">admin</td>
             <td th:text="${byId.email}">admin@mail</td>
             <td th:text="${byId.ruolo}">ADMIN</td>
-            <td th:text="${byId.libero} ? 'si' : 'no'">si</td>
+            <td th:text="${byId.ticketAssegnati}">1</td>
         </tr>
         </tbody>
     </table>
@@ -61,7 +61,7 @@
             <th scope="col">Username</th>
             <th scope="col">Email</th>
             <th scope="col">Ruolo</th>
-            <th scope="col">Libero</th>
+            <th scope="col">Ticket assegnati</th>
         </tr>
         </thead>
         <tbody>
@@ -70,7 +70,7 @@
             <td th:text="${byUsername.username}">admin</td>
             <td th:text="${byUsername.email}">admin@mail</td>
             <td th:text="${byUsername.ruolo}">ADMIN</td>
-            <td th:text="${byUsername.libero} ? 'si' : 'no'">si</td>
+            <td th:text="${byUsername.ticketAssegnati}">1</td>
         </tr>
         </tbody>
     </table>
@@ -94,7 +94,7 @@
             <th scope="col">Username</th>
             <th scope="col">Email</th>
             <th scope="col">Ruolo</th>
-            <th scope="col">Libero</th>
+            <th scope="col">Ticket Assegnati</th>
         </tr>
         </thead>
         <tbody>
@@ -103,7 +103,7 @@
             <td th:text="${u.username}">admin</td>
             <td th:text="${u.email}">admin@mail</td>
             <td th:text="${u.ruolo}">ADMIN</td>
-            <td th:text="${u.libero} ? 'si' : 'no'">si</td>
+            <td th:text="${u.ticketAssegnati}">1</td>
         </tr>
         </tbody>
     </table>

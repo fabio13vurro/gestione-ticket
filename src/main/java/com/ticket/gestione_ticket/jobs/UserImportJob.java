@@ -67,7 +67,7 @@ public class UserImportJob{
                 utente.setPassword(passwordEncoder.encode(username));
                 Ruolo ruolo = random.nextBoolean() ? Ruolo.CLIENTE : Ruolo.OPERATORE;
                 utente.setRuolo(ruolo);
-                utente.setLibero(true);
+                utente.setTicketAssegnati(0);
                 utente.setDeleted(false);
                 utente.setAddress(street + ", " + city);
 

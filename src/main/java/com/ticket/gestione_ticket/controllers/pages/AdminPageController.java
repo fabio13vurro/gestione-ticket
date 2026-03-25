@@ -96,9 +96,8 @@ public class AdminPageController {
                                        @RequestParam(required = false) String username,
                                        @RequestParam(required = false) String email,
                                        @RequestParam(required = false) String password,
-                                       @RequestParam(required = false) Boolean libero,
                                        Model model) {
-        model.addAttribute("updateResult", utenteService.update(id, username, email, password, libero));
+        model.addAttribute("updateResult", utenteService.update(id, username, email, password));
         return "redirect:/admin/utenti";
     }
 

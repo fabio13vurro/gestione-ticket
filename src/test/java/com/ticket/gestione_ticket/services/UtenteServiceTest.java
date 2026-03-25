@@ -46,7 +46,7 @@ public class UtenteServiceTest {
         assertThat(saved.getEmail()).isEqualTo("email");
         assertThat(saved.getPassword()).isEqualTo("ENC");
         assertThat(saved.getRuolo()).isEqualTo(Ruolo.CLIENTE);
-        assertThat(saved.getLibero()).isTrue();
+        assertThat(saved.getTicketAssegnati()).isEqualTo(0);
         assertThat(saved.getDeleted()).isFalse();
         assertThat(result).isSameAs(saved);
     }
@@ -95,16 +95,14 @@ public class UtenteServiceTest {
         old.setEmail("email");
         old.setUsername("username");
         old.setPassword("PASSWORD");
-        old.setLibero(true);
 
         given(utenteRepository.findById(7)).willReturn(Optional.of(old));
         given(utenteRepository.save(any(Utente.class))).willAnswer(inv -> inv.getArgument(0));
 
-        Utente updated = utenteService.update(7,"username2", "email2", null, null);
+        Utente updated = utenteService.update(7,"username2", "email2", null);
         assertThat(updated.getEmail()).isEqualTo("email2");
         assertThat(updated.getUsername()).isEqualTo("username2");
         assertThat(updated.getPassword()).isEqualTo("PASSWORD");
-        assertThat(updated.getLibero()).isTrue();
     }
 
     @Test

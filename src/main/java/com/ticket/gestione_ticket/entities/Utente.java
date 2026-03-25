@@ -26,7 +26,8 @@ public class Utente {
     @Enumerated(EnumType.STRING)
     private Ruolo ruolo;
 
-    private Boolean libero;
+    @Column(name = "ticket_assegnati")
+    private Integer ticketAssegnati;
     private Boolean deleted;
     private String address;
 

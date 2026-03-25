@@ -26,7 +26,7 @@ public class UtenteController {
 
     @PutMapping("/update/{id}")
     public Utente update(@PathVariable int id, @RequestBody UtenteUpdateDTO dto) {
-        return utenteService.update(id, dto.username(), dto.email(), dto.password(), dto.libero());
+        return utenteService.update(id, dto.username(), dto.email(), dto.password());
     }
 
     @GetMapping("/admin/findALl")

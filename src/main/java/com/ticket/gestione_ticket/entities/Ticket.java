@@ -31,7 +31,7 @@ public class Ticket {
     private LocalDateTime data_ora_chiusura;
     private LocalDateTime data_ora_scadenza;
     private Boolean over_sla;
-    private Boolean deleted = false;
+    private Boolean deleted;
     private String created;
 
     @OneToMany(mappedBy = "ticket")

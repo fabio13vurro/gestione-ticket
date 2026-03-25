@@ -25,7 +25,7 @@ public class UtenteService {
         u.setEmail(email);
         u.setPassword(passwordEncoder.encode(password));
         u.setRuolo(Ruolo.valueOf(ruolo));
-        u.setLibero(true);
+        u.setTicketAssegnati(0);
         u.setDeleted(false);
 
         return utenteRepository.save(u);
@@ -55,7 +55,7 @@ public class UtenteService {
     }
 
     @Transactional
-    public Utente update(Integer id, String username, String email, String password, Boolean libero) {
+    public Utente update(Integer id, String username, String email, String password) {
         Utente utente = findById(id);
         boolean modifica = false;
 
@@ -72,11 +72,6 @@ public class UtenteService {
         if(password != null && !password.isBlank() && !password.equals(utente.getPassword())) {
             modifica = true;
             utente.setPassword(passwordEncoder.encode(password));
-        }
-
-        if(libero != null && !libero.equals(utente.getLibero())) {
-            modifica = true;
-            utente.setLibero(libero);
         }
 
         if(!modifica) return utente;
