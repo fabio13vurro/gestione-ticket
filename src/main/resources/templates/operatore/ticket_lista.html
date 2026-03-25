@@ -32,39 +32,38 @@
 </p>
 
 <div class="collapse" id="legenda">
-    <div class="card card-body d-flex flex-row flex-wrap" style="background-color: #f5f7fa;">
+    <div class="card card-body d-flex flex-row flex-nowrap" style="background-color: #f5f7fa;">
         <div class="legend-item d-flex align-items-center mr-4 mb-3">
             <span class="btn btn-primary btn-sm mr-2">
                 <i class="bi bi-pencil-square"></i>
             </span>
             Modifica ticket
         </div>
-        <div class="legend-item d-flex align-items-center mr-4 mb-3">
+        <div class="legend-item d-flex align-items-center mr-4 mb-0">
             <span class="btn btn-danger btn-sm mr-2">
                 <i class="bi bi-trash"></i>
             </span>
             Elimina ticket
         </div>
-        <div class="legend-item d-flex align-items-center mr-4 mb-3">
+        <div class="legend-item d-flex align-items-center mr-4 mb-0">
             <span class="btn btn-success btn-sm mr-2">
               <i class="bi bi-arrow-repeat"></i>
             </span>
             Ripristina ticket
         </div>
-        <div class="legend-item d-flex align-items-center mr-4 mb-3">
+        <div class="legend-item d-flex align-items-center mr-4 mb-0">
             <span class="btn btn-success btn-sm mr-2">
               <i class="bi bi-file-plus"></i>
             </span>
             Aggiungi commento
         </div>
-        <div class="w-100"></div> <!-- va a capo -->
-        <div class="legend-item d-flex align-items-center mr-4 mb-3">
+        <div class="legend-item d-flex align-items-center mr-4 mb-0">
             <span class="btn btn-info btn-sm mr-2">
                 <i class="bi bi-chat-left-text"></i>
             </span>
             Visualizza commenti
         </div>
-        <div class="legend-item d-flex align-items-center mr-4 mb-3">
+        <div class="legend-item d-flex align-items-center mr-4 mb-0">
             <span class="btn btn-warning btn-sm mr-2">
                 <i class="bi bi-ticket-perforated"></i>
             </span>
@@ -108,19 +107,34 @@
         <td th:text="${#temporals.format(t.data_ora_apertura, 'dd/MM/yyyy HH:mm')}"></td>
         <td th:text="${t.data_ora_chiusura != null ? #temporals.format(t.data_ora_chiusura, 'dd/MM/yyyy HH:mm') : '-'}"></td>
         <td>
-            <a class="btn btn-primary" th:href="@{/operatore/ticket/modifica (id=${t.idTicket})}" role="button"><i
-                    class="bi bi-pencil-square"></i></a>
-            <a class="btn btn-danger" th:href="@{/operatore/ticket/cancella (id=${t.idTicket})}" th:if="${!t.deleted}"
+            <a class="btn btn-primary" title="Modifica ticket"
+               th:href="@{/operatore/ticket/modifica (id=${t.idTicket})}" role="button">
+                <i class="bi bi-pencil-square"></i></a>
+            <a class="btn btn-danger" title="Elimina ticket"
+               th:href="@{/operatore/ticket/cancella (id=${t.idTicket})}" th:if="${!t.deleted}"
                role="button"><i class="bi bi-trash"></i></a>
-            <a class="btn btn-success" th:href="@{/operatore/ticket/ripristina (id=${t.idTicket})}" th:if="${t.deleted}"
+            <a class="btn btn-success" title="Ripristina ticket"
+               th:href="@{/operatore/ticket/ripristina (id=${t.idTicket})}" th:if="${t.deleted}"
                role="button"><i class="bi bi-arrow-repeat"></i></a>
-            <a class="btn btn-success" th:href="@{/cliente/commenti/crea (ticketId=${t.idTicket})}" role="button"><i
+            <a class="btn btn-success" title="Aggiungi commento"
+               th:href="@{/cliente/commenti/crea (ticketId=${t.idTicket})}" role="button"><i
                     class="bi bi-file-plus"></i></a>
-            <a class="btn btn-info" th:href="@{/operatore/ticket/commenti (id=${t.idTicket})}" role="button"><i
+            <a class="btn btn-info" title="Visualizza commenti"
+               th:href="@{/operatore/ticket/commenti (id=${t.idTicket})}" role="button"><i
                     class="bi bi-chat-square-text"></i></a>
-            <a class="btn btn-warning" th:if="${t.stato != 'CHIUSO'}" th:href="@{/operatore/ticket/stato (id=${t.idTicket})}" role="button"><i
+
+            <a class="btn btn-warning" title="Cambia stato" th:if="${t.stato != 'CHIUSO'}"
+               th:href="@{/operatore/ticket/stato (id=${t.idTicket})}" role="button"><i
                     class="bi bi-ticket-perforated"></i></a>
-            <a class="btn btn-secondary" th:href="@{/operatore/ticket/storico (id=${t.idTicket})}" role="button"><i
+            <a class="btn btn-secondary disabled"
+               th:if="${t.stato == 'CHIUSO'}"
+               role="button"
+               style="pointer-events: none;">
+                <i class="bi bi-ticket-perforated"></i>
+            </a>
+
+            <a class="btn btn-secondary" title="Visualizza storico"
+               th:href="@{/operatore/ticket/storico (id=${t.idTicket})}" role="button"><i
                     class="bi bi-archive"></i></a>
         </td>
     </tr>

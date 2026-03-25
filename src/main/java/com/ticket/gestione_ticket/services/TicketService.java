@@ -1,10 +1,7 @@
 package com.ticket.gestione_ticket.services;
 
 import com.mongodb.lang.Nullable;
-import com.ticket.gestione_ticket.entities.StoricoStato;
 import com.ticket.gestione_ticket.entities.Ticket;
-import com.ticket.gestione_ticket.entities.Utente;
-import com.ticket.gestione_ticket.jobs.JobProducer;
 import com.ticket.gestione_ticket.repositories.TicketRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -30,12 +27,9 @@ public class TicketService {
         t.setStato("APERTO");
         t.setData_ora_apertura(LocalDateTime.now());
         t.setOver_sla(false);
-        t.setCreated("interno");
+        t.setCreated(username);
         t.setDeleted(false);
         t.setData_ora_scadenza(calcolaScadenza(priorita));
-
-        Utente u = utenteService.findByUsername(username);
-        t.setUtente(u);
 
         return ticketRepository.save(t);
     }
@@ -197,5 +191,6 @@ public class TicketService {
 
         return ticketRepository.save(t);
     }
+
 
 }
