@@ -45,9 +45,25 @@ public class TicketService {
         return switch (priorita){
             case 1 -> apertura.plusHours(12);
             case 2 -> apertura.plusDays(1);
-            case 3 -> apertura.plusHours(48);
+            case 3 -> apertura.plusHours(36);
             default -> apertura.plusDays(2);
         };
+    }
+
+    public void controlloScadenze(){
+        LocalDateTime now = LocalDateTime.now();
+        List<Ticket> tickets = ticketRepository.findAll();
+        for(Ticket t : tickets){
+            if(t.getOver_sla().equals(true) || t.getStato().equals("CHIUSO") || t.getDeleted().equals(true) || t.getStato().equals("IN_ATTESA")) {
+                continue;
+            }else{
+                if(t.getData_ora_scadenza() != null && now.isAfter(t.getData_ora_scadenza())){
+                    t.setOver_sla(true);
+                    t.setStato("SCADUTO");
+                    ticketRepository.save(t);
+                }
+            }
+        }
     }
 
     public void deleteById(int id) {
@@ -103,6 +119,10 @@ public class TicketService {
         return ticketRepository.findAll();
     }
 
+    public List<Ticket> ticketScaduti(){
+        return ticketRepository.findByOverSlaTrue();
+    }
+
     public Ticket findById(Integer id) {
         return ticketRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Ticket non trovato: " + id));
@@ -149,6 +169,10 @@ public class TicketService {
             case "RISOLTO":
                 statoNuovo = "CHIUSO";
                 t.setData_ora_chiusura(LocalDateTime.now());
+                break;
+            case "SCADUTO":
+                statoNuovo = "APERTO";
+                t.setData_ora_scadenza(calcolaScadenza(t.getPriorita()));
                 break;
             default:
                 statoNuovo = statoAttuale;

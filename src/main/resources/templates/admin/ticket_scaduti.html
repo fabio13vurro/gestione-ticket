@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lista Ticket Scaduti</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        body { font-family: Arial; padding: 20px; background-color: #f5f7fa}
+        h1{text-align: center;}
+    </style>
+</head>
+<body>
+<h2 class="text-center mb-4">
+    Ticket scaduti &nbsp;
+    <a th:href="@{/home}" class="text-primary" style="text-decoration:none;">
+        <i class="bi bi-house-door-fill"></i>
+    </a>
+</h2>
+
+<div th:if="${warning}" class="alert alert-warning" th:text="${warning}"></div>
+<div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
+<div th:if="${#lists.isEmpty(scaduti)}">
+    <p>Non ci sono ticket scaduti.</p>
+</div>
+
+<div th:if="${!#lists.isEmpty(scaduti)}" class="table-responsive">
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Titolo</th>
+            <th scope="col">Descrizione</th>
+            <th scope="col">Categoria</th>
+            <th scope="col">Stato</th>
+            <th scope="col">Data apertura</th>
+            <th scope="col">Data scadenza</th>
+            <th scope="col">Utente</th>
+            <th scope="col">Azioni</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="t : ${scaduti}">
+            <th scope="row" th:text="${t.idTicket}">1</th>
+            <td th:text="${t.titolo}">Titolo</td>
+            <td th:text="${t.descrizione}">Descrizione</td>
+            <td th:text="${t.categoria}">Categoria</td>
+            <td th:text="${t.stato}">APERTO</td>
+            <td th:text="${#temporals.format(t.data_ora_apertura, 'dd/MM/yyyy HH:mm')}"></td>
+            <td th:text="${#temporals.format(t.data_ora_scadenza, 'dd/MM/yyyy HH:mm')}"></td>
+            <td th:text="${t.utente != null ? t.utente.username : 'N/D'}">utente</td>
+            <td>
+                <a class="btn btn-danger" th:href="@{/operatore/ticket/cancella (id=${t.idTicket})}" th:if="${!t.deleted}" role="button"><i class="bi bi-trash"></i></a>
+                <a class="btn btn-success" th:href="@{/operatore/ticket/ripristina (id=${t.idTicket})}" th:if="${t.deleted}" role="button"><i class="bi bi-arrow-repeat"></i></a>
+                <a class="btn btn-success" th:href="@{/cliente/commenti/crea (ticketId=${t.idTicket})}" role="button"><i class="bi bi-file-plus"></i></a>
+                <a class="btn btn-info" th:href="@{/operatore/ticket/commenti (id=${t.idTicket})}" role="button"><i class="bi bi-chat-square-text"></i></a>
+                <a class="btn btn-warning" th:href="@{/operatore/ticket/stato (id=${t.idTicket})}" role="button"><i class="bi bi-ticket-perforated"></i></a>
+                <a class="btn btn-secondary" th:href="@{/operatore/ticket/storico (id=${t.idTicket})}" role="button"><i class="bi bi-archive"></i></a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

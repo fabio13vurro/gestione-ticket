@@ -1,10 +1,11 @@
 package com.ticket.gestione_ticket.controllers.pages;
 
 import com.ticket.gestione_ticket.entities.Ruolo;
+import com.ticket.gestione_ticket.entities.Ticket;
+import com.ticket.gestione_ticket.services.TicketService;
 import com.ticket.gestione_ticket.services.UtenteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class AdminPageController {
 
     private final UtenteService utenteService;
-    private final PasswordEncoder passwordEncoder;
+    private final TicketService ticketService;
 
     @GetMapping("/utenti/crea")
     public String utentiCreaPage() { return "admin/utenti_crea"; }
@@ -99,5 +100,11 @@ public class AdminPageController {
                                        Model model) {
         model.addAttribute("updateResult", utenteService.update(id, username, email, password, libero));
         return "redirect:/admin/utenti";
+    }
+
+    @GetMapping("/ticket-scaduti")
+    public String ticketScaduti(Model model){
+        model.addAttribute("scaduti", ticketService.ticketScaduti());
+        return "admin/ticket_scaduti";
     }
 }

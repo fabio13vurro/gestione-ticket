@@ -1,60 +1,134 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>Lista Ticket</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-  <style>
-    body { font-family: Arial; padding: 20px; background-color: #f5f7fa}
-    h1{text-align: center;}
-  </style>
+    <title>Lista Ticket</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        body {
+            font-family: Arial;
+            padding: 20px;
+            background-color: #f5f7fa
+        }
+
+        h1 {
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
 <h2 class="text-center mb-4">
-  Lista ticket &nbsp;
-  <a th:href="@{/home}" class="text-primary" style="text-decoration:none;">
-    <i class="bi bi-house-door-fill"></i>
-  </a>
+    Lista ticket &nbsp;
+    <a th:href="@{/home}" class="text-primary" style="text-decoration:none;">
+        <i class="bi bi-house-door-fill"></i>
+    </a>
 </h2>
 
-<div th:if="${warning}" class="alert alert-warning" th:text="${warning}"></div>
+<p class="d-inline-flex gap-1">
+    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#legenda" aria-expanded="false"
+            aria-controls="collapse">
+        Apri/Chiudi legenda
+    </button>
+</p>
+
+<div class="collapse" id="legenda">
+    <div class="card card-body d-flex flex-row flex-wrap" style="background-color: #f5f7fa;">
+        <div class="legend-item d-flex align-items-center mr-4 mb-3">
+            <span class="btn btn-primary btn-sm mr-2">
+                <i class="bi bi-pencil-square"></i>
+            </span>
+            Modifica ticket
+        </div>
+        <div class="legend-item d-flex align-items-center mr-4 mb-3">
+            <span class="btn btn-danger btn-sm mr-2">
+                <i class="bi bi-trash"></i>
+            </span>
+            Elimina ticket
+        </div>
+        <div class="legend-item d-flex align-items-center mr-4 mb-3">
+            <span class="btn btn-success btn-sm mr-2">
+              <i class="bi bi-arrow-repeat"></i>
+            </span>
+            Ripristina ticket
+        </div>
+        <div class="legend-item d-flex align-items-center mr-4 mb-3">
+            <span class="btn btn-success btn-sm mr-2">
+              <i class="bi bi-file-plus"></i>
+            </span>
+            Aggiungi commento
+        </div>
+        <div class="w-100"></div> <!-- va a capo -->
+        <div class="legend-item d-flex align-items-center mr-4 mb-3">
+            <span class="btn btn-info btn-sm mr-2">
+                <i class="bi bi-chat-left-text"></i>
+            </span>
+            Visualizza commenti
+        </div>
+        <div class="legend-item d-flex align-items-center mr-4 mb-3">
+            <span class="btn btn-warning btn-sm mr-2">
+                <i class="bi bi-ticket-perforated"></i>
+            </span>
+            Cambia stato
+        </div>
+        <div class="mr-4">
+      <span class="btn btn-secondary btn-sm">
+        <i class="bi bi-archive"></i>
+      </span>
+            Visualizza storico
+        </div>
+    </div>
+</div>
+
+<br>
+
 <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
 
 <table class="table table-bordered table-hover">
-  <thead>
-  <tr>
-    <th scope="col">Id</th>
-    <th scope="col">Titolo</th>
-    <th scope="col">Descrizione</th>
-    <th scope="col">Categoria</th>
-    <th scope="col">Priorità</th>
-    <th scope="col">Stato</th>
-    <th scope="col">Data apertura</th>
-    <th scope="col">Data chiusura</th>
-    <th scope="col">Azioni</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr th:each="t : ${tickets}">
-    <th scope="row" th:text="${t.idTicket}">1</th>
-    <td th:text="${t.titolo}">Titolo</td>
-    <td th:text="${t.descrizione}">Descrizione</td>
-    <td th:text="${t.categoria}">Categoria</td>
-    <td th:text="${t.priorita}">Priorità</td>
-    <td th:text="${t.stato}">APERTO</td>
-    <td th:text="${#temporals.format(t.data_ora_apertura, 'dd/MM/yyyy HH:mm')}"></td>
-    <td th:text="${t.data_ora_chiusura != null ? #temporals.format(t.data_ora_chiusura, 'dd/MM/yyyy HH:mm') : '-'}"></td>
-    <td>
-      <a class="btn btn-primary" th:href="@{/operatore/ticket/modifica (id=${t.idTicket})}" role="button"><i class="bi bi-pencil-square"></i></a>
-      <a class="btn btn-danger" th:href="@{/operatore/ticket/cancella (id=${t.idTicket})}" th:if="${!t.deleted}" role="button"><i class="bi bi-trash"></i></a>
-      <a class="btn btn-success" th:href="@{/operatore/ticket/ripristina (id=${t.idTicket})}" th:if="${t.deleted}" role="button"><i class="bi bi-arrow-repeat"></i></a>
-      <a class="btn btn-success" th:href="@{/cliente/commenti/crea (ticketId=${t.idTicket})}" role="button"><i class="bi bi-file-plus"></i></a>
-      <a class="btn btn-info" th:href="@{/operatore/ticket/commenti (id=${t.idTicket})}" role="button"><i class="bi bi-chat-square-text"></i></a>
-      <a class="btn btn-warning" th:href="@{/operatore/ticket/stato (id=${t.idTicket})}" role="button"><i class="bi bi-ticket-perforated"></i></a>
-      <a class="btn btn-secondary" th:href="@{/operatore/ticket/storico (id=${t.idTicket})}" role="button"><i class="bi bi-archive"></i></a>
-    </td>
-  </tr>
-  </tbody>
+    <thead>
+    <tr>
+        <th scope="col">Id</th>
+        <th scope="col">Titolo</th>
+        <th scope="col">Descrizione</th>
+        <th scope="col">Categoria</th>
+        <th scope="col">Priorità</th>
+        <th scope="col">Stato</th>
+        <th scope="col">Data apertura</th>
+        <th scope="col">Data chiusura</th>
+        <th scope="col">Azioni</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="t : ${tickets}">
+        <th scope="row" th:text="${t.idTicket}">1</th>
+        <td th:text="${t.titolo}">Titolo</td>
+        <td th:text="${t.descrizione}">Descrizione</td>
+        <td th:text="${t.categoria}">Categoria</td>
+        <td th:text="${t.priorita}">Priorità</td>
+        <td th:text="${t.stato}">APERTO</td>
+        <td th:text="${#temporals.format(t.data_ora_apertura, 'dd/MM/yyyy HH:mm')}"></td>
+        <td th:text="${t.data_ora_chiusura != null ? #temporals.format(t.data_ora_chiusura, 'dd/MM/yyyy HH:mm') : '-'}"></td>
+        <td>
+            <a class="btn btn-primary" th:href="@{/operatore/ticket/modifica (id=${t.idTicket})}" role="button"><i
+                    class="bi bi-pencil-square"></i></a>
+            <a class="btn btn-danger" th:href="@{/operatore/ticket/cancella (id=${t.idTicket})}" th:if="${!t.deleted}"
+               role="button"><i class="bi bi-trash"></i></a>
+            <a class="btn btn-success" th:href="@{/operatore/ticket/ripristina (id=${t.idTicket})}" th:if="${t.deleted}"
+               role="button"><i class="bi bi-arrow-repeat"></i></a>
+            <a class="btn btn-success" th:href="@{/cliente/commenti/crea (ticketId=${t.idTicket})}" role="button"><i
+                    class="bi bi-file-plus"></i></a>
+            <a class="btn btn-info" th:href="@{/operatore/ticket/commenti (id=${t.idTicket})}" role="button"><i
+                    class="bi bi-chat-square-text"></i></a>
+            <a class="btn btn-warning" th:if="${t.stato != 'CHIUSO'}" th:href="@{/operatore/ticket/stato (id=${t.idTicket})}" role="button"><i
+                    class="bi bi-ticket-perforated"></i></a>
+            <a class="btn btn-secondary" th:href="@{/operatore/ticket/storico (id=${t.idTicket})}" role="button"><i
+                    class="bi bi-archive"></i></a>
+        </td>
+    </tr>
+    </tbody>
 </table>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 </html>

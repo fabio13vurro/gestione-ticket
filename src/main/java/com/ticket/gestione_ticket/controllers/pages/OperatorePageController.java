@@ -118,12 +118,6 @@ public class OperatorePageController {
     @GetMapping("/ticket/stato")
     public String cambiaStato(@RequestParam Integer id, RedirectAttributes redirectAttributes) {
         Ticket t = ticketService.findById(id);
-
-        if (t.getStato().equals("CHIUSO")) {
-            redirectAttributes.addFlashAttribute("warning", "Non è possibile cambiare lo stato di un ticket chiuso.");
-            return "redirect:/operatore/ticket";
-        }
-
         ticketService.cambiaStato(id);
         redirectAttributes.addFlashAttribute("success", "Stato del ticket modificato con successo.");
         return "redirect:/operatore/ticket";
