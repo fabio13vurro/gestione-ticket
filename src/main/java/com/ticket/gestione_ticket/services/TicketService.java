@@ -111,39 +111,6 @@ public class TicketService {
         return ticketRepository.save(ticket);
     }
 
-    public List<Ticket> findAll() {
-        return ticketRepository.findAll();
-    }
-
-    public List<Ticket> ticketScaduti(){
-        return ticketRepository.findByOverSlaTrue();
-    }
-
-    public Ticket findById(Integer id) {
-        return ticketRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Ticket non trovato: " + id));
-    }
-
-    public Ticket findByTitolo(String titolo){
-        return ticketRepository.findByTitolo(titolo);
-    }
-
-    public List<Ticket> findByStato(String stato){
-        return ticketRepository.findByStato(stato);
-    }
-
-    public List<Ticket> findByPriorita(int priorita){
-        return ticketRepository.findByPriorita(priorita);
-    }
-
-    public List<Ticket> findByCategoria(String categoria){
-        return ticketRepository.findByCategoria(categoria);
-    }
-
-    public List<Ticket> findByUtente_Username(String username){
-        return ticketRepository.findByUtente_Username(username);
-    }
-
     public Ticket cambiaStato(Integer id){
         Ticket t = findById(id);
         if(t == null) return null;
@@ -196,5 +163,42 @@ public class TicketService {
 
     public Page<Ticket> getAll(Pageable pageable){
         return ticketRepository.findAll(pageable);
+    }
+
+    public Page<Ticket> cercaTicket(String q, Pageable pageable){
+        return ticketRepository.cercaTicket(q, pageable);
+    }
+
+    public List<Ticket> findAll() {
+        return ticketRepository.findAll();
+    }
+
+    public List<Ticket> ticketScaduti(){
+        return ticketRepository.findByOverSlaTrue();
+    }
+
+    public Ticket findById(Integer id) {
+        return ticketRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Ticket non trovato: " + id));
+    }
+
+    public Ticket findByTitolo(String titolo){
+        return ticketRepository.findByTitolo(titolo);
+    }
+
+    public List<Ticket> findByStato(String stato){
+        return ticketRepository.findByStato(stato);
+    }
+
+    public List<Ticket> findByPriorita(int priorita){
+        return ticketRepository.findByPriorita(priorita);
+    }
+
+    public List<Ticket> findByCategoria(String categoria){
+        return ticketRepository.findByCategoria(categoria);
+    }
+
+    public List<Ticket> findByUtente_Username(String username){
+        return ticketRepository.findByUtente_Username(username);
     }
 }

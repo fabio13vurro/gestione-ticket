@@ -28,9 +28,15 @@ public class OperatorePageController {
     private final CommentoService commentoService;
 
     @GetMapping("/ticket")
-    public String listaTicket(Model model, @RequestParam(defaultValue = "0") int pag) {
-        Page<Ticket> tickets = ticketService.getAll(PageRequest.of(pag, 20));
-        model.addAttribute("paginaAttuale", pag);
+    public String listaTicket(Model model, @RequestParam(defaultValue = "0") int pag, @RequestParam(required = false) String q) {
+        Page<Ticket> tickets;
+        if (q != null && !q.trim().isEmpty()) {
+            tickets = ticketService.cercaTicket(q.trim(), PageRequest.of(pag, 20));
+        }else{
+            tickets = ticketService.getAll(PageRequest.of(pag, 20));
+        }
+
+        model.addAttribute("q", q);
         model.addAttribute("tickets", tickets);
         return "operatore/ticket_lista";
     }
