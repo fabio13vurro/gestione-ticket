@@ -6,6 +6,8 @@ import com.ticket.gestione_ticket.services.CommentoService;
 import com.ticket.gestione_ticket.services.StoricoStatoService;
 import com.ticket.gestione_ticket.services.TicketService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,8 +28,10 @@ public class OperatorePageController {
     private final CommentoService commentoService;
 
     @GetMapping("/ticket")
-    public String listaTicket(Model model) {
-        model.addAttribute("tickets", ticketService.findAll());
+    public String listaTicket(Model model, @RequestParam(defaultValue = "0") int pag) {
+        Page<Ticket> tickets = ticketService.getAll(PageRequest.of(pag, 20));
+        model.addAttribute("paginaAttuale", pag);
+        model.addAttribute("tickets", tickets);
         return "operatore/ticket_lista";
     }
 
