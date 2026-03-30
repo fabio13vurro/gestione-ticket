@@ -30,31 +30,19 @@
     </a>
 </h2>
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <p class="mb-0">
-        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#legenda"
-                aria-expanded="false"
-                aria-controls="collapse">
-            Apri/Chiudi legenda
-        </button>
-    </p>
+<div class="d-flex justify-content-between align-items-center mb-2">
+    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#legenda">
+        Apri/Chiudi legenda
+    </button>
 
-    <form th:action="@{/operatore/ticket}" method="get" class="form-inline">
-        <div class="input-group">
-            <input type="text" class="form-control" name="q" placeholder="Cerca" th:value="${q}">
-            <div class="input-group-append">
-                <button class="btn btn-primary" type="submit">
-                    <i class="bi bi-search"></i>
-                </button>
-                <a th:href="@{/operatore/ticket}" class="btn btn-outline-secondary" th:if="${q != null and q != ''}">
-                    <i class="bi bi-x-circle"></i>
-                </a>
-            </div>
-        </div>
-    </form>
+
+    <button class="btn btn-outline-primary" type="button" data-toggle="collapse" data-target="#filtri">
+        <i class="bi bi-funnel"></i> Filtri
+        <span th:if="${filtroAttivo}" class="badge badge-primary ml-1">attivi</span>
+    </button>
 </div>
 
-<div class="collapse mb-3" id="legenda">
+<div class="collapse mb-2" id="legenda">
     <div class="card card-body d-flex flex-row align-items-center"
          style="background-color: #f5f7fa; gap: 16px; flex-wrap: nowrap; padding: 10px 16px;">
         <div class="d-flex align-items-center" style="white-space: nowrap; gap: 6px;">
@@ -88,6 +76,59 @@
     </div>
 </div>
 
+<div class="collapse mb-3" id="filtri" th:classappend="${filtroAttivo} ? 'show'">
+    <div class="card card-body" style="background-color: #f5f7fa;">
+        <form th:action="@{/operatore/ticket}" method="get">
+            <div class="row">
+                <div class="col-md-2">
+                    <label class="small font-weight-bold text-muted mb-1">Titolo</label>
+                    <input type="text" class="form-control form-control-sm" name="titolo" th:value="${titolo}" placeholder="Cerca per titolo...">
+                </div>
+                <div class="col-md-2">
+                    <label class="small font-weight-bold text-muted mb-1">Descrizione</label>
+                    <input type="text" class="form-control form-control-sm" name="descrizione" th:value="${descrizione}" placeholder="Cerca per descrizione...">
+                </div>
+                <div class="col-md-2">
+                    <label class="small font-weight-bold text-muted mb-1">Categoria</label>
+                    <input type="text" class="form-control form-control-sm" name="categoria" th:value="${categoria}" placeholder="Cerca per categoria...">
+                </div>
+                <div class="col-md-2">
+                    <label class="small font-weight-bold text-muted mb-1">Stato</label>
+                    <select class="form-control form-control-sm" name="stato">
+                        <option value="">Tutti</option>
+                        <option value="APERTO"         th:selected="${stato == 'APERTO'}">Aperto</option>
+                        <option value="IN_LAVORAZIONE" th:selected="${stato == 'IN_LAVORAZIONE'}">In lavorazione</option>
+                        <option value="IN_ATTESA"      th:selected="${stato == 'IN_ATTESA'}">In attesa</option>
+                        <option value="CHIUSO"         th:selected="${stato == 'CHIUSO'}">Chiuso</option>
+                        <option value="SCADUTO"        th:selected="${stato == 'SCADUTO'}">Scaduto</option>
+                    </select>
+                </div>
+                <div class="col-md-1">
+                    <label class="small font-weight-bold text-muted mb-1">Priorità</label>
+                    <select class="form-control form-control-sm" name="priorita">
+                        <option value="">Tutte</option>
+                        <option value="1" th:selected="${priorita == '1'}">1</option>
+                        <option value="2" th:selected="${priorita == '2'}">2</option>
+                        <option value="3" th:selected="${priorita == '3'}">3</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="small font-weight-bold text-muted mb-1">Utente</label>
+                    <input type="text" class="form-control form-control-sm" name="username" th:value="${username}" placeholder="Cerca per utente...">
+                </div>
+                <div class="col-md-1 d-flex align-items-end" style="gap: 6px;">
+                    <button class="btn btn-primary btn-sm" type="submit">
+                        <i class="bi bi-search"></i>
+                    </button>
+                    <a th:href="@{/operatore/ticket}" class="btn btn-outline-secondary btn-sm" th:if="${filtroAttivo}" title="Reset filtri">
+                        <i class="bi bi-x-circle"></i>
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
 <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
 
 <table class="table table-bordered table-hover" style="table-layout: fixed; width: 100%;">
@@ -108,9 +149,7 @@
     <tbody>
     <tr th:if="${tickets.totalElements == 0}">
         <td colspan="9" class="text-center text-muted">
-                <span th:if="${q != null and q != ''}">
-                    Nessun risultato trovato per <strong th:text="${q}"></strong>"
-                </span>
+            Nessun risultato trovato
         </td>
     </tr>
     <tr th:each="t : ${tickets.content}">
@@ -165,7 +204,7 @@
 
             <li class="page-item" th:classappend="${tickets.first} ? 'disabled'">
                 <a class="page-link"
-                   th:href="${!tickets.first} ? @{/operatore/ticket(pag=${tickets.number - 1}, q=${q})} : '#'">
+                   th:href="${!tickets.first} ? @{/operatore/ticket(pag=${tickets.number - 1}, titolo=${titolo}, descrizione=${descrizione}, categoria=${categoria}, stato=${stato}, priorita=${priorita}, username=${username})} : '#'">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
             </li>
@@ -175,13 +214,13 @@
                 th:classappend="${i == tickets.number} ? 'active'">
                 <a class="page-link"
                    th:text="${i + 1}"
-                   th:href="@{/operatore/ticket(pag=${i}, q=${q})}">
+                   th:href="@{/operatore/ticket(pag=${i}, titolo=${titolo}, descrizione=${descrizione}, categoria=${categoria}, stato=${stato}, priorita=${priorita}, username=${username})}">
                 </a>
             </li>
 
             <li class="page-item" th:classappend="${tickets.last} ? 'disabled'">
                 <a class="page-link"
-                   th:href="${!tickets.last} ? @{/operatore/ticket(pag=${tickets.number + 1}, q=${q})} : '#'">
+                   th:href="${!tickets.last} ? @{/operatore/ticket(pag=${tickets.number + 1}, titolo=${titolo}, descrizione=${descrizione}, categoria=${categoria}, stato=${stato}, priorita=${priorita}, username=${username})} : '#'">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
             </li>

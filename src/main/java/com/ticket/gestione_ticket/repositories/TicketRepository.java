@@ -37,12 +37,17 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
     List<Ticket> findByUtente_Username(String username);
 
     @Query("SELECT t FROM Ticket t LEFT JOIN t.utente u WHERE " +
-            "LOWER(t.titolo) LIKE LOWER(CONCAT('%', :q, '%')) OR " +
-            "LOWER(t.descrizione) LIKE LOWER(CONCAT('%', :q, '%')) OR " +
-            "LOWER(t.categoria) LIKE LOWER(CONCAT('%', :q, '%')) OR " +
-            "LOWER(t.stato) LIKE LOWER(CONCAT('%', :q, '%')) OR " +
-            "(u IS NOT NULL AND LOWER(u.username) LIKE LOWER(CONCAT('%', :q, '%'))) OR " +
-            "CAST(t.data_ora_apertura AS string) LIKE CONCAT('%', :q, '%') OR " +
-            "CAST(t.data_ora_chiusura AS string) LIKE CONCAT('%', :q, '%')")
-    Page<Ticket> cercaTicket(@Param("q") String q, Pageable pageable);
+            "(:titolo IS NULL OR LOWER(t.titolo) LIKE LOWER(CONCAT('%', :titolo, '%'))) AND " +
+            "(:descrizione IS NULL OR LOWER(t.descrizione) LIKE LOWER(CONCAT('%', :descrizione, '%'))) AND " +
+            "(:categoria IS NULL OR LOWER(t.categoria) LIKE LOWER(CONCAT('%', :categoria, '%'))) AND " +
+            "(:stato IS NULL OR LOWER(t.stato) LIKE LOWER(CONCAT('%', :stato, '%'))) AND " +
+            "(:priorita IS NULL OR CAST(t.priorita AS string) = :priorita) AND " +
+            "(:username IS NULL OR LOWER(u.username) LIKE LOWER(CONCAT('%', :username, '%')))")
+    Page<Ticket> filtraTicket(@Param("titolo") String titolo,
+                              @Param("descrizione") String descrizione,
+                              @Param("categoria") String categoria,
+                              @Param("stato") String stato,
+                              @Param("priorita") String priorita,
+                              @Param("username") String username,
+                              Pageable pageable);
 }

@@ -28,16 +28,27 @@ public class OperatorePageController {
     private final CommentoService commentoService;
 
     @GetMapping("/ticket")
-    public String listaTicket(Model model, @RequestParam(defaultValue = "0") int pag, @RequestParam(required = false) String q) {
+    public String listaTicket(Model model, @RequestParam(defaultValue = "0") int pag, @RequestParam(required = false) String titolo,
+                              @RequestParam(required = false) String descrizione, @RequestParam(required = false) String categoria,
+                              @RequestParam(required = false) String stato, @RequestParam(required = false) String priorita, @RequestParam(required = false) String username) {
+
+        boolean filtroAttivo = ticketService.filtroAttivo(titolo, descrizione, categoria, stato, priorita, username);
+
         Page<Ticket> tickets;
-        if (q != null && !q.trim().isEmpty()) {
-            tickets = ticketService.cercaTicket(q.trim(), PageRequest.of(pag, 20));
+        if (filtroAttivo) {
+            tickets = ticketService.filtraTicket(titolo, descrizione, categoria, stato, priorita, username, PageRequest.of(pag, 20));
         }else{
             tickets = ticketService.getAll(PageRequest.of(pag, 20));
         }
 
-        model.addAttribute("q", q);
         model.addAttribute("tickets", tickets);
+        model.addAttribute("titolo", titolo);
+        model.addAttribute("descrizione", descrizione);
+        model.addAttribute("categoria", categoria);
+        model.addAttribute("stato", stato);
+        model.addAttribute("priorita", priorita);
+        model.addAttribute("username", username);
+        model.addAttribute("filtroAttivo", filtroAttivo);
         return "operatore/ticket_lista";
     }
 

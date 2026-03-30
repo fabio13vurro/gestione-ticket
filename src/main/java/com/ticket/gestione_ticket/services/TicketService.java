@@ -165,8 +165,20 @@ public class TicketService {
         return ticketRepository.findAll(pageable);
     }
 
-    public Page<Ticket> cercaTicket(String q, Pageable pageable){
-        return ticketRepository.cercaTicket(q, pageable);
+    public Page<Ticket> filtraTicket(String titolo, String descrizione, String categoria, String stato, String priorita, String username, Pageable pageable){
+        return ticketRepository.filtraTicket(titolo, descrizione, categoria, stato, priorita, username, pageable);
+    }
+
+    public boolean filtroAttivo(String titolo, String descrizione, String categoria, String stato, String priorita, String username){
+        titolo      = (titolo      != null && !titolo.trim().isEmpty())      ? titolo.trim()      : null;
+        descrizione = (descrizione != null && !descrizione.trim().isEmpty()) ? descrizione.trim() : null;
+        categoria   = (categoria   != null && !categoria.trim().isEmpty())   ? categoria.trim()   : null;
+        stato       = (stato       != null && !stato.trim().isEmpty())       ? stato.trim()       : null;
+        priorita    = (priorita    != null && !priorita.trim().isEmpty())    ? priorita.trim()    : null;
+        username    = (username    != null && !username.trim().isEmpty())    ? username.trim()    : null;
+
+        return titolo != null || descrizione != null || categoria != null
+                || stato != null || priorita != null || username != null;
     }
 
     public List<Ticket> findAll() {
