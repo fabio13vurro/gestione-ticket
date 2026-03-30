@@ -32,6 +32,13 @@ public class OperatorePageController {
                               @RequestParam(required = false) String descrizione, @RequestParam(required = false) String categoria,
                               @RequestParam(required = false) String stato, @RequestParam(required = false) String priorita, @RequestParam(required = false) String username) {
 
+        titolo = (titolo != null && !titolo.trim().isEmpty()) ? titolo.trim() : null;
+        descrizione = (descrizione != null && !descrizione.trim().isEmpty()) ? descrizione.trim() : null;
+        categoria = (categoria != null && !categoria.trim().isEmpty()) ? categoria.trim() : null;
+        stato = (stato != null && !stato.trim().isEmpty()) ? stato.trim() : null;
+        priorita = (priorita != null && !priorita.trim().isEmpty()) ? priorita.trim() : null;
+        username = (username != null && !username.trim().isEmpty()) ? username.trim() : null;
+
         boolean filtroAttivo = ticketService.filtroAttivo(titolo, descrizione, categoria, stato, priorita, username);
 
         Page<Ticket> tickets;

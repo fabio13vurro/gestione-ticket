@@ -1,7 +1,9 @@
 package com.ticket.gestione_ticket.services;
 
 import com.mongodb.lang.Nullable;
+import com.ticket.gestione_ticket.entities.Ruolo;
 import com.ticket.gestione_ticket.entities.Ticket;
+import com.ticket.gestione_ticket.entities.Utente;
 import com.ticket.gestione_ticket.repositories.TicketRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -32,7 +35,7 @@ public class TicketService {
         t.setCreated(username);
         t.setDeleted(false);
         t.setData_ora_scadenza(calcolaScadenza(priorita));
-
+        assegnaTicket(t);
         return ticketRepository.save(t);
     }
 
@@ -146,6 +149,18 @@ public class TicketService {
         return ticketRepository.save(t);
     }
 
+    public void assegnaTicket(Ticket t){
+        List<Utente> operatori = utenteService.findByRuolo(Ruolo.OPERATORE);
+        Utente o = operatori.stream()
+                .filter(u -> !u.getDeleted())
+                .min(Comparator.comparing(Utente::getTicketAssegnati))
+                .orElseThrow(() -> new RuntimeException("Nessun operatore disponibile"));
+
+        t.setUtente(o);
+        o.setTicketAssegnati(o.getTicketAssegnati() + 1);
+        utenteService.save(o);
+    }
+
     public Ticket creazioneTicket(String titolo, String descrizione) {
         Ticket t = new Ticket();
         t.setTitolo(titolo);
@@ -170,13 +185,6 @@ public class TicketService {
     }
 
     public boolean filtroAttivo(String titolo, String descrizione, String categoria, String stato, String priorita, String username){
-        titolo      = (titolo      != null && !titolo.trim().isEmpty())      ? titolo.trim()      : null;
-        descrizione = (descrizione != null && !descrizione.trim().isEmpty()) ? descrizione.trim() : null;
-        categoria   = (categoria   != null && !categoria.trim().isEmpty())   ? categoria.trim()   : null;
-        stato       = (stato       != null && !stato.trim().isEmpty())       ? stato.trim()       : null;
-        priorita    = (priorita    != null && !priorita.trim().isEmpty())    ? priorita.trim()    : null;
-        username    = (username    != null && !username.trim().isEmpty())    ? username.trim()    : null;
-
         return titolo != null || descrizione != null || categoria != null
                 || stato != null || priorita != null || username != null;
     }

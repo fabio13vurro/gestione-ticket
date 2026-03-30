@@ -95,4 +95,8 @@ public class UtenteService {
     public List<Utente> findByRuolo(Ruolo ruolo){
         return utenteRepository.findByRuolo(ruolo);
     }
+
+    public Utente save(Utente u){
+        return utenteRepository.save(u);
+    }
 }
