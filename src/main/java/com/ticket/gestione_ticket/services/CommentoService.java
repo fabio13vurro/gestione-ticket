@@ -3,6 +3,8 @@ package com.ticket.gestione_ticket.services;
 import com.mongodb.lang.Nullable;
 import com.ticket.gestione_ticket.entities.*;
 import com.ticket.gestione_ticket.repositories.CommentoRepository;
+import com.ticket.gestione_ticket.repositories.TicketRepository;
+import com.ticket.gestione_ticket.repositories.UtenteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,12 +17,12 @@ import java.util.List;
 public class CommentoService {
 
     private final CommentoRepository commentoRepository;
-    private final TicketService ticketService;
-    private final UtenteService utenteService;
+    private final TicketRepository ticketRepository;
+    private final UtenteRepository utenteRepository;
 
     public Commento create(String testo, String tipo, Integer ticketId, String username){
-        Ticket t = ticketService.findById(ticketId);
-        Utente u = utenteService.findByUsername(username);
+        Ticket t = ticketRepository.findById(ticketId).orElseThrow(() -> new RuntimeException("Ticket non trovato: " + ticketId));
+        Utente u = utenteRepository.findByUsername(username);
         Commento c = new Commento();
 
         c.setTesto(testo);
@@ -32,7 +34,7 @@ public class CommentoService {
         c.setTicket(t);
         c.setData_ora(LocalDateTime.now());
         c.setDeleted(false);
-
+        c.setCreated(username);
         return commentoRepository.save(c);
     }
 
@@ -82,8 +84,8 @@ public class CommentoService {
         return commentoRepository.findByTipo(tipo);
     }
 
-    public List<Commento> findByTicketCreated(String username){
-        return commentoRepository.findByTicketCreated(username);
+    public List<Commento> findByCreated(String username){
+        return commentoRepository.findByCreated(username);
     }
 
     public List<Commento> findByTicketIdOrderByData_oraAsc(Integer ticketId){

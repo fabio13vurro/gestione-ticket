@@ -22,6 +22,7 @@ public class Commento {
     private Tipo tipo;
     private LocalDateTime data_ora;
     private Boolean deleted;
+    private String created;
 
     @JsonIgnore
     @ManyToOne

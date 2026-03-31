@@ -31,7 +31,6 @@ public class ClientePageController {
                                    @RequestParam String categoria, @RequestParam Integer priorita,
                                    Model model, Principal principal) {
         model.addAttribute("result",ticketService.create(titolo, descrizione, categoria, priorita, principal.getName()));
-        model.addAttribute("success", "Ticket creato con successo.");
         return "redirect:/cliente/miei-ticket";
     }
 
@@ -43,12 +42,11 @@ public class ClientePageController {
 
     @PostMapping("/commenti/crea")
     public String creaCommentoSubmit(@RequestParam String testo,
-                                 @RequestParam String tipo,
+                                 @RequestParam(required = false) String tipo,
                                  @RequestParam Integer ticketId,
                                  Model model, Principal principal) {
         Commento c = commentoService.create(testo, tipo, ticketId, principal.getName());
         model.addAttribute("ticketSelezionato", c.getTicket());
-        model.addAttribute("success", "Commento creato con successo.");
         return "redirect:/cliente/miei-commenti";
     }
 
@@ -60,7 +58,7 @@ public class ClientePageController {
 
     @GetMapping("/miei-commenti")
     public String mieiCommentiPage(Model model, Principal principal) {
-        model.addAttribute("mieiCommenti", commentoService.findByTicketCreated(principal.getName()));
+        model.addAttribute("mieiCommenti", commentoService.findByCreated(principal.getName()));
         return "cliente/miei_commenti";
     }
 }

@@ -13,8 +13,8 @@ import java.util.List;
 public interface CommentoRepository extends JpaRepository<Commento, Integer>{
     List<Commento> findByTipo(Tipo tipo);
 
-    @Query("SELECT c FROM Commento c WHERE c.ticket.created = :username")
-    List<Commento> findByTicketCreated(@Param("username") String username);
+    @Query("SELECT c FROM Commento c WHERE c.created = :username")
+    List<Commento> findByCreated(String username);
 
     @Query("SELECT c FROM Commento c WHERE c.ticket.idTicket = :ticketId order by c.data_ora asc")
     List<Commento> findByTicketIdOrderByData_oraAsc(@Param("ticketId") Integer ticketId);
