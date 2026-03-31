@@ -110,7 +110,7 @@ public class OperatorePageController {
     @GetMapping("/ticket/cerca/utente")
     public String cercaByUtente(@RequestParam String username, Model model) {
         model.addAttribute("usernameSelezionato", username);
-        model.addAttribute("ticketsByUtente", ticketService.findByUtente_Username(username));
+        model.addAttribute("ticketsByUtente", ticketService.findByCreated(username));
         return "operatore/ticket_cerca";
     }
 

@@ -34,8 +34,8 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
 
     List<Ticket> findByCategoria(String categoria);
 
-    @Query("SELECT t FROM Ticket t WHERE t.utente.username = :username")
-    List<Ticket> findByUtente_Username(String username);
+    @Query("SELECT t FROM Ticket t WHERE t.created = :username")
+    List<Ticket> findByCreated(String username);
 
     @Query("SELECT t FROM Ticket t LEFT JOIN t.utente u WHERE " +
             "(:titolo IS NULL OR LOWER(t.titolo) LIKE LOWER(CONCAT('%', :titolo, '%'))) AND " +

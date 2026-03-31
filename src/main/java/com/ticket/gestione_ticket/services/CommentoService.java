@@ -82,8 +82,8 @@ public class CommentoService {
         return commentoRepository.findByTipo(tipo);
     }
 
-    public List<Commento> findByTicket_Utente_Username(String username){
-        return commentoRepository.findByTicket_Utente_Username(username);
+    public List<Commento> findByTicketCreated(String username){
+        return commentoRepository.findByTicketCreated(username);
     }
 
     public List<Commento> findByTicketIdOrderByData_oraAsc(Integer ticketId){

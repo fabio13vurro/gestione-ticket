@@ -219,7 +219,7 @@ public class TicketService {
         return ticketRepository.findByCategoria(categoria);
     }
 
-    public List<Ticket> findByUtente_Username(String username){
-        return ticketRepository.findByUtente_Username(username);
+    public List<Ticket> findByCreated(String username){
+        return ticketRepository.findByCreated(username);
     }
 }

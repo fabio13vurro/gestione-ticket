@@ -54,13 +54,13 @@ public class ClientePageController {
 
     @GetMapping("/miei-ticket")
     public String mieiTicketPage(Model model, Principal principal) {
-        model.addAttribute("mieiTicket", ticketService.findByUtente_Username(principal.getName()));
+        model.addAttribute("mieiTicket", ticketService.findByCreated(principal.getName()));
         return "cliente/miei_ticket";
     }
 
     @GetMapping("/miei-commenti")
-    public String mieiCommenti(Model model, Principal principal) {
-        model.addAttribute("mieiCommenti", commentoService.findByTicket_Utente_Username(principal.getName()));
+    public String mieiCommentiPage(Model model, Principal principal) {
+        model.addAttribute("mieiCommenti", commentoService.findByTicketCreated(principal.getName()));
         return "cliente/miei_commenti";
     }
 }
