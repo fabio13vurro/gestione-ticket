@@ -59,4 +59,6 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
                               @Param("dataChiusuraDa") LocalDateTime dataChiusuraDa,
                               @Param("dataChiusuraA") LocalDateTime dataChiusuraA,
                               Pageable pageable);
+
+    List<Ticket> findByUtenteAndStatoNot(Utente utente, String stato);
 }

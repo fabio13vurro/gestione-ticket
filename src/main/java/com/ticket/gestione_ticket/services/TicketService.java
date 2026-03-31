@@ -5,6 +5,7 @@ import com.ticket.gestione_ticket.entities.Ruolo;
 import com.ticket.gestione_ticket.entities.Ticket;
 import com.ticket.gestione_ticket.entities.Utente;
 import com.ticket.gestione_ticket.repositories.TicketRepository;
+import com.ticket.gestione_ticket.repositories.UtenteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +22,7 @@ public class TicketService {
 
     private final TicketRepository ticketRepository;
     private final StoricoStatoService storicoService;
-    private final UtenteService utenteService;
+    private final UtenteRepository utenteRepository;
 
     public Ticket create(String titolo, String descr, String categoria, Integer priorita, String username) {
         Ticket t = new Ticket();
@@ -135,6 +136,11 @@ public class TicketService {
             case "RISOLTO":
                 statoNuovo = "CHIUSO";
                 t.setData_ora_chiusura(LocalDateTime.now());
+                Utente operatore = t.getUtente();
+                if(operatore != null) {
+                    operatore.setTicketAssegnati(operatore.getTicketAssegnati() - 1);
+                    utenteRepository.save(operatore);
+                }
                 break;
             case "SCADUTO":
                 statoNuovo = "APERTO";
@@ -150,7 +156,7 @@ public class TicketService {
     }
 
     public void assegnaTicket(Ticket t){
-        List<Utente> operatori = utenteService.findByRuolo(Ruolo.OPERATORE);
+        List<Utente> operatori = utenteRepository.findByRuolo(Ruolo.OPERATORE);
         Utente o = operatori.stream()
                 .filter(u -> !u.getDeleted())
                 .min(Comparator.comparing(Utente::getTicketAssegnati))
@@ -158,7 +164,7 @@ public class TicketService {
 
         t.setUtente(o);
         o.setTicketAssegnati(o.getTicketAssegnati() + 1);
-        utenteService.save(o);
+        utenteRepository.save(o);
     }
 
     public Ticket creazioneTicket(String titolo, String descrizione) {
@@ -170,9 +176,10 @@ public class TicketService {
         t.setStato("APERTO");
         t.setData_ora_apertura(LocalDateTime.now());
         t.setOver_sla(false);
-        t.setDeleted(false);
         t.setCreated("esterno");
-
+        t.setDeleted(false);
+        t.setData_ora_scadenza(calcolaScadenza(t.getPriorita()));
+        assegnaTicket(t);
         return ticketRepository.save(t);
     }
 

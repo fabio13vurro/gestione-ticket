@@ -2,13 +2,16 @@ package com.ticket.gestione_ticket.services;
 
 import com.ticket.gestione_ticket.DTOs.UtenteFileUploadRequest;
 import com.ticket.gestione_ticket.entities.Ruolo;
+import com.ticket.gestione_ticket.entities.Ticket;
 import com.ticket.gestione_ticket.entities.Utente;
+import com.ticket.gestione_ticket.repositories.TicketRepository;
 import com.ticket.gestione_ticket.repositories.UtenteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -16,6 +19,7 @@ import java.util.List;
 public class UtenteService {
 
     private final UtenteRepository utenteRepository;
+    private final TicketRepository ticketRepository;
     private final PasswordEncoder passwordEncoder;
 
     public Utente create(String username, String email, String password, String ruolo) {
@@ -39,9 +43,26 @@ public class UtenteService {
     }
 
     public void deleteById(int id) {
-        Utente utente = utenteRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Utente non trovato: " + id));
+        Utente utente = findById(id);
 
+        if (utente.getRuolo() == Ruolo.OPERATORE) {
+            List<Ticket> tickets = ticketRepository.findByUtenteAndStatoNot(utente, "CHIUSO");
+
+            for(Ticket t : tickets){
+                Utente operatore = utenteRepository.findByRuolo(Ruolo.OPERATORE)
+                        .stream()
+                        .filter(u -> !u.getDeleted() && !u.getIdUtente().equals(id))
+                        .min(Comparator.comparing(Utente::getTicketAssegnati))
+                        .orElseThrow(() -> new RuntimeException("Nessun operatore disponibile"));
+
+                t.setUtente(operatore);
+                operatore.setTicketAssegnati(operatore.getTicketAssegnati() + 1);
+                utenteRepository.save(operatore);
+                ticketRepository.save(t);
+            }
+        }
+
+        utente.setTicketAssegnati(0);
         utente.setDeleted(true);
         utenteRepository.save(utente);
     }
