@@ -22,7 +22,7 @@ public class UtenteService {
     private final TicketRepository ticketRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public Utente create(String username, String email, String password, String ruolo) {
+    public Utente create(String username, String email, String password, String ruolo, String via, String citta) {
         Utente u = new Utente();
 
         u.setUsername(username);
@@ -31,7 +31,7 @@ public class UtenteService {
         u.setRuolo(Ruolo.valueOf(ruolo));
         u.setTicketAssegnati(0);
         u.setDeleted(false);
-
+        u.setAddress(capitalize(via) + ", " + capitalize(citta));
         return utenteRepository.save(u);
     }
 
@@ -76,7 +76,7 @@ public class UtenteService {
     }
 
     @Transactional
-    public Utente update(Integer id, String username, String email, String password) {
+    public Utente update(Integer id, String username, String email, String password, String via, String citta) {
         Utente utente = findById(id);
         boolean modifica = false;
 
@@ -94,6 +94,18 @@ public class UtenteService {
             modifica = true;
             utente.setPassword(passwordEncoder.encode(password));
         }
+
+        boolean viaPresente = via != null && !via.isBlank();
+        boolean cittaPresente = citta != null && !citta.isBlank();
+
+        if(viaPresente && cittaPresente) {
+
+            String newAddress = capitalize(via) + ", " + capitalize(citta);
+            if(!newAddress.equals(utente.getAddress())) {
+                modifica = true;
+                utente.setAddress(newAddress);
+            }
+        } else if (viaPresente || cittaPresente) throw new RuntimeException("Entrambi i campi via e città devono essere presenti");
 
         if(!modifica) return utente;
 
@@ -119,5 +131,21 @@ public class UtenteService {
 
     public Utente save(Utente u){
         return utenteRepository.save(u);
+    }
+
+    private String capitalize(String testo) {
+        if (testo == null || testo.isBlank()) return testo;
+
+        String[] parole = testo.toLowerCase().split("\\s+");
+        StringBuilder risultato = new StringBuilder();
+
+        for (String parola : parole) {
+            if (!parola.isEmpty()) {
+                risultato.append(Character.toUpperCase(parola.charAt(0)))
+                        .append(parola.substring(1))
+                        .append(" ");
+            }
+        }
+        return risultato.toString().trim();
     }
 }

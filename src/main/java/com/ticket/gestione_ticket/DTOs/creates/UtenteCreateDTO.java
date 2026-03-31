@@ -4,5 +4,7 @@ public record UtenteCreateDTO(
         String username,
         String email,
         String password,
-        String ruolo
+        String ruolo,
+        String via,
+        String citta
 ) {}

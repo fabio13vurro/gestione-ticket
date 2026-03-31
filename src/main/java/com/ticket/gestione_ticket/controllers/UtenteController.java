@@ -21,12 +21,12 @@ public class UtenteController {
 
     @PostMapping("/create")
     public Utente create(@RequestBody UtenteCreateDTO dto) {
-        return utenteService.create(dto.username(), dto.email(), dto.password(), dto.ruolo());
+        return utenteService.create(dto.username(), dto.email(), dto.password(), dto.ruolo(), dto.via(), dto.citta());
     }
 
     @PutMapping("/update/{id}")
     public Utente update(@PathVariable int id, @RequestBody UtenteUpdateDTO dto) {
-        return utenteService.update(id, dto.username(), dto.email(), dto.password());
+        return utenteService.update(id, dto.username(), dto.email(), dto.password(), dto.via(), dto.citta());
     }
 
     @GetMapping("/admin/findALl")

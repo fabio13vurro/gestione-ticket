@@ -28,9 +28,9 @@ public class AdminPageController {
     @PostMapping("/utenti/crea")
     public String utentiCreaSubmit(@RequestParam String username, @RequestParam String email,
                                    @RequestParam String password, @RequestParam String ruolo,
+                                   @RequestParam String via, @RequestParam String citta,
                                    Model model) {
-        model.addAttribute("createResult", utenteService.create(username, email, password, ruolo));
-        model.addAttribute("success", "Utente creato");
+        model.addAttribute("createResult", utenteService.create(username, email, password, ruolo, via, citta));
         return "redirect:/admin/utenti";
     }
 
@@ -96,8 +96,10 @@ public class AdminPageController {
                                        @RequestParam(required = false) String username,
                                        @RequestParam(required = false) String email,
                                        @RequestParam(required = false) String password,
+                                       @RequestParam(required = false) String via,
+                                       @RequestParam(required = false) String citta,
                                        Model model) {
-        model.addAttribute("updateResult", utenteService.update(id, username, email, password));
+        model.addAttribute("updateResult", utenteService.update(id, username, email, password, via, citta));
         return "redirect:/admin/utenti";
     }
 
