@@ -7,12 +7,14 @@ import com.ticket.gestione_ticket.entities.Utente;
 import com.ticket.gestione_ticket.repositories.TicketRepository;
 import com.ticket.gestione_ticket.repositories.UtenteRepository;
 import lombok.RequiredArgsConstructor;
+import net.datafaker.Faker;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 @RequiredArgsConstructor
 @Service
@@ -21,6 +23,7 @@ public class UtenteService {
     private final UtenteRepository utenteRepository;
     private final TicketRepository ticketRepository;
     private final PasswordEncoder passwordEncoder;
+    private final Faker faker = new Faker(new Locale("it"));
 
     public Utente create(String username, String email, String password, String ruolo, String via, String citta) {
         Utente u = new Utente();
@@ -147,5 +150,21 @@ public class UtenteService {
             }
         }
         return risultato.toString().trim();
+    }
+
+    public void creazioneOperatore(){
+        Utente u = new Utente();
+        String username;
+        do {
+            username = faker.name().firstName();
+        }while (utenteRepository.existsByUsername(username));
+        u.setUsername(username);
+        u.setEmail(u.getUsername() + "@gmail.com");
+        u.setPassword(passwordEncoder.encode(u.getUsername()));
+        u.setRuolo(Ruolo.OPERATORE);
+        u.setTicketAssegnati(0);
+        u.setDeleted(false);
+        u.setAddress(capitalize(faker.address().streetAddress()) + ", " + capitalize(faker.address().city()));
+        utenteRepository.save(u);
     }
 }

@@ -32,7 +32,7 @@ public class UserImportJob{
     private static final Logger log = LogManager.getLogger(UserImportJob.class);
 
     @Observed(name = "userImportJob.importUsers")
-    @Scheduled(fixedRateString = "${scheduler.fixedrate}")
+    //@Scheduled(fixedRateString = "${scheduler.fixedrate}")
     public void importUsers() {
         try {
             String query = Files.readString(Paths.get("src/main/resources/graphql/queries/user-import.graphql"));
