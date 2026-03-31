@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -42,12 +43,20 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
             "(:categoria IS NULL OR LOWER(t.categoria) LIKE LOWER(CONCAT('%', :categoria, '%'))) AND " +
             "(:stato IS NULL OR LOWER(t.stato) LIKE LOWER(CONCAT('%', :stato, '%'))) AND " +
             "(:priorita IS NULL OR CAST(t.priorita AS string) = :priorita) AND " +
-            "(:username IS NULL OR LOWER(u.username) LIKE LOWER(CONCAT('%', :username, '%')))")
+            "(:username IS NULL OR LOWER(u.username) LIKE LOWER(CONCAT('%', :username, '%'))) AND " +
+            "(:dataAperturaDa IS NULL OR t.data_ora_apertura >= :dataAperturaDa) AND " +
+            "(:dataAperturaA IS NULL OR t.data_ora_apertura <= :dataAperturaA) AND " +
+            "(:dataChiusuraDa IS NULL OR t.data_ora_chiusura >= :dataChiusuraDa) AND " +
+            "(:dataChiusuraA IS NULL OR t.data_ora_chiusura <= :dataChiusuraA)")
     Page<Ticket> filtraTicket(@Param("titolo") String titolo,
                               @Param("descrizione") String descrizione,
                               @Param("categoria") String categoria,
                               @Param("stato") String stato,
                               @Param("priorita") String priorita,
                               @Param("username") String username,
+                              @Param("dataAperturaDa") LocalDateTime dataAperturaDa,
+                              @Param("dataAperturaA") LocalDateTime dataAperturaA,
+                              @Param("dataChiusuraDa") LocalDateTime dataChiusuraDa,
+                              @Param("dataChiusuraA") LocalDateTime dataChiusuraA,
                               Pageable pageable);
 }

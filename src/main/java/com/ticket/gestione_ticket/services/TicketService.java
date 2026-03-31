@@ -180,13 +180,14 @@ public class TicketService {
         return ticketRepository.findAll(pageable);
     }
 
-    public Page<Ticket> filtraTicket(String titolo, String descrizione, String categoria, String stato, String priorita, String username, Pageable pageable){
-        return ticketRepository.filtraTicket(titolo, descrizione, categoria, stato, priorita, username, pageable);
+    public Page<Ticket> filtraTicket(String titolo, String descrizione, String categoria, String stato, String priorita, String username, LocalDateTime dataAperturaDa, LocalDateTime dataAperturaA, LocalDateTime dataChiusuraDa, LocalDateTime dataChiusuraA, Pageable pageable){
+        return ticketRepository.filtraTicket(titolo, descrizione, categoria, stato, priorita, username, dataAperturaDa, dataAperturaA, dataChiusuraDa, dataChiusuraA, pageable);
     }
 
-    public boolean filtroAttivo(String titolo, String descrizione, String categoria, String stato, String priorita, String username){
+    public boolean filtroAttivo(String titolo, String descrizione, String categoria, String stato, String priorita, String username, LocalDateTime dataAperturaDa, LocalDateTime dataAperturaA, LocalDateTime dataChiusuraDa, LocalDateTime dataChiusuraA){
         return titolo != null || descrizione != null || categoria != null
-                || stato != null || priorita != null || username != null;
+                || stato != null || priorita != null || username != null || dataAperturaDa != null
+                || dataAperturaA != null || dataChiusuraDa != null || dataChiusuraA != null;
     }
 
     public List<Ticket> findAll() {

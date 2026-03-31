@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @RequiredArgsConstructor
 @Controller
 @RequestMapping("/operatore")
@@ -30,20 +33,27 @@ public class OperatorePageController {
     @GetMapping("/ticket")
     public String listaTicket(Model model, @RequestParam(defaultValue = "0") int pag, @RequestParam(required = false) String titolo,
                               @RequestParam(required = false) String descrizione, @RequestParam(required = false) String categoria,
-                              @RequestParam(required = false) String stato, @RequestParam(required = false) String priorita, @RequestParam(required = false) String username) {
+                              @RequestParam(required = false) String stato, @RequestParam(required = false) String priorita, @RequestParam(required = false) String username,
+                              @RequestParam(required = false) String dataAperturaDa, @RequestParam(required = false) String dataAperturaA,
+                              @RequestParam(required = false) String dataChiusuraDa, @RequestParam(required = false) String dataChiusuraA) {
 
-        titolo = (titolo != null && !titolo.trim().isEmpty()) ? titolo.trim() : null;
-        descrizione = (descrizione != null && !descrizione.trim().isEmpty()) ? descrizione.trim() : null;
-        categoria = (categoria != null && !categoria.trim().isEmpty()) ? categoria.trim() : null;
-        stato = (stato != null && !stato.trim().isEmpty()) ? stato.trim() : null;
-        priorita = (priorita != null && !priorita.trim().isEmpty()) ? priorita.trim() : null;
-        username = (username != null && !username.trim().isEmpty()) ? username.trim() : null;
+        titolo = pulisci(titolo);
+        descrizione = pulisci(descrizione);
+        categoria   = pulisci(categoria);
+        stato       = pulisci(stato);
+        priorita    = pulisci(priorita);
+        username    = pulisci(username);
 
-        boolean filtroAttivo = ticketService.filtroAttivo(titolo, descrizione, categoria, stato, priorita, username);
+        LocalDateTime aperturaDa  = parseData(dataAperturaDa, false);
+        LocalDateTime aperturaA   = parseData(dataAperturaA, true);
+        LocalDateTime chiusuraDa  = parseData(dataChiusuraDa, false);
+        LocalDateTime chiusuraA   = parseData(dataChiusuraA, true);
+
+        boolean filtroAttivo = ticketService.filtroAttivo(titolo, descrizione, categoria, stato, priorita, username, aperturaDa, aperturaA, chiusuraDa, chiusuraA);
 
         Page<Ticket> tickets;
         if (filtroAttivo) {
-            tickets = ticketService.filtraTicket(titolo, descrizione, categoria, stato, priorita, username, PageRequest.of(pag, 20));
+            tickets = ticketService.filtraTicket(titolo, descrizione, categoria, stato, priorita, username, aperturaDa, aperturaA, chiusuraDa, chiusuraA, PageRequest.of(pag, 20));
         }else{
             tickets = ticketService.getAll(PageRequest.of(pag, 20));
         }
@@ -239,5 +249,19 @@ public class OperatorePageController {
         model.addAttribute(("tipoSelezionato"), tipo);
         model.addAttribute("commentiByTipo", commentoService.findByTipo(Tipo.valueOf(tipo)));
         return "operatore/commenti_cerca";
+    }
+
+    private String pulisci(String val) {
+        return (val != null && !val.trim().isEmpty()) ? val.trim() : null;
+    }
+
+    private LocalDateTime parseData(String data, boolean fineGiornata) {
+        if (data == null || data.trim().isEmpty()) return null;
+        try {
+            LocalDate d = LocalDate.parse(data.trim());
+            return fineGiornata ? d.atTime(23, 59, 59) : d.atStartOfDay();
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

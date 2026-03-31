@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -59,13 +60,18 @@ public class TicketController {
             @RequestParam(required = false) String categoria,
             @RequestParam(required = false) String stato,
             @RequestParam(required = false) String priorita,
-            @RequestParam(required = false) String username) {
+            @RequestParam(required = false) String username,
+            @RequestParam(required = false)LocalDateTime aperturaDa,
+            @RequestParam(required = false)LocalDateTime aperturaA,
+            @RequestParam(required = false)LocalDateTime chiusuraDa,
+            @RequestParam(required = false)LocalDateTime chiusuraA
+            ) {
 
-        boolean filtroAttivo = ticketService.filtroAttivo(titolo, descrizione, categoria, stato, priorita, username);
+        boolean filtroAttivo = ticketService.filtroAttivo(titolo, descrizione, categoria, stato, priorita, username, aperturaDa, aperturaA, chiusuraDa, chiusuraA);
 
         Pageable pageable = PageRequest.of(pag, 20);
 
-        if(filtroAttivo) return ticketService.filtraTicket(titolo, descrizione, categoria, stato, priorita, username, pageable);
+        if(filtroAttivo) return ticketService.filtraTicket(titolo, descrizione, categoria, stato, priorita, username, aperturaDa, aperturaA, chiusuraDa, chiusuraA, pageable);
         return ticketService.getAll(pageable);
     }
 }

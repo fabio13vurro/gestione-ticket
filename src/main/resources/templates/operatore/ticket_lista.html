@@ -35,7 +35,6 @@
         Apri/Chiudi legenda
     </button>
 
-
     <button class="btn btn-outline-primary" type="button" data-toggle="collapse" data-target="#filtri">
         <i class="bi bi-funnel"></i> Filtri
         <span th:if="${filtroAttivo}" class="badge badge-primary ml-1">attivi</span>
@@ -110,11 +109,28 @@
                         <option value="1" th:selected="${priorita == '1'}">1</option>
                         <option value="2" th:selected="${priorita == '2'}">2</option>
                         <option value="3" th:selected="${priorita == '3'}">3</option>
+                        <option value="4" th:selected="${priorita == '4'}">4</option>
                     </select>
                 </div>
                 <div class="col-md-2">
                     <label class="small font-weight-bold text-muted mb-1">Utente</label>
                     <input type="text" class="form-control form-control-sm" name="username" th:value="${username}" placeholder="Cerca per utente...">
+                </div>
+                <div class="col-md-2">
+                    <label class="small font-weight-bold text-muted mb-1">Apertura dal</label>
+                    <input type="date" class="form-control form-control-sm" name="dataAperturaDa" th:value="${dataAperturaDa}">
+                </div>
+                <div class="col-md-2">
+                    <label class="small font-weight-bold text-muted mb-1">Apertura al</label>
+                    <input type="date" class="form-control form-control-sm" name="dataAperturaA" th:value="${dataAperturaA}">
+                </div>
+                <div class="col-md-2">
+                    <label class="small font-weight-bold text-muted mb-1">Chiusura dal</label>
+                    <input type="date" class="form-control form-control-sm" name="dataChiusuraDa" th:value="${dataChiusuraDa}">
+                </div>
+                <div class="col-md-2">
+                    <label class="small font-weight-bold text-muted mb-1">Chiusura al</label>
+                    <input type="date" class="form-control form-control-sm" name="dataChiusuraA" th:value="${dataChiusuraA}">
                 </div>
                 <div class="col-md-1 d-flex align-items-end" style="gap: 6px;">
                     <button class="btn btn-primary btn-sm" type="submit">
@@ -204,7 +220,8 @@
 
             <li class="page-item" th:classappend="${tickets.first} ? 'disabled'">
                 <a class="page-link"
-                   th:href="${!tickets.first} ? @{/operatore/ticket(pag=${tickets.number - 1}, titolo=${titolo}, descrizione=${descrizione}, categoria=${categoria}, stato=${stato}, priorita=${priorita}, username=${username})} : '#'">
+                   th:href="${!tickets.first} ? @{/operatore/ticket(pag=${tickets.number - 1}, titolo=${titolo}, descrizione=${descrizione}, categoria=${categoria}, stato=${stato}, priorita=${priorita}, username=${username}, dataAperturaDa=${dataAperturaDa}, dataAperturaA=${dataAperturaA},
+    dataChiusuraDa=${dataChiusuraDa}, dataChiusuraA=${dataChiusuraA})} : '#'">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
             </li>
@@ -214,13 +231,15 @@
                 th:classappend="${i == tickets.number} ? 'active'">
                 <a class="page-link"
                    th:text="${i + 1}"
-                   th:href="@{/operatore/ticket(pag=${i}, titolo=${titolo}, descrizione=${descrizione}, categoria=${categoria}, stato=${stato}, priorita=${priorita}, username=${username})}">
+                   th:href="@{/operatore/ticket(pag=${i}, titolo=${titolo}, descrizione=${descrizione}, categoria=${categoria}, stato=${stato}, priorita=${priorita}, username=${username}, dataAperturaDa=${dataAperturaDa}, dataAperturaA=${dataAperturaA},
+    dataChiusuraDa=${dataChiusuraDa}, dataChiusuraA=${dataChiusuraA})}">
                 </a>
             </li>
 
             <li class="page-item" th:classappend="${tickets.last} ? 'disabled'">
                 <a class="page-link"
-                   th:href="${!tickets.last} ? @{/operatore/ticket(pag=${tickets.number + 1}, titolo=${titolo}, descrizione=${descrizione}, categoria=${categoria}, stato=${stato}, priorita=${priorita}, username=${username})} : '#'">
+                   th:href="${!tickets.last} ? @{/operatore/ticket(pag=${tickets.number + 1}, titolo=${titolo}, descrizione=${descrizione}, categoria=${categoria}, stato=${stato}, priorita=${priorita}, username=${username}, dataAperturaDa=${dataAperturaDa}, dataAperturaA=${dataAperturaA},
+    dataChiusuraDa=${dataChiusuraDa}, dataChiusuraA=${dataChiusuraA})} : '#'">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
             </li>
