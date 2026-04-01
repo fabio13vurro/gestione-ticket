@@ -8,6 +8,8 @@ import com.ticket.gestione_ticket.repositories.TicketRepository;
 import com.ticket.gestione_ticket.repositories.UtenteRepository;
 import lombok.RequiredArgsConstructor;
 import net.datafaker.Faker;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -132,10 +134,6 @@ public class UtenteService {
         return utenteRepository.findByRuolo(ruolo);
     }
 
-    public Utente save(Utente u){
-        return utenteRepository.save(u);
-    }
-
     private String capitalize(String testo) {
         if (testo == null || testo.isBlank()) return testo;
 
@@ -154,10 +152,15 @@ public class UtenteService {
 
     public void creazioneOperatore(){
         Utente u = new Utente();
-        String username;
-        do {
-            username = faker.name().firstName();
-        }while (utenteRepository.existsByUsername(username));
+
+        String base = faker.name().firstName();
+        String username = base;
+
+        int tentativi = 0;
+        while (utenteRepository.existsByUsername(username)) {
+            username = base + faker.number().numberBetween(1, 9999);
+            if (++tentativi > 20) throw new RuntimeException("Impossibile generare username univoco");
+        }
         u.setUsername(username);
         u.setEmail(u.getUsername() + "@gmail.com");
         u.setPassword(passwordEncoder.encode(u.getUsername()));
@@ -166,5 +169,17 @@ public class UtenteService {
         u.setDeleted(false);
         u.setAddress(capitalize(faker.address().streetAddress()) + ", " + capitalize(faker.address().city()));
         utenteRepository.save(u);
+    }
+
+    public Page<Utente> getAll(Pageable pageable){
+        return utenteRepository.findAll(pageable);
+    }
+
+    public Page<Utente> filtraUtenti(String username, String email, String ruolo, String ticketAssegnati, String address, Pageable pageable){
+        return utenteRepository.filtraUtenti(username, email, ruolo, ticketAssegnati, address, pageable);
+    }
+
+    public boolean filtroAttivo(String username, String email, String ruolo, String ticketAssegnati, String address){
+        return username != null || email != null || ruolo != null || ticketAssegnati != null || address != null;
     }
 }

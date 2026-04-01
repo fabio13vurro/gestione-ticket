@@ -7,6 +7,11 @@
     <style>
         body { font-family: Arial; padding: 20px; background-color: #f5f7fa}
         h1{text-align: center;}
+        table td, table th {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
     </style>
 </head>
 <body>
@@ -16,31 +21,145 @@
         <i class="bi bi-house-door-fill"></i>
     </a>
 </h2>
-<table class="table table-bordered table-hover">
+
+<div class="d-flex justify-content-between align-items-center mb-2">
+    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#legenda">
+        Apri/Chiudi legenda
+    </button>
+
+    <button class="btn btn-outline-primary" type="button" data-toggle="collapse" data-target="#filtri">
+        <i class="bi bi-funnel"></i> Filtri
+        <span th:if="${filtroAttivo}" class="badge badge-primary ml-1">attivi</span>
+    </button>
+</div>
+
+<div class="collapse mb-2" id="legenda">
+    <div class="card card-body d-flex flex-row align-items-center"
+         style="background-color: #f5f7fa; gap: 16px; flex-wrap: nowrap; padding: 10px 16px;">
+        <div class="d-flex align-items-center" style="white-space: nowrap; gap: 6px;">
+            <span class="btn btn-primary btn-sm"><i class="bi bi-pencil-square"></i></span>
+            Modifica Utente
+        </div>
+        <div class="d-flex align-items-center" style="white-space: nowrap; gap: 6px;">
+            <span class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></span>
+            Elimina utente
+        </div>
+        <div class="d-flex align-items-center" style="white-space: nowrap; gap: 6px;">
+            <span class="btn btn-success btn-sm"><i class="bi bi-arrow-repeat"></i></span>
+            Ripristina utente
+        </div>
+    </div>
+</div>
+
+<div class="collapse mb-3" id="filtri" th:classappend="${filtroAttivo} ? 'show'">
+    <div class="card card-body" style="background-color: #f5f7fa;">
+        <form th:action="@{/admin/utenti}" method="get">
+            <div class="row">
+                <div class="col-md-2">
+                    <label class="small font-weight-bold text-muted mb-1">Username</label>
+                    <input type="text" class="form-control form-control-sm" name="username" th:value="${username}" placeholder="Cerca per username...">
+                </div>
+                <div class="col-md-2">
+                    <label class="small font-weight-bold text-muted mb-1">Email</label>
+                    <input type="text" class="form-control form-control-sm" name="email" th:value="${email}" placeholder="Cerca per email...">
+                </div>
+                <div class="col-md-2">
+                    <label class="small font-weight-bold text-muted mb-1">Ruolo</label>
+                    <select class="form-control form-control-sm" name="ruolo">
+                        <option value="">Tutti</option>
+                        <option value="ADMIN" th:selected="${ruolo == 'ADMIN'}">Admin</option>
+                        <option value="OPERATORE" th:selected="${ruolo == 'OPERATORE'}">Operatore</option>
+                        <option value="CLIENTE" th:selected="${ruolo == 'CLIENTE'}">Cliente</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="small font-weight-bold text-muted mb-1">Ticket Assegnati</label>
+                    <input type="number" class="form-control form-control-sm" name="ticketAssegnati" th:value="${ticketAssegnati}" placeholder="Cerca per ticket assegnati...">
+                </div>
+                <div class="col-md-2">
+                    <label class="small font-weight-bold text-muted mb-1">Indirizzo</label>
+                    <input type="text" class="form-control form-control-sm" name="address" th:value="${address}" placeholder="Cerca per indirizzo...">
+                </div>
+                <div class="col-md-1 d-flex align-items-end" style="gap: 6px;">
+                    <button class="btn btn-primary btn-sm" type="submit">
+                        <i class="bi bi-search"></i>
+                    </button>
+                    <a th:href="@{/admin/utenti}" class="btn btn-outline-secondary btn-sm" th:if="${filtroAttivo}" title="Reset filtri">
+                        <i class="bi bi-x-circle"></i>
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<table class="table table-bordered table-hover" style="table-layout: fixed; width: 100%;">
     <thead>
     <tr>
-        <th scope="col">Id</th>
-        <th scope="col">Username</th>
-        <th scope="col">Email</th>
-        <th scope="col">Ruolo</th>
-        <th scope="col">Ticket Assegnati</th>
-        <th scope="col">Azioni</th>
+        <th style="width: 5%">Id</th>
+        <th style="width: 20%">Username</th>
+        <th style="width: 20%">Email</th>
+        <th style="width: 13%">Ruolo</th>
+        <th style="width: 12%">Ticket Ass.</th>
+        <th style="width: 20%">Indirizzo</th>
+        <th style="width: 10%">Azioni</th>
     </tr>
     </thead>
     <tbody>
-    <tr th:each="u : ${utenti}">
+    <tr th:if="${utenti.totalElements == 0}">
+        <td colspan="7" class="text-center text-muted">
+            Nessun risultato trovato
+        </td>
+    </tr>
+    <tr th:each="u : ${utenti.content}">
         <th scope="row" th:text="${u.idUtente}">1</th>
-        <td th:text="${u.username}">admin</td>
-        <td th:text="${u.email}">admin@mail</td>
-        <td th:text="${u.ruolo}">ADMIN</td>
+        <td th:text="${u.username}" th:title="${u.username}">admin</td>
+        <td th:text="${u.email}" th:title="${u.email}">admin@mail</td>
+        <td th:text="${u.ruolo}" th:title="${u.ruolo}">ADMIN</td>
         <td th:text="${u.ticketAssegnati}">1</td>
+        <td th:text="${u.address}" th:title="${u.address}">Via Roma, Roma</td>
         <td>
-            <a class="btn btn-primary" th:href="@{/admin/utenti/modifica (id=${u.idUtente})}" role="button">Modifica</a>
-            <a class="btn btn-danger" th:href="@{/admin/utenti/cancella (id=${u.idUtente})}" th:if="${!u.deleted}" role="button">Cancella</a>
-            <a class="btn btn-success" th:href="@{/admin/utenti/ripristina (id=${u.idUtente})}" th:if="${u.deleted}" role="button">Ripristina</a>
+            <a class="btn btn-primary" title="Modifica utente" th:href="@{/admin/utenti/modifica (id=${u.idUtente})}" role="button"><i class="bi bi-pencil-square"></i></a>
+            <a class="btn btn-danger" title="Elimina utente" th:href="@{/admin/utenti/cancella (id=${u.idUtente})}" th:if="${!u.deleted}" role="button"><i class="bi bi-trash"></i></a>
+            <a class="btn btn-success" title="Ripristina utente" th:href="@{/admin/utenti/ripristina (id=${u.idUtente})}" th:if="${u.deleted}" role="button"><i class="bi bi-arrow-repeat"></i></a>
         </td>
     </tr>
     </tbody>
 </table>
+
+<div class="d-flex justify-content-center mt-4" th:if="${utenti != null and utenti.totalPages > 0}">
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+
+            <li class="page-item" th:classappend="${utenti.first} ? 'disabled'">
+                <a class="page-link"
+                   th:href="${!utenti.first} ? @{/admin/utenti(pag=${utenti.number - 1}, username=${username}, email=${email}, ruolo=${ruolo}, ticketAssegnati=${ticketAssegnati}, address=${address})} : '#'">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+
+            <li class="page-item"
+                th:each="i : ${#numbers.sequence(0, utenti.totalPages - 1)}"
+                th:classappend="${i == utenti.number} ? 'active'">
+                <a class="page-link"
+                   th:text="${i + 1}"
+                   th:href="@{/admin/utenti(pag=${i}, username=${username}, email=${email}, ruolo=${ruolo}, ticketAssegnati=${ticketAssegnati}, address=${address})}">
+                </a>
+            </li>
+
+            <li class="page-item" th:classappend="${utenti.last} ? 'disabled'">
+                <a class="page-link"
+                   th:href="${!utenti.last} ? @{/admin/utenti(pag=${utenti.number + 1}, username=${username}, email=${email}, ruolo=${ruolo}, ticketAssegnati=${ticketAssegnati}, address=${address})} : '#'">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+
+        </ul>
+    </nav>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 </html>

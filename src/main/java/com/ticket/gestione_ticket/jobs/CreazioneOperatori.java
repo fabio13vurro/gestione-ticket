@@ -12,7 +12,7 @@ public class CreazioneOperatori {
 
     @Scheduled(fixedRateString = "${scheduler.fixedrate}")
     public void creazioneOperatori(){
-        for (int i = 0; i<100; i++){
+        for (int i = 0; i<20; i++){
             utenteService.creazioneOperatore();
         }
     }

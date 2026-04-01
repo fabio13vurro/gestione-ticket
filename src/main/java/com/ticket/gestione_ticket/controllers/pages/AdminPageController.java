@@ -2,9 +2,12 @@ package com.ticket.gestione_ticket.controllers.pages;
 
 import com.ticket.gestione_ticket.entities.Ruolo;
 import com.ticket.gestione_ticket.entities.Ticket;
+import com.ticket.gestione_ticket.entities.Utente;
 import com.ticket.gestione_ticket.services.TicketService;
 import com.ticket.gestione_ticket.services.UtenteService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,8 +38,31 @@ public class AdminPageController {
     }
 
     @GetMapping("/utenti")
-    public String utentiLista(Model model) {
-        model.addAttribute("utenti", utenteService.findAll());
+    public String utentiLista(Model model, @RequestParam(defaultValue = "0") int pag, @RequestParam(required = false) String username,
+                              @RequestParam(required = false) String email, @RequestParam(required = false) String ruolo,
+                              @RequestParam(required = false) String ticketAssegnati, @RequestParam(required = false) String address) {
+        username = pulisci(username);
+        email = pulisci(email);
+        ruolo = pulisci(ruolo);
+        ticketAssegnati = pulisci(ticketAssegnati);
+        address = pulisci(address);
+
+        boolean filtroAttivo = utenteService.filtroAttivo(username, email, ruolo, ticketAssegnati, address);
+
+        Page<Utente> utenti;
+        if (filtroAttivo) {
+            utenti = utenteService.filtraUtenti(username, email, ruolo, ticketAssegnati, address, PageRequest.of(pag, 20));
+        }else {
+            utenti = utenteService.getAll(PageRequest.of(pag, 20));
+        }
+
+        model.addAttribute("utenti", utenti);
+        model.addAttribute("username", username);
+        model.addAttribute("email", email);
+        model.addAttribute("ruolo", ruolo);
+        model.addAttribute("ticketAssegnati", ticketAssegnati);
+        model.addAttribute("address", address);
+        model.addAttribute("filtroAttivo", filtroAttivo);
         return "admin/utenti_lista";
     }
 
@@ -107,5 +133,9 @@ public class AdminPageController {
     public String ticketScaduti(Model model){
         model.addAttribute("scaduti", ticketService.ticketScaduti());
         return "admin/ticket_scaduti";
+    }
+
+    private String pulisci(String val){
+        return (val != null && !val.trim().isEmpty()) ? val.trim() : null;
     }
 }
