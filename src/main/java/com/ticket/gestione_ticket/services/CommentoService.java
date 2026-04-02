@@ -6,11 +6,13 @@ import com.ticket.gestione_ticket.repositories.CommentoRepository;
 import com.ticket.gestione_ticket.repositories.TicketRepository;
 import com.ticket.gestione_ticket.repositories.UtenteRepository;
 import lombok.RequiredArgsConstructor;
+import net.datafaker.Faker;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Locale;
 
 @RequiredArgsConstructor
 @Service
@@ -19,6 +21,7 @@ public class CommentoService {
     private final CommentoRepository commentoRepository;
     private final TicketRepository ticketRepository;
     private final UtenteRepository utenteRepository;
+    private final Faker faker = new Faker(new Locale("it"));
 
     public Commento create(String testo, String tipo, Integer ticketId, String username){
         Ticket t = ticketRepository.findById(ticketId).orElseThrow(() -> new RuntimeException("Ticket non trovato: " + ticketId));
@@ -90,5 +93,24 @@ public class CommentoService {
 
     public List<Commento> findByTicketIdOrderByData_oraAsc(Integer ticketId){
         return commentoRepository.findByTicketIdOrderByData_oraAsc(ticketId);
+    }
+
+    public void creazioneCommenti(Ticket ticket) {
+        List<Utente> clienti = utenteRepository.findByRuolo(Ruolo.CLIENTE);
+        List<Utente> operatori = utenteRepository.findByRuolo(Ruolo.OPERATORE);
+        String[] tipiOperatore = {"INTERNO", "ESTERNO"};
+        int numCommenti = faker.number().numberBetween(2, 11);
+
+        for (int i = 0; i < numCommenti; i++) {
+            boolean isCliente = faker.bool().bool();
+            Utente autore = isCliente
+                    ? clienti.get(faker.number().numberBetween(0, clienti.size()))
+                    : operatori.get(faker.number().numberBetween(0, operatori.size()));
+
+            String testo = faker.lorem().paragraph(1);
+            String tipo = isCliente ? null : tipiOperatore[faker.number().numberBetween(0, 2)];
+
+            create(testo, tipo, ticket.getIdTicket(), autore.getUsername());
+        }
     }
 }

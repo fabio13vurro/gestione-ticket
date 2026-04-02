@@ -145,25 +145,4 @@ public class TicketServiceTest {
         Ticket result = ticketService.findByTitolo("titolo");
         assertThat(result).isSameAs(t);
     }
-
-    @Test
-    void creazioneTicketScheduled() {
-        given(ticketRepository.save(any(Ticket.class)))
-                .willAnswer(inv -> inv.getArgument(0));
-
-        Ticket t = ticketService.creazioneTicket("titolo", "descrizione");
-
-        assertThat(t.getTitolo()).isEqualTo("titolo");
-        assertThat(t.getDescrizione()).isEqualTo("descrizione");
-        assertThat(t.getCategoria()).isEqualTo("MONITORAGGIO");
-        assertThat(t.getPriorita()).isEqualTo(3);
-        assertThat(t.getStato()).isEqualTo("APERTO");
-        assertThat(t.getData_ora_apertura()).isNotNull();
-        assertThat(t.getData_ora_chiusura()).isNull();
-        assertThat(t.getOver_sla()).isFalse();
-        assertThat(t.getDeleted()).isFalse();
-        assertThat(t.getCreated()).isEqualTo("esterno");
-
-        then(ticketRepository).should().save(any(Ticket.class));
-    }
 }

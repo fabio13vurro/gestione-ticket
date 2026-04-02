@@ -7,6 +7,7 @@ import com.ticket.gestione_ticket.entities.Utente;
 import com.ticket.gestione_ticket.repositories.TicketRepository;
 import com.ticket.gestione_ticket.repositories.UtenteRepository;
 import lombok.RequiredArgsConstructor;
+import net.datafaker.Faker;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 @RequiredArgsConstructor
 @Service
@@ -23,6 +25,7 @@ public class TicketService {
     private final TicketRepository ticketRepository;
     private final StoricoStatoService storicoService;
     private final UtenteRepository utenteRepository;
+    private final Faker faker = new Faker(new Locale("it"));
 
     public Ticket create(String titolo, String descr, String categoria, Integer priorita, String username) {
         Ticket t = new Ticket();
@@ -40,9 +43,9 @@ public class TicketService {
         return ticketRepository.save(t);
     }
 
-    public LocalDateTime calcolaScadenza(Integer priorita){
+    public LocalDateTime calcolaScadenza(Integer priorita) {
         LocalDateTime apertura = LocalDateTime.now();
-        return switch (priorita){
+        return switch (priorita) {
             case 1 -> apertura.plusHours(12);
             case 2 -> apertura.plusDays(1);
             case 3 -> apertura.plusHours(36);
@@ -50,14 +53,14 @@ public class TicketService {
         };
     }
 
-    public void controlloScadenze(){
+    public void controlloScadenze() {
         LocalDateTime now = LocalDateTime.now();
         List<Ticket> tickets = ticketRepository.findAll();
-        for(Ticket t : tickets){
-            if(t.getOver_sla().equals(true) || t.getStato().equals("CHIUSO") || t.getDeleted().equals(true) || t.getStato().equals("IN_ATTESA")) {
+        for (Ticket t : tickets) {
+            if (t.getOver_sla().equals(true) || t.getStato().equals("CHIUSO") || t.getDeleted().equals(true) || t.getStato().equals("IN_ATTESA")) {
                 continue;
-            }else{
-                if(t.getData_ora_scadenza() != null && now.isAfter(t.getData_ora_scadenza())){
+            } else {
+                if (t.getData_ora_scadenza() != null && now.isAfter(t.getData_ora_scadenza())) {
                     t.setOver_sla(true);
                     t.setStato("SCADUTO");
                     ticketRepository.save(t);
@@ -74,7 +77,7 @@ public class TicketService {
         ticketRepository.save(ticket);
     }
 
-    public void ripristina(Integer id){
+    public void ripristina(Integer id) {
         Ticket ticket = ticketRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Ticket non trovato: " + id));
 
@@ -84,7 +87,7 @@ public class TicketService {
 
     @Transactional
     public Ticket update(Integer id, @Nullable String titolo, @Nullable String descrizione, @Nullable String categoria,
-                        @Nullable Integer priorita) {
+                         @Nullable Integer priorita) {
         Ticket ticket = findById(id);
 
         boolean modifica = false;
@@ -110,18 +113,18 @@ public class TicketService {
             modifica = true;
         }
 
-        if(!modifica) return ticket;
+        if (!modifica) return ticket;
 
         return ticketRepository.save(ticket);
     }
 
-    public Ticket cambiaStato(Integer id){
+    public Ticket cambiaStato(Integer id) {
         Ticket t = findById(id);
-        if(t == null) return null;
+        if (t == null) return null;
 
         String statoNuovo, statoAttuale = t.getStato();
 
-        if(statoAttuale.equals("CHIUSO")) return t;
+        if (statoAttuale.equals("CHIUSO")) return t;
 
         switch (statoAttuale) {
             case "APERTO":
@@ -137,7 +140,7 @@ public class TicketService {
                 statoNuovo = "CHIUSO";
                 t.setData_ora_chiusura(LocalDateTime.now());
                 Utente operatore = t.getUtente();
-                if(operatore != null) {
+                if (operatore != null) {
                     operatore.setTicketAssegnati(operatore.getTicketAssegnati() - 1);
                     utenteRepository.save(operatore);
                 }
@@ -155,7 +158,7 @@ public class TicketService {
         return ticketRepository.save(t);
     }
 
-    public void assegnaTicket(Ticket t){
+    public void assegnaTicket(Ticket t) {
         List<Utente> operatori = utenteRepository.findByRuolo(Ruolo.OPERATORE);
         Utente o = operatori.stream()
                 .filter(u -> !u.getDeleted())
@@ -167,31 +170,30 @@ public class TicketService {
         utenteRepository.save(o);
     }
 
-    public Ticket creazioneTicket(String titolo, String descrizione) {
-        Ticket t = new Ticket();
-        t.setTitolo(titolo);
-        t.setDescrizione(descrizione);
-        t.setCategoria("MONITORAGGIO");
-        t.setPriorita(3);
-        t.setStato("APERTO");
-        t.setData_ora_apertura(LocalDateTime.now());
-        t.setOver_sla(false);
-        t.setCreated("esterno");
-        t.setDeleted(false);
-        t.setData_ora_scadenza(calcolaScadenza(t.getPriorita()));
-        assegnaTicket(t);
-        return ticketRepository.save(t);
+    public Ticket creazioneTicket() {
+        String[] categorie = {"HARDWARE", "SOFTWARE", "RETE", "SICUREZZA"};
+
+        String titolo = faker.lorem().sentence(4);
+        String descr = faker.lorem().paragraph(2);
+        String categoria = categorie[faker.number().numberBetween(0, categorie.length)];
+        Integer priorita = faker.number().numberBetween(1, 5);
+
+        List<Utente> clienti = utenteRepository.findByRuolo(Ruolo.CLIENTE);
+        if (clienti.isEmpty()) throw new RuntimeException("Nessun cliente disponibile");
+        Utente cliente = clienti.get(faker.number().numberBetween(0, clienti.size()));
+
+        return create(titolo, descr, categoria, priorita, cliente.getUsername());
     }
 
-    public Page<Ticket> getAll(Pageable pageable){
+    public Page<Ticket> getAll(Pageable pageable) {
         return ticketRepository.findAll(pageable);
     }
 
-    public Page<Ticket> filtraTicket(String titolo, String descrizione, String categoria, String stato, String priorita, String username, LocalDateTime dataAperturaDa, LocalDateTime dataAperturaA, LocalDateTime dataChiusuraDa, LocalDateTime dataChiusuraA, Pageable pageable){
+    public Page<Ticket> filtraTicket(String titolo, String descrizione, String categoria, String stato, String priorita, String username, LocalDateTime dataAperturaDa, LocalDateTime dataAperturaA, LocalDateTime dataChiusuraDa, LocalDateTime dataChiusuraA, Pageable pageable) {
         return ticketRepository.filtraTicket(titolo, descrizione, categoria, stato, priorita, username, dataAperturaDa, dataAperturaA, dataChiusuraDa, dataChiusuraA, pageable);
     }
 
-    public boolean filtroAttivo(String titolo, String descrizione, String categoria, String stato, String priorita, String username, LocalDateTime dataAperturaDa, LocalDateTime dataAperturaA, LocalDateTime dataChiusuraDa, LocalDateTime dataChiusuraA){
+    public boolean filtroAttivo(String titolo, String descrizione, String categoria, String stato, String priorita, String username, LocalDateTime dataAperturaDa, LocalDateTime dataAperturaA, LocalDateTime dataChiusuraDa, LocalDateTime dataChiusuraA) {
         return titolo != null || descrizione != null || categoria != null
                 || stato != null || priorita != null || username != null || dataAperturaDa != null
                 || dataAperturaA != null || dataChiusuraDa != null || dataChiusuraA != null;
@@ -201,7 +203,7 @@ public class TicketService {
         return ticketRepository.findAll();
     }
 
-    public List<Ticket> ticketScaduti(){
+    public List<Ticket> ticketScaduti() {
         return ticketRepository.findByOverSlaTrue();
     }
 
@@ -210,23 +212,23 @@ public class TicketService {
                 .orElseThrow(() -> new RuntimeException("Ticket non trovato: " + id));
     }
 
-    public Ticket findByTitolo(String titolo){
+    public Ticket findByTitolo(String titolo) {
         return ticketRepository.findByTitolo(titolo);
     }
 
-    public List<Ticket> findByStato(String stato){
+    public List<Ticket> findByStato(String stato) {
         return ticketRepository.findByStato(stato);
     }
 
-    public List<Ticket> findByPriorita(int priorita){
+    public List<Ticket> findByPriorita(int priorita) {
         return ticketRepository.findByPriorita(priorita);
     }
 
-    public List<Ticket> findByCategoria(String categoria){
+    public List<Ticket> findByCategoria(String categoria) {
         return ticketRepository.findByCategoria(categoria);
     }
 
-    public List<Ticket> findByCreated(String username){
+    public List<Ticket> findByCreated(String username) {
         return ticketRepository.findByCreated(username);
     }
 }

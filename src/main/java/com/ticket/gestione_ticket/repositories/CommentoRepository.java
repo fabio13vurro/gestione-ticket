@@ -1,5 +1,6 @@
 package com.ticket.gestione_ticket.repositories;
 
+import com.ticket.gestione_ticket.entities.Ticket;
 import com.ticket.gestione_ticket.entities.Tipo;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
