@@ -1,5 +1,6 @@
 package com.ticket.gestione_ticket.controllers.pages;
 
+import com.ticket.gestione_ticket.entities.Commento;
 import com.ticket.gestione_ticket.entities.Ticket;
 import com.ticket.gestione_ticket.entities.Tipo;
 import com.ticket.gestione_ticket.services.CommentoService;
@@ -65,12 +66,16 @@ public class OperatorePageController {
         model.addAttribute("stato", stato);
         model.addAttribute("priorita", priorita);
         model.addAttribute("username", username);
+        model.addAttribute("dataAperturaDa", dataAperturaDa);
+        model.addAttribute("dataAperturaA",  dataAperturaA);
+        model.addAttribute("dataChiusuraDa", dataChiusuraDa);
+        model.addAttribute("dataChiusuraA",  dataChiusuraA);
         model.addAttribute("filtroAttivo", filtroAttivo);
         return "operatore/ticket_lista";
     }
 
     @GetMapping("/ticket/commenti")
-    public String listaCommenti(@RequestParam Integer id, Model model) {
+    public String listaCommenti(Model model, @RequestParam Integer id) {
         model.addAttribute("ticketId", id);
         model.addAttribute("commenti", commentoService.findByTicketIdOrderByData_oraAsc(id));
         return "operatore/ticket_commenti";
@@ -193,8 +198,35 @@ public class OperatorePageController {
     }
 
     @GetMapping("/commenti")
-    public String commentiPage(Model model) {
-        model.addAttribute("commenti", commentoService.findAll());
+    public String commentiPage(Model model, @RequestParam(defaultValue = "0") int pag,
+                               @RequestParam(required = false) String testo, @RequestParam(required = false) String tipo,
+                               @RequestParam(required = false) String codTicket, @RequestParam(required = false) String created,
+                               @RequestParam(required = false) String dataOraDa, @RequestParam(required = false) String dataOraA) {
+        testo = pulisci(testo);
+        tipo = pulisci(tipo);
+        codTicket = pulisci(codTicket);
+        created = pulisci(created);
+
+        LocalDateTime dataDa =  parseData(dataOraDa, false);
+        LocalDateTime dataA =  parseData(dataOraA, true);
+
+        boolean filtroAttivo = commentoService.filtroAttivo(testo, tipo, codTicket, created, dataDa, dataA);
+
+        Page<Commento> commenti;
+        if (filtroAttivo) {
+            commenti = commentoService.filtraCommenti(testo, tipo, codTicket, created, dataDa, dataA, PageRequest.of(pag, 20));
+        }else{
+            commenti = commentoService.getAll(PageRequest.of(pag, 20));
+        }
+
+        model.addAttribute("commenti", commenti);
+        model.addAttribute("testo", testo);
+        model.addAttribute("tipo", tipo);
+        model.addAttribute("codTicket", codTicket);
+        model.addAttribute("created", created);
+        model.addAttribute("dataOraDa", dataOraDa);
+        model.addAttribute("dataOraA", dataOraA);
+        model.addAttribute("filtroAttivo", filtroAttivo);
         return "operatore/commenti"; }
 
     @GetMapping("/commenti/modifica")

@@ -3,42 +3,164 @@
 <head>
     <title>Lista Commenti</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <style>
         body { font-family: Arial; padding: 20px; background-color: #f5f7fa}
         h1{text-align: center;}
+        table td, table th{
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
     </style>
 </head>
 <body>
-<h1>Lista Commenti</h1>
-<br>
-<table class="table table-bordered table-hover">
+<h2 class="text-center mb-4">
+    Lista Commenti &nbsp;
+    <a th:href="@{/home}" class="text-primary" style="text-decoration:none;">
+        <i class="bi bi-house-door-fill"></i>
+    </a>
+</h2>
+
+<div class="d-flex justify-content-between align-items-center mb-2">
+    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#legenda">
+        Apri/Chiudi legenda
+    </button>
+
+    <button class="btn btn-outline-primary" type="button" data-toggle="collapse" data-target="#filtri">
+        <i class="bi bi-funnel"></i> Filtri
+        <span th:if="${filtroAttivo}" class="badge badge-primary ml-1">attivi</span>
+    </button>
+</div>
+
+<div class="collapse mb-2" id="legenda">
+    <div class="card card-body d-flex flex-row align-items-center"
+         style="background-color: #f5f7fa; gap: 16px; flex-wrap: nowrap; padding: 10px 16px;">
+        <div class="d-flex align-items-center" style="white-space: nowrap; gap: 6px;">
+            <span class="btn btn-primary btn-sm"><i class="bi bi-pencil-square"></i></span>
+            Modifica Commento
+        </div>
+        <div class="d-flex align-items-center" style="white-space: nowrap; gap: 6px;">
+            <span class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></span>
+            Elimina commento
+        </div>
+        <div class="d-flex align-items-center" style="white-space: nowrap; gap: 6px;">
+            <span class="btn btn-success btn-sm"><i class="bi bi-arrow-repeat"></i></span>
+            Ripristina commento
+        </div>
+    </div>
+</div>
+
+<div class="collapse mb-3" id="filtri" th:classappend="${filtroAttivo} ? 'show'">
+    <div class="card card-body" style="background-color: #f5f7fa;">
+        <form th:action="@{/operatore/commenti}" method="get">
+            <div class="row">
+                <div class="col-md-2">
+                    <label class="small font-weight-bold text-muted mb-1">Testo</label>
+                    <input type="text" class="form-control form-control-sm" name="testo" th:value="${testo}" placeholder="Cerca per testo...">
+                </div>
+                <div class="col md-2">
+                    <label class="small font-weight-bold text-muted mb-1">Tipo</label>
+                    <option value="">Tutti</option>
+                    <option value="ESTERNO" th:selected="${tipo == 'ESTERNO'}">Esterno</option>
+                    <option value="INTERNO" th:selected="${tipo == 'INTERNO'}">Interno</option>
+                </div>
+                <div class="col-md-2">
+                    <label class="small font-weight-bold text-muted mb-1">Ticket</label>
+                    <input type="number" class="form-control form-control-sm" name="codTicket" th:value="${codTicket}" placeholder="Cerca per ticket associato...">
+                </div>
+                <div class="col md-2">
+                    <label class="small font-weight-bold text-muted mb-1">Utente</label>
+                    <input type="text" class="form-control form-control-sm" name="created" th:value="${created}" placeholder="Cerca per utente...">
+                </div>
+                <div class="col-md-2">
+                    <label class="small font-weight-bold text-muted mb-1">Data dal</label>
+                    <input type="date" class="form-control form-control-sm" name="dataOraDa" th:value="${dataOraDa}">
+                </div>
+                <div class="col-md-2">
+                    <label class="small font-weight-bold text-muted mb-1">Data al</label>
+                    <input type="date" class="form-control form-control-sm" name="dataOraA" th:value="${dataOraA}">
+                </div>
+                <div class="col-md-1 d-flex align-items-end" style="gap: 6px;">
+                    <button class="btn btn-primary btn-sm" type="submit">
+                        <i class="bi bi-search"></i>
+                    </button>
+                    <a th:href="@{/operatore/commenti}" class="btn btn-outline-secondary btn-sm" th:if="${filtroAttivo}" title="Reset filtri">
+                        <i class="bi bi-x-circle"></i>
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<table class="table table-bordered table-hover" style="table-layout: fixed; width: 100%;">
     <thead>
     <tr>
-        <th scope="col">Id</th>
-        <th scope="col">Testo</th>
-        <th scope="col">Tipo</th>
-        <th scope="col">Data</th>
-        <th scope="col">Codice Ticket</th>
-        <th scope="col">Azioni</th>
+        <th style="width: 5%">Id</th>
+        <th style="width: 25%">Testo</th>
+        <th style="width: 15%">Tipo</th>
+        <th style="width: 20%">Utente</th>
+        <th style="width: 15%">Data</th>
+        <th style="width: 10%">Ticket</th>
+        <th style="width: 10%">Azioni</th>
     </tr>
     </thead>
     <tbody>
-    <tr th:each="c : ${commenti}">
-        <th scope="row" th:text="${c.idCommento}">1</th>
-        <td th:text="${c.testo}">testo</td>
+    <tr th:if="${commenti.totalElements == 0}">
+        <td colspan="7" class="text-center text-muted">
+            Nessun risultato trovato
+        </td>
+    </tr>
+    <tr th:each="c : ${commenti.content}">
+        <th scope="row" th:text="${c.idCommento}" th:title="${c.idCommento}">1</th>
+        <td th:text="${c.testo}" th:title="${c.testo}">testo</td>
         <td th:text="${c.tipo}">tipo</td>
+        <td th:text="${c.created}">utente</td>
         <td th:text="${#temporals.format(c.data_ora, 'dd/MM/yyyy HH:mm')}">data</td>
-        <td th:text="${c.ticket != null ? c.ticket.idTicket : '-'}">1</td>
+        <td th:text="${c.ticket.idTicket}">1</td>
         <td>
-            <a class="btn btn-primary" th:href="@{/operatore/commenti/modifica (id=${c.idCommento})}" role="button">Modifica</a>
-            <a class="btn btn-danger" th:href="@{/operatore/commenti/cancella (id=${c.idCommento})}" th:if="${!c.deleted}" role="button">Cancella</a>
-            <a class="btn btn-success" th:href="@{/operatore/commenti/ripristina (id=${c.idCommento})}" th:if="${c.deleted}" role="button">Ripristina</a>
+            <a class="btn btn-primary" title="Modifica commento" th:href="@{/operatore/commenti/modifica (id=${c.idCommento})}" role="button"><i class="bi bi-pencil-square"></i></a>
+            <a class="btn btn-danger" title="Elimina commento" th:href="@{/operatore/commenti/cancella (id=${c.idCommento})}" th:if="${!c.deleted}" role="button"><i class="bi bi-trash"></i></a>
+            <a class="btn btn-success" title="Ripristina commento" th:href="@{/operatore/commenti/ripristina (id=${c.idCommento})}" th:if="${c.deleted}" role="button"><i class="bi bi-arrow-repeat"></i></a>
         </td>
     </tr>
     </tbody>
 </table>
-<br>
-<a class="btn btn-primary" th:href="@{/operatore/commenti/cerca}" role="button">Cerca commenti</a>
-<a class="btn btn-secondary" th:href="@{/home}" role="button">← Torna alla Home</a>
+
+<div class="d-flex justify-content-center mt-4" th:if="${commenti != null and commenti.totalPages > 0}">
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+
+            <li class="page-item" th:classappend="${commenti.first} ? 'disabled'">
+                <a class="page-link"
+                   th:href="${!commenti.first} ? @{/operatore/commenti(pag=${commenti.number - 1}, testo=${testo}, tipo=${tipo}, codTicket=${codTicket}, created=${created}, dataOraDa=${dataOraDa}, dataOraA=${dataOraA})} : '#'">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+
+            <li class="page-item"
+                th:each="i : ${#numbers.sequence(0, commenti.totalPages - 1)}"
+                th:classappend="${i == commenti.number} ? 'active'">
+                <a class="page-link"
+                   th:text="${i + 1}"
+                   th:href="@{/operatore/commenti(pag=${i}, testo=${testo}, tipo=${tipo}, codTicket=${codTicket}, created=${created}, dataOraDa=${dataOraDa}, dataOraA=${dataOraA})}">
+                </a>
+            </li>
+
+            <li class="page-item" th:classappend="${commenti.last} ? 'disabled'">
+                <a class="page-link"
+                   th:href="${!commenti.last} ? @{/operatore/commenti(pag=${commenti.number + 1}, testo=${testo}, tipo=${tipo}, codTicket=${codTicket}, created=${created}, dataOraDa=${dataOraDa}, dataOraA=${dataOraA})} : '#'">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+
+        </ul>
+    </nav>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 </html>

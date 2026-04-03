@@ -7,6 +7,8 @@ import com.ticket.gestione_ticket.repositories.TicketRepository;
 import com.ticket.gestione_ticket.repositories.UtenteRepository;
 import lombok.RequiredArgsConstructor;
 import net.datafaker.Faker;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -112,5 +114,17 @@ public class CommentoService {
 
             create(testo, tipo, ticket.getIdTicket(), autore.getUsername());
         }
+    }
+
+    public Page<Commento> getAll(Pageable pageable){
+        return commentoRepository.findAll(pageable);
+    }
+
+    public Page<Commento> filtraCommenti(String testo, String tipo, String codTicket, String created, LocalDateTime dataOraDa, LocalDateTime dataOraA, Pageable pageable){
+        return commentoRepository.filtraCommenti(testo, tipo, codTicket, created, dataOraDa, dataOraA, pageable);
+    }
+
+    public boolean filtroAttivo(String testo, String tipo, String codTicket, String created, LocalDateTime dataOraDa, LocalDateTime dataOraA){
+        return testo != null || tipo != null || codTicket != null || created != null || dataOraDa != null || dataOraA != null;
     }
 }
