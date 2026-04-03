@@ -37,7 +37,10 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
     @Query("SELECT t FROM Ticket t WHERE t.created = :username")
     List<Ticket> findByCreated(String username);
 
-    @Query("SELECT t FROM Ticket t LEFT JOIN t.utente u WHERE " +
+    @Query("SELECT t FROM Ticket t WHERE t.created = :username")
+    Page<Ticket> findByCreated(String username, Pageable pageable);
+
+    @Query("SELECT DISTINCT t FROM Ticket t LEFT JOIN FETCH t.commenti LEFT JOIN t.utente u WHERE " +
             "(:titolo IS NULL OR LOWER(t.titolo) LIKE LOWER(CONCAT('%', :titolo, '%'))) AND " +
             "(:descrizione IS NULL OR LOWER(t.descrizione) LIKE LOWER(CONCAT('%', :descrizione, '%'))) AND " +
             "(:categoria IS NULL OR LOWER(t.categoria) LIKE LOWER(CONCAT('%', :categoria, '%'))) AND " +
@@ -47,7 +50,8 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
             "(:dataAperturaDa IS NULL OR t.data_ora_apertura >= :dataAperturaDa) AND " +
             "(:dataAperturaA IS NULL OR t.data_ora_apertura <= :dataAperturaA) AND " +
             "(:dataChiusuraDa IS NULL OR t.data_ora_chiusura >= :dataChiusuraDa) AND " +
-            "(:dataChiusuraA IS NULL OR t.data_ora_chiusura <= :dataChiusuraA)")
+            "(:dataChiusuraA IS NULL OR t.data_ora_chiusura <= :dataChiusuraA) AND " +
+            "(:numCommenti IS NULL OR (SELECT COUNT(c) FROM Commento c WHERE c.ticket = t) = :numCommenti)")
     Page<Ticket> filtraTicket(@Param("titolo") String titolo,
                               @Param("descrizione") String descrizione,
                               @Param("categoria") String categoria,
@@ -58,7 +62,11 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
                               @Param("dataAperturaA") LocalDateTime dataAperturaA,
                               @Param("dataChiusuraDa") LocalDateTime dataChiusuraDa,
                               @Param("dataChiusuraA") LocalDateTime dataChiusuraA,
+                              @Param("numCommenti") Integer numCommenti,
                               Pageable pageable);
+
+    @Query("SELECT DISTINCT t FROM Ticket t LEFT JOIN FETCH t.commenti")
+    Page<Ticket> findAllWithCommenti(Pageable pageable);
 
     List<Ticket> findByUtenteAndStatoNot(Utente utente, String stato);
 }

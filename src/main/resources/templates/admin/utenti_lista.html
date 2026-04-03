@@ -133,13 +133,22 @@
 
             <li class="page-item" th:classappend="${utenti.first} ? 'disabled'">
                 <a class="page-link"
+                   th:href="${!utenti.first} ? @{/admin/utenti(pag=0, username=${username}, email=${email}, ruolo=${ruolo}, ticketAssegnati=${ticketAssegnati}, address=${address})} : '#'">
+                    &laquo;&laquo;
+                </a>
+            </li>
+
+            <li class="page-item" th:classappend="${utenti.first} ? 'disabled'">
+                <a class="page-link"
                    th:href="${!utenti.first} ? @{/admin/utenti(pag=${utenti.number - 1}, username=${username}, email=${email}, ruolo=${ruolo}, ticketAssegnati=${ticketAssegnati}, address=${address})} : '#'">
-                    <span aria-hidden="true">&laquo;</span>
+                    &laquo;
                 </a>
             </li>
 
             <li class="page-item"
-                th:each="i : ${#numbers.sequence(0, utenti.totalPages - 1)}"
+                th:each="i : ${#numbers.sequence(
+                    T(java.lang.Math).max(0, utenti.number - 5),
+                    T(java.lang.Math).min(utenti.totalPages - 1, utenti.number + 5))}"
                 th:classappend="${i == utenti.number} ? 'active'">
                 <a class="page-link"
                    th:text="${i + 1}"
@@ -150,7 +159,14 @@
             <li class="page-item" th:classappend="${utenti.last} ? 'disabled'">
                 <a class="page-link"
                    th:href="${!utenti.last} ? @{/admin/utenti(pag=${utenti.number + 1}, username=${username}, email=${email}, ruolo=${ruolo}, ticketAssegnati=${ticketAssegnati}, address=${address})} : '#'">
-                    <span aria-hidden="true">&raquo;</span>
+                    &raquo;
+                </a>
+            </li>
+
+            <li class="page-item" th:classappend="${utenti.last} ? 'disabled'">
+                <a class="page-link"
+                   th:href="${!utenti.last} ? @{/admin/utenti(pag=${utenti.totalPages - 1}, username=${username}, email=${email}, ruolo=${ruolo}, ticketAssegnati=${ticketAssegnati}, address=${address})} : '#'">
+                    &raquo;&raquo;
                 </a>
             </li>
 

@@ -36,7 +36,8 @@ public class OperatorePageController {
                               @RequestParam(required = false) String descrizione, @RequestParam(required = false) String categoria,
                               @RequestParam(required = false) String stato, @RequestParam(required = false) String priorita, @RequestParam(required = false) String username,
                               @RequestParam(required = false) String dataAperturaDa, @RequestParam(required = false) String dataAperturaA,
-                              @RequestParam(required = false) String dataChiusuraDa, @RequestParam(required = false) String dataChiusuraA) {
+                              @RequestParam(required = false) String dataChiusuraDa, @RequestParam(required = false) String dataChiusuraA,
+                              @RequestParam(required = false) Integer numCommenti) {
 
         titolo = pulisci(titolo);
         descrizione = pulisci(descrizione);
@@ -50,11 +51,11 @@ public class OperatorePageController {
         LocalDateTime chiusuraDa  = parseData(dataChiusuraDa, false);
         LocalDateTime chiusuraA   = parseData(dataChiusuraA, true);
 
-        boolean filtroAttivo = ticketService.filtroAttivo(titolo, descrizione, categoria, stato, priorita, username, aperturaDa, aperturaA, chiusuraDa, chiusuraA);
+        boolean filtroAttivo = ticketService.filtroAttivo(titolo, descrizione, categoria, stato, priorita, username, aperturaDa, aperturaA, chiusuraDa, chiusuraA, numCommenti);
 
         Page<Ticket> tickets;
         if (filtroAttivo) {
-            tickets = ticketService.filtraTicket(titolo, descrizione, categoria, stato, priorita, username, aperturaDa, aperturaA, chiusuraDa, chiusuraA, PageRequest.of(pag, 20));
+            tickets = ticketService.filtraTicket(titolo, descrizione, categoria, stato, priorita, username, aperturaDa, aperturaA, chiusuraDa, chiusuraA, numCommenti, PageRequest.of(pag, 20));
         }else{
             tickets = ticketService.getAll(PageRequest.of(pag, 20));
         }
@@ -70,14 +71,15 @@ public class OperatorePageController {
         model.addAttribute("dataAperturaA",  dataAperturaA);
         model.addAttribute("dataChiusuraDa", dataChiusuraDa);
         model.addAttribute("dataChiusuraA",  dataChiusuraA);
+        model.addAttribute("numCommenti", numCommenti);
         model.addAttribute("filtroAttivo", filtroAttivo);
         return "operatore/ticket_lista";
     }
 
     @GetMapping("/ticket/commenti")
-    public String listaCommenti(Model model, @RequestParam Integer id) {
+    public String listaCommenti(Model model, @RequestParam Integer id, @RequestParam(defaultValue = "0") int pag) {
         model.addAttribute("ticketId", id);
-        model.addAttribute("commenti", commentoService.findByTicketIdOrderByData_oraAsc(id));
+        model.addAttribute("commenti", commentoService.findByTicketIdOrderByDataOraAsc(id, PageRequest.of(pag, 20)));
         return "operatore/ticket_commenti";
     }
 

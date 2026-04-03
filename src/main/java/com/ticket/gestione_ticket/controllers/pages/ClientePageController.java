@@ -4,6 +4,7 @@ import com.ticket.gestione_ticket.entities.Commento;
 import com.ticket.gestione_ticket.services.CommentoService;
 import com.ticket.gestione_ticket.services.TicketService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -51,14 +52,14 @@ public class ClientePageController {
     }
 
     @GetMapping("/miei-ticket")
-    public String mieiTicketPage(Model model, Principal principal) {
-        model.addAttribute("mieiTicket", ticketService.findByCreated(principal.getName()));
+    public String mieiTicketPage(Model model, Principal principal, @RequestParam(defaultValue = "0") int pag) {
+        model.addAttribute("mieiTicket", ticketService.findByCreated(principal.getName(), PageRequest.of(pag, 20)));
         return "cliente/miei_ticket";
     }
 
     @GetMapping("/miei-commenti")
-    public String mieiCommentiPage(Model model, Principal principal) {
-        model.addAttribute("mieiCommenti", commentoService.findByCreated(principal.getName()));
+    public String mieiCommentiPage(Model model, Principal principal, @RequestParam(defaultValue = "0") int pag) {
+        model.addAttribute("mieiCommenti", commentoService.findByCreated(principal.getName(), PageRequest.of(pag, 20)));
         return "cliente/miei_commenti";
     }
 }

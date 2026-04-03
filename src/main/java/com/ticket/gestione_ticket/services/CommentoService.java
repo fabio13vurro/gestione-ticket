@@ -89,12 +89,12 @@ public class CommentoService {
         return commentoRepository.findByTipo(tipo);
     }
 
-    public List<Commento> findByCreated(String username){
-        return commentoRepository.findByCreated(username);
+    public Page<Commento> findByCreated(String username, Pageable pageable){
+        return commentoRepository.findByCreated(username, pageable);
     }
 
-    public List<Commento> findByTicketIdOrderByData_oraAsc(Integer ticketId){
-        return commentoRepository.findByTicketIdOrderByData_oraAsc(ticketId);
+    public Page<Commento> findByTicketIdOrderByDataOraAsc(Integer ticketId, Pageable pageable){
+        return commentoRepository.findByTicketIdOrderByDataOraAsc(ticketId, pageable);
     }
 
     public void creazioneCommenti(Ticket ticket) {

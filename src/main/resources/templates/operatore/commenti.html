@@ -61,9 +61,11 @@
                 </div>
                 <div class="col md-2">
                     <label class="small font-weight-bold text-muted mb-1">Tipo</label>
-                    <option value="">Tutti</option>
-                    <option value="ESTERNO" th:selected="${tipo == 'ESTERNO'}">Esterno</option>
-                    <option value="INTERNO" th:selected="${tipo == 'INTERNO'}">Interno</option>
+                    <select class="form-control form-control-sm" name="tipo">
+                        <option value="">Tutti</option>
+                        <option value="ESTERNO" th:selected="${tipo == 'ESTERNO'}">Esterno</option>
+                        <option value="INTERNO" th:selected="${tipo == 'INTERNO'}">Interno</option>
+                    </select>
                 </div>
                 <div class="col-md-2">
                     <label class="small font-weight-bold text-muted mb-1">Ticket</label>
@@ -134,13 +136,22 @@
 
             <li class="page-item" th:classappend="${commenti.first} ? 'disabled'">
                 <a class="page-link"
+                   th:href="${!commenti.first} ? @{/operatore/commenti(pag=0, testo=${testo}, tipo=${tipo}, codTicket=${codTicket}, created=${created}, dataOraDa=${dataOraDa}, dataOraA=${dataOraA})} : '#'">
+                    &laquo;&laquo;
+                </a>
+            </li>
+
+            <li class="page-item" th:classappend="${commenti.first} ? 'disabled'">
+                <a class="page-link"
                    th:href="${!commenti.first} ? @{/operatore/commenti(pag=${commenti.number - 1}, testo=${testo}, tipo=${tipo}, codTicket=${codTicket}, created=${created}, dataOraDa=${dataOraDa}, dataOraA=${dataOraA})} : '#'">
-                    <span aria-hidden="true">&laquo;</span>
+                    &laquo;
                 </a>
             </li>
 
             <li class="page-item"
-                th:each="i : ${#numbers.sequence(0, commenti.totalPages - 1)}"
+                th:each="i : ${#numbers.sequence(
+                    T(java.lang.Math).max(0, commenti.number - 5),
+                    T(java.lang.Math).min(commenti.totalPages - 1, commenti.number + 5))}"
                 th:classappend="${i == commenti.number} ? 'active'">
                 <a class="page-link"
                    th:text="${i + 1}"
@@ -151,7 +162,14 @@
             <li class="page-item" th:classappend="${commenti.last} ? 'disabled'">
                 <a class="page-link"
                    th:href="${!commenti.last} ? @{/operatore/commenti(pag=${commenti.number + 1}, testo=${testo}, tipo=${tipo}, codTicket=${codTicket}, created=${created}, dataOraDa=${dataOraDa}, dataOraA=${dataOraA})} : '#'">
-                    <span aria-hidden="true">&raquo;</span>
+                    &raquo;
+                </a>
+            </li>
+
+            <li class="page-item" th:classappend="${commenti.last} ? 'disabled'">
+                <a class="page-link"
+                   th:href="${!commenti.last} ? @{/operatore/commenti(pag=${commenti.totalPages - 1}, testo=${testo}, tipo=${tipo}, codTicket=${codTicket}, created=${created}, dataOraDa=${dataOraDa}, dataOraA=${dataOraA})} : '#'">
+                    &raquo;&raquo;
                 </a>
             </li>
 

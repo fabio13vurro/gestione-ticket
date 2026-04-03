@@ -64,14 +64,15 @@ public class TicketController {
             @RequestParam(required = false)LocalDateTime aperturaDa,
             @RequestParam(required = false)LocalDateTime aperturaA,
             @RequestParam(required = false)LocalDateTime chiusuraDa,
-            @RequestParam(required = false)LocalDateTime chiusuraA
+            @RequestParam(required = false)LocalDateTime chiusuraA,
+            @RequestParam(required = false)Integer numCommenti
             ) {
 
-        boolean filtroAttivo = ticketService.filtroAttivo(titolo, descrizione, categoria, stato, priorita, username, aperturaDa, aperturaA, chiusuraDa, chiusuraA);
+        boolean filtroAttivo = ticketService.filtroAttivo(titolo, descrizione, categoria, stato, priorita, username, aperturaDa, aperturaA, chiusuraDa, chiusuraA, numCommenti);
 
         Pageable pageable = PageRequest.of(pag, 20);
 
-        if(filtroAttivo) return ticketService.filtraTicket(titolo, descrizione, categoria, stato, priorita, username, aperturaDa, aperturaA, chiusuraDa, chiusuraA, pageable);
+        if(filtroAttivo) return ticketService.filtraTicket(titolo, descrizione, categoria, stato, priorita, username, aperturaDa, aperturaA, chiusuraDa, chiusuraA, numCommenti, pageable);
         return ticketService.getAll(pageable);
     }
 }

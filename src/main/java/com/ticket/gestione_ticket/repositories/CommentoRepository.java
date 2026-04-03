@@ -18,10 +18,10 @@ public interface CommentoRepository extends JpaRepository<Commento, Integer>{
     List<Commento> findByTipo(Tipo tipo);
 
     @Query("SELECT c FROM Commento c WHERE c.created = :username")
-    List<Commento> findByCreated(String username);
+    Page<Commento> findByCreated(String username, Pageable pageable);
 
-    @Query("SELECT c FROM Commento c WHERE c.ticket.idTicket = :ticketId order by c.data_ora asc")
-    List<Commento> findByTicketIdOrderByData_oraAsc(@Param("ticketId") Integer ticketId);
+    @Query("SELECT c FROM Commento c WHERE c.ticket.idTicket = :ticketId ORDER BY c.data_ora ASC")
+    Page<Commento> findByTicketIdOrderByDataOraAsc(@Param("ticketId") Integer ticketId, Pageable pageable);
 
     @Query("SELECT c FROM Commento c WHERE " +
             "(:testo IS NULL OR LOWER(c.testo) LIKE LOWER(CONCAT('%', :testo, '%'))) AND " +

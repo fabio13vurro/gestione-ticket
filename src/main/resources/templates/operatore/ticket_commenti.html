@@ -4,49 +4,147 @@
     <meta charset="UTF-8"/>
     <title>Commenti del ticket</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <style>
         body { font-family: Arial; padding: 20px; background-color: #f5f7fa }
-        h1 { text-align: center; }
-        .nowrap { white-space: nowrap; }
+        table td, table th {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
     </style>
 </head>
 <body>
 
-<h1>Commenti del ticket #<span th:text="${ticketId}">0</span></h1>
-<hr/>
+<h2 class="text-center mb-4">
+    Commenti del ticket #<span th:text="${ticketId}">0</span> &nbsp;
+    <a th:href="@{/home}" class="text-primary" style="text-decoration:none;">
+        <i class="bi bi-house-door-fill"></i>
+    </a>
+</h2>
 
-<div th:if="${#lists.isEmpty(commenti)}" class="alert alert-info">
+<div class="d-flex justify-content-between align-items-center mb-2">
+    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#legenda">
+        Apri/Chiudi legenda
+    </button>
+</div>
+
+<div class="collapse mb-3" id="legenda">
+    <div class="card card-body d-flex flex-row align-items-center"
+         style="background-color: #f5f7fa; gap: 16px; flex-wrap: nowrap; padding: 10px 16px;">
+        <div class="d-flex align-items-center" style="white-space: nowrap; gap: 6px;">
+            <span class="btn btn-primary btn-sm"><i class="bi bi-pencil-square"></i></span>
+            Modifica commento
+        </div>
+        <div class="d-flex align-items-center" style="white-space: nowrap; gap: 6px;">
+            <span class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></span>
+            Elimina commento
+        </div>
+        <div class="d-flex align-items-center" style="white-space: nowrap; gap: 6px;">
+            <span class="btn btn-success btn-sm"><i class="bi bi-arrow-repeat"></i></span>
+            Ripristina commento
+        </div>
+    </div>
+</div>
+
+<div th:if="${commenti.totalElements == 0}" class="alert alert-info">
     Nessun commento presente per questo ticket.
 </div>
 
-<div th:if="${!#lists.isEmpty(commenti)}" class="table-responsive">
-    <table class="table table-bordered table-hover">
-        <thead class="thead-light">
-        <tr>
-            <th>ID</th>
-            <th>Data</th>
-            <th>Tipo</th>
-            <th>Testo</th>
-            <th>Azioni</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="c : ${commenti}">
-            <td th:text="${c.idCommento}">1</td>
-            <td class="nowrap" th:text="${#temporals.format(c.data_ora, 'dd/MM/yyyy HH:mm')}">01/01/2026 10:00</td>
-            <td th:text="${c.tipo}">ESTERNO</td>
-            <td th:text="${c.testo}">Testo</td>
-            <td>
-                <a class="btn btn-primary" th:href="@{/operatore/commenti/modifica (id=${c.idCommento})}" role="button">Modifica</a>
-                <a class="btn btn-danger" th:href="@{/operatore/commenti/cancella (id=${c.idCommento})}" th:if="${!c.deleted}" role="button">Cancella</a>
-                <a class="btn btn-success" th:href="@{/operatore/commenti/ripristina (id=${c.idCommento})}" th:if="${c.deleted}" role="button">Ripristina</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+<table class="table table-bordered table-hover" style="table-layout: fixed; width: 100%;">
+    <thead class="thead-light">
+    <tr>
+        <th style="width: 5%">ID</th>
+        <th style="width: 15%">Data</th>
+        <th style="width: 10%">Tipo</th>
+        <th style="width: 15%">Utente</th>
+        <th style="width: 40%">Testo</th>
+        <th style="width: 15%">Azioni</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="c : ${commenti.content}">
+        <td th:text="${c.idCommento}">1</td>
+        <td th:text="${#temporals.format(c.data_ora, 'dd/MM/yyyy HH:mm')}" th:title="${#temporals.format(c.data_ora, 'dd/MM/yyyy HH:mm')}">01/01/2026 10:00</td>
+        <td th:text="${c.tipo}" th:title="${c.tipo}">ESTERNO</td>
+        <td th:text="${c.created}" th:title="${c.created}">utente</td>
+        <td th:text="${c.testo}" th:title="${c.testo}">Testo</td>
+        <td>
+            <a class="btn btn-primary btn-sm" title="Modifica commento"
+               th:href="@{/operatore/commenti/modifica (id=${c.idCommento})}" role="button">
+                <i class="bi bi-pencil-square"></i>
+            </a>
+            <a class="btn btn-danger btn-sm" title="Elimina commento"
+               th:href="@{/operatore/commenti/cancella (id=${c.idCommento})}"
+               th:if="${!c.deleted}" role="button">
+                <i class="bi bi-trash"></i>
+            </a>
+            <a class="btn btn-success btn-sm" title="Ripristina commento"
+               th:href="@{/operatore/commenti/ripristina (id=${c.idCommento})}"
+               th:if="${c.deleted}" role="button">
+                <i class="bi bi-arrow-repeat"></i>
+            </a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- Paginazione -->
+<div class="d-flex justify-content-center mt-4" th:if="${commenti != null and commenti.totalPages > 0}">
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+
+            <li class="page-item" th:classappend="${commenti.first} ? 'disabled'">
+                <a class="page-link"
+                   th:href="${!commenti.first} ? @{/operatore/ticket/commenti(id=${ticketId}, pag=0)} : '#'">
+                    &laquo;&laquo;
+                </a>
+            </li>
+
+            <li class="page-item" th:classappend="${commenti.first} ? 'disabled'">
+                <a class="page-link"
+                   th:href="${!commenti.first} ? @{/operatore/ticket/commenti(id=${ticketId}, pag=${commenti.number - 1})} : '#'">
+                    &laquo;
+                </a>
+            </li>
+
+            <li class="page-item"
+                th:each="i : ${#numbers.sequence(
+                    T(java.lang.Math).max(0, commenti.number - 5),
+                    T(java.lang.Math).min(commenti.totalPages - 1, commenti.number + 5))}"
+                th:classappend="${i == commenti.number} ? 'active'">
+                <a class="page-link"
+                   th:text="${i + 1}"
+                   th:href="@{/operatore/ticket/commenti(id=${ticketId}, pag=${i})}">
+                </a>
+            </li>
+
+            <li class="page-item" th:classappend="${commenti.last} ? 'disabled'">
+                <a class="page-link"
+                   th:href="${!commenti.last} ? @{/operatore/ticket/commenti(id=${ticketId}, pag=${commenti.number + 1})} : '#'">
+                    &raquo;
+                </a>
+            </li>
+
+            <li class="page-item" th:classappend="${commenti.last} ? 'disabled'">
+                <a class="page-link"
+                   th:href="${!commenti.last} ? @{/operatore/ticket/commenti(id=${ticketId}, pag=${commenti.totalPages - 1})} : '#'">
+                    &raquo;&raquo;
+                </a>
+            </li>
+
+        </ul>
+    </nav>
 </div>
 
-<p><a class="btn btn-secondary" th:href="@{/operatore/ticket}" role="button">← Torna indietro</a></p>
+<div class="mt-3">
+    <a class="btn btn-secondary" th:href="@{/operatore/ticket}" role="button">
+        <i class="bi bi-arrow-left"></i> Torna indietro
+    </a>
+</div>
 
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 </html>

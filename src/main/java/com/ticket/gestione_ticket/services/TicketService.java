@@ -186,17 +186,17 @@ public class TicketService {
     }
 
     public Page<Ticket> getAll(Pageable pageable) {
-        return ticketRepository.findAll(pageable);
+        return ticketRepository.findAllWithCommenti(pageable);
     }
 
-    public Page<Ticket> filtraTicket(String titolo, String descrizione, String categoria, String stato, String priorita, String username, LocalDateTime dataAperturaDa, LocalDateTime dataAperturaA, LocalDateTime dataChiusuraDa, LocalDateTime dataChiusuraA, Pageable pageable) {
-        return ticketRepository.filtraTicket(titolo, descrizione, categoria, stato, priorita, username, dataAperturaDa, dataAperturaA, dataChiusuraDa, dataChiusuraA, pageable);
+    public Page<Ticket> filtraTicket(String titolo, String descrizione, String categoria, String stato, String priorita, String username, LocalDateTime dataAperturaDa, LocalDateTime dataAperturaA, LocalDateTime dataChiusuraDa, LocalDateTime dataChiusuraA, Integer numCommenti, Pageable pageable) {
+        return ticketRepository.filtraTicket(titolo, descrizione, categoria, stato, priorita, username, dataAperturaDa, dataAperturaA, dataChiusuraDa, dataChiusuraA, numCommenti, pageable);
     }
 
-    public boolean filtroAttivo(String titolo, String descrizione, String categoria, String stato, String priorita, String username, LocalDateTime dataAperturaDa, LocalDateTime dataAperturaA, LocalDateTime dataChiusuraDa, LocalDateTime dataChiusuraA) {
+    public boolean filtroAttivo(String titolo, String descrizione, String categoria, String stato, String priorita, String username, LocalDateTime dataAperturaDa, LocalDateTime dataAperturaA, LocalDateTime dataChiusuraDa, LocalDateTime dataChiusuraA, Integer numCommenti) {
         return titolo != null || descrizione != null || categoria != null
                 || stato != null || priorita != null || username != null || dataAperturaDa != null
-                || dataAperturaA != null || dataChiusuraDa != null || dataChiusuraA != null;
+                || dataAperturaA != null || dataChiusuraDa != null || dataChiusuraA != null || numCommenti != null;
     }
 
     public List<Ticket> findAll() {
@@ -230,5 +230,9 @@ public class TicketService {
 
     public List<Ticket> findByCreated(String username) {
         return ticketRepository.findByCreated(username);
+    }
+
+    public Page<Ticket> findByCreated(String username, Pageable pageable) {
+        return ticketRepository.findByCreated(username, pageable);
     }
 }

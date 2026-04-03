@@ -132,6 +132,11 @@
                     <label class="small font-weight-bold text-muted mb-1">Chiusura al</label>
                     <input type="date" class="form-control form-control-sm" name="dataChiusuraA" th:value="${dataChiusuraA}">
                 </div>
+                <div class="col-md-1">
+                    <label class="small font-weight-bold text-muted mb-1">Commenti</label>
+                    <input type="number" class="form-control form-control-sm" name="numCommenti"
+                           th:value="${numCommenti}" min="0" placeholder="Numero commenti...">
+                </div>
                 <div class="col-md-1 d-flex align-items-end" style="gap: 6px;">
                     <button class="btn btn-primary btn-sm" type="submit">
                         <i class="bi bi-search"></i>
@@ -151,13 +156,14 @@
     <thead>
     <tr>
         <th style="width: 4%">Id</th>
-        <th style="width: 10%">Titolo</th>
-        <th style="width: 12%">Descrizione</th>
-        <th style="width: 10%">Categoria</th>
+        <th style="width: 8%">Titolo</th>
+        <th style="width: 9%">Descrizione</th>
+        <th style="width: 8%">Categoria</th>
         <th style="width: 7%">Priorità</th>
         <th style="width: 10%">Stato</th>
-        <th style="width: 12%">Data apertura</th>
-        <th style="width: 12%">Data chiusura</th>
+        <th style="width: 9%">Commenti</th>
+        <th style="width: 10%">Data apertura</th>
+        <th style="width: 10%">Data chiusura</th>
         <th style="width: 25%">Azioni</th>
     </tr>
     </thead>
@@ -169,12 +175,13 @@
         </td>
     </tr>
     <tr th:each="t : ${tickets.content}">
-        <th scope="row" th:text="${t.idTicket}">1</th>
+        <th scope="row" th:text="${t.idTicket}" th:title="${t.idTicket}">1</th>
         <td th:text="${t.titolo}" th:title="${t.titolo}">Titolo</td>
         <td th:text="${t.descrizione}" th:title="${t.descrizione}">Descrizione</td>
         <td th:text="${t.categoria}" th:title="${t.categoria}">Categoria</td>
         <td th:text="${t.priorita}">Priorità</td>
         <td th:text="${t.stato}">APERTO</td>
+        <td th:text="${t.commenti != null ? t.commenti.size() : 0}">Commenti</td>
         <td th:text="${#temporals.format(t.data_ora_apertura, 'dd/MM/yyyy HH:mm')}"
             th:title="${#temporals.format(t.data_ora_apertura, 'dd/MM/yyyy HH:mm')}"></td>
         <td th:text="${t.data_ora_chiusura != null ? #temporals.format(t.data_ora_chiusura, 'dd/MM/yyyy HH:mm') : '-'}"
@@ -220,27 +227,40 @@
 
             <li class="page-item" th:classappend="${tickets.first} ? 'disabled'">
                 <a class="page-link"
-                   th:href="${!tickets.first} ? @{/operatore/ticket(pag=${tickets.number - 1}, titolo=${titolo}, descrizione=${descrizione}, categoria=${categoria}, stato=${stato}, priorita=${priorita}, username=${username}, dataAperturaDa=${dataAperturaDa}, dataAperturaA=${dataAperturaA},
-    dataChiusuraDa=${dataChiusuraDa}, dataChiusuraA=${dataChiusuraA})} : '#'">
-                    <span aria-hidden="true">&laquo;</span>
+                   th:href="${!tickets.first} ? @{/operatore/ticket(pag=0, titolo=${titolo}, descrizione=${descrizione}, categoria=${categoria}, stato=${stato}, priorita=${priorita}, username=${username}, dataAperturaDa=${dataAperturaDa}, dataAperturaA=${dataAperturaA}, dataChiusuraDa=${dataChiusuraDa}, dataChiusuraA=${dataChiusuraA}, numCommenti=${numCommenti})} : '#'">
+                    &laquo;&laquo;
+                </a>
+            </li>
+
+            <li class="page-item" th:classappend="${tickets.first} ? 'disabled'">
+                <a class="page-link"
+                   th:href="${!tickets.first} ? @{/operatore/ticket(pag=${tickets.number - 1}, titolo=${titolo}, descrizione=${descrizione}, categoria=${categoria}, stato=${stato}, priorita=${priorita}, username=${username}, dataAperturaDa=${dataAperturaDa}, dataAperturaA=${dataAperturaA}, dataChiusuraDa=${dataChiusuraDa}, dataChiusuraA=${dataChiusuraA}, numCommenti=${numCommenti})} : '#'">
+                    &laquo;
                 </a>
             </li>
 
             <li class="page-item"
-                th:each="i : ${#numbers.sequence(0, tickets.totalPages - 1)}"
+                th:each="i : ${#numbers.sequence(
+                    T(java.lang.Math).max(0, tickets.number - 5),
+                    T(java.lang.Math).min(tickets.totalPages - 1, tickets.number + 5))}"
                 th:classappend="${i == tickets.number} ? 'active'">
                 <a class="page-link"
                    th:text="${i + 1}"
-                   th:href="@{/operatore/ticket(pag=${i}, titolo=${titolo}, descrizione=${descrizione}, categoria=${categoria}, stato=${stato}, priorita=${priorita}, username=${username}, dataAperturaDa=${dataAperturaDa}, dataAperturaA=${dataAperturaA},
-    dataChiusuraDa=${dataChiusuraDa}, dataChiusuraA=${dataChiusuraA})}">
+                   th:href="@{/operatore/ticket(pag=${i}, titolo=${titolo}, descrizione=${descrizione}, categoria=${categoria}, stato=${stato}, priorita=${priorita}, username=${username}, dataAperturaDa=${dataAperturaDa}, dataAperturaA=${dataAperturaA}, dataChiusuraDa=${dataChiusuraDa}, dataChiusuraA=${dataChiusuraA}, numCommenti=${numCommenti})}">
                 </a>
             </li>
 
             <li class="page-item" th:classappend="${tickets.last} ? 'disabled'">
                 <a class="page-link"
-                   th:href="${!tickets.last} ? @{/operatore/ticket(pag=${tickets.number + 1}, titolo=${titolo}, descrizione=${descrizione}, categoria=${categoria}, stato=${stato}, priorita=${priorita}, username=${username}, dataAperturaDa=${dataAperturaDa}, dataAperturaA=${dataAperturaA},
-    dataChiusuraDa=${dataChiusuraDa}, dataChiusuraA=${dataChiusuraA})} : '#'">
-                    <span aria-hidden="true">&raquo;</span>
+                   th:href="${!tickets.last} ? @{/operatore/ticket(pag=${tickets.number + 1}, titolo=${titolo}, descrizione=${descrizione}, categoria=${categoria}, stato=${stato}, priorita=${priorita}, username=${username}, dataAperturaDa=${dataAperturaDa}, dataAperturaA=${dataAperturaA}, dataChiusuraDa=${dataChiusuraDa}, dataChiusuraA=${dataChiusuraA}, numCommenti=${numCommenti})} : '#'">
+                    &raquo;
+                </a>
+            </li>
+
+            <li class="page-item" th:classappend="${tickets.last} ? 'disabled'">
+                <a class="page-link"
+                   th:href="${!tickets.last} ? @{/operatore/ticket(pag=${tickets.totalPages - 1}, titolo=${titolo}, descrizione=${descrizione}, categoria=${categoria}, stato=${stato}, priorita=${priorita}, username=${username}, dataAperturaDa=${dataAperturaDa}, dataAperturaA=${dataAperturaA}, dataChiusuraDa=${dataChiusuraDa}, dataChiusuraA=${dataChiusuraA}, numCommenti=${numCommenti})} : '#'">
+                    &raquo;&raquo;
                 </a>
             </li>
 
