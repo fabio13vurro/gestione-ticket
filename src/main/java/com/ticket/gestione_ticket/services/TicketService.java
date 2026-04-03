@@ -203,8 +203,8 @@ public class TicketService {
         return ticketRepository.findAll();
     }
 
-    public List<Ticket> ticketScaduti() {
-        return ticketRepository.findByOverSlaTrue();
+    public Page<Ticket> ticketScaduti(Pageable pageable) {
+        return ticketRepository.findByOverSlaTrue(pageable);
     }
 
     public Ticket findById(Integer id) {

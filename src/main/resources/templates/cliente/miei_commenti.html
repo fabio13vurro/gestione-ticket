@@ -43,7 +43,7 @@
         <td colspan="6" class="text-center text-muted">Nessun risultato trovato</td>
     </tr>
     <tr th:each="c : ${mieiCommenti.content}">
-        <td th:text="${c.idCommento}">1</td>
+        <td th:text="${c.idCommento}" th:title="${c.idCommento}">1</td>
         <td th:text="${#temporals.format(c.data_ora, 'dd/MM/yyyy HH:mm')}"
             th:title="${#temporals.format(c.data_ora, 'dd/MM/yyyy HH:mm')}">01/01/2026 10:00</td>
         <td th:text="${c.tipo}" th:title="${c.tipo}">ESTERNO</td>
@@ -100,12 +100,6 @@
 
         </ul>
     </nav>
-</div>
-
-<div class="mt-3">
-    <a class="btn btn-secondary" th:href="@{/home}" role="button">
-        <i class="bi bi-arrow-left"></i> Torna alla Home
-    </a>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>

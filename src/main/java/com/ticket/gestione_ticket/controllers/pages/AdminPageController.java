@@ -130,8 +130,8 @@ public class AdminPageController {
     }
 
     @GetMapping("/ticket-scaduti")
-    public String ticketScaduti(Model model){
-        model.addAttribute("scaduti", ticketService.ticketScaduti());
+    public String ticketScaduti(Model model, @RequestParam(defaultValue = "0") int pag){
+        model.addAttribute("scaduti", ticketService.ticketScaduti(PageRequest.of(pag, 20)));
         return "admin/ticket_scaduti";
     }
 

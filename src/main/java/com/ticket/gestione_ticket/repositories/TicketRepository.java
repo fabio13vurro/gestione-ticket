@@ -20,6 +20,9 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
     @Query("SELECT t FROM Ticket t WHERE t.over_sla = true")
     List<Ticket> findByOverSlaTrue();
 
+    @Query("SELECT t FROM Ticket t WHERE t.over_sla = true")
+    Page<Ticket> findByOverSlaTrue(Pageable pageable);
+
     @Query("""
             SELECT DISTINCT t
             FROM Ticket t

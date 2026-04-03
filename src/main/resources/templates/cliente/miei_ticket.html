@@ -45,7 +45,7 @@
         <td colspan="9" class="text-center text-muted">Nessun risultato trovato</td>
     </tr>
     <tr th:each="t : ${mieiTicket.content}">
-        <td th:text="${t.idTicket}"></td>
+        <td th:text="${t.idTicket}" th:title="${t.idTicket}"></td>
         <td th:text="${t.titolo}" th:title="${t.titolo}"></td>
         <td th:text="${t.descrizione}" th:title="${t.descrizione}"></td>
         <td th:text="${t.categoria}" th:title="${t.categoria}"></td>
@@ -110,12 +110,6 @@
 
         </ul>
     </nav>
-</div>
-
-<div class="mt-3">
-    <a class="btn btn-secondary" th:href="@{/home}" role="button">
-        <i class="bi bi-arrow-left"></i> Torna alla Home
-    </a>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
