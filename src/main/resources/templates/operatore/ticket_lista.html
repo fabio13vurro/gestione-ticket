@@ -113,8 +113,8 @@
                     </select>
                 </div>
                 <div class="col-md-2">
-                    <label class="small font-weight-bold text-muted mb-1">Utente</label>
-                    <input type="text" class="form-control form-control-sm" name="username" th:value="${username}" placeholder="Cerca per utente...">
+                    <label class="small font-weight-bold text-muted mb-1">Operatore assegnato</label>
+                    <input type="text" class="form-control form-control-sm" name="username" th:value="${username}" placeholder="Cerca per operatore...">
                 </div>
                 <div class="col-md-2">
                     <label class="small font-weight-bold text-muted mb-1">Apertura dal</label>
@@ -136,6 +136,10 @@
                     <label class="small font-weight-bold text-muted mb-1">Commenti</label>
                     <input type="number" class="form-control form-control-sm" name="numCommenti"
                            th:value="${numCommenti}" min="0" placeholder="Numero commenti...">
+                </div>
+                <div class="col-md-1">
+                    <label class="small font-weight-bold text-muted mb-1">Creato da</label>
+                    <input type="text" class="form-control form-control-sm" name="created" th:value="${created}" placeholder="Creato da...">
                 </div>
                 <div class="col-md-1 d-flex align-items-end" style="gap: 6px;">
                     <button class="btn btn-primary btn-sm" type="submit">

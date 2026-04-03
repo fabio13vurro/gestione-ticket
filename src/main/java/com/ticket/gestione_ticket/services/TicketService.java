@@ -189,14 +189,15 @@ public class TicketService {
         return ticketRepository.findAllWithCommenti(pageable);
     }
 
-    public Page<Ticket> filtraTicket(String titolo, String descrizione, String categoria, String stato, String priorita, String username, LocalDateTime dataAperturaDa, LocalDateTime dataAperturaA, LocalDateTime dataChiusuraDa, LocalDateTime dataChiusuraA, Integer numCommenti, Pageable pageable) {
-        return ticketRepository.filtraTicket(titolo, descrizione, categoria, stato, priorita, username, dataAperturaDa, dataAperturaA, dataChiusuraDa, dataChiusuraA, numCommenti, pageable);
+    public Page<Ticket> filtraTicket(String titolo, String descrizione, String categoria, String stato, String priorita, String username, LocalDateTime dataAperturaDa, LocalDateTime dataAperturaA, LocalDateTime dataChiusuraDa, LocalDateTime dataChiusuraA, Integer numCommenti, String created, Pageable pageable) {
+        return ticketRepository.filtraTicket(titolo, descrizione, categoria, stato, priorita, username, dataAperturaDa, dataAperturaA, dataChiusuraDa, dataChiusuraA, numCommenti, created, pageable);
     }
 
-    public boolean filtroAttivo(String titolo, String descrizione, String categoria, String stato, String priorita, String username, LocalDateTime dataAperturaDa, LocalDateTime dataAperturaA, LocalDateTime dataChiusuraDa, LocalDateTime dataChiusuraA, Integer numCommenti) {
+    public boolean filtroAttivo(String titolo, String descrizione, String categoria, String stato, String priorita, String username, LocalDateTime dataAperturaDa, LocalDateTime dataAperturaA, LocalDateTime dataChiusuraDa, LocalDateTime dataChiusuraA, Integer numCommenti, String created) {
         return titolo != null || descrizione != null || categoria != null
                 || stato != null || priorita != null || username != null || dataAperturaDa != null
-                || dataAperturaA != null || dataChiusuraDa != null || dataChiusuraA != null || numCommenti != null;
+                || dataAperturaA != null || dataChiusuraDa != null || dataChiusuraA != null
+                || numCommenti != null || created != null;
     }
 
     public List<Ticket> findAll() {

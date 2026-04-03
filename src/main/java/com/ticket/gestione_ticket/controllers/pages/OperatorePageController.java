@@ -37,7 +37,7 @@ public class OperatorePageController {
                               @RequestParam(required = false) String stato, @RequestParam(required = false) String priorita, @RequestParam(required = false) String username,
                               @RequestParam(required = false) String dataAperturaDa, @RequestParam(required = false) String dataAperturaA,
                               @RequestParam(required = false) String dataChiusuraDa, @RequestParam(required = false) String dataChiusuraA,
-                              @RequestParam(required = false) Integer numCommenti) {
+                              @RequestParam(required = false) Integer numCommenti, @RequestParam(required = false) String created) {
 
         titolo = pulisci(titolo);
         descrizione = pulisci(descrizione);
@@ -45,17 +45,18 @@ public class OperatorePageController {
         stato       = pulisci(stato);
         priorita    = pulisci(priorita);
         username    = pulisci(username);
+        created     = pulisci(created);
 
         LocalDateTime aperturaDa  = parseData(dataAperturaDa, false);
         LocalDateTime aperturaA   = parseData(dataAperturaA, true);
         LocalDateTime chiusuraDa  = parseData(dataChiusuraDa, false);
         LocalDateTime chiusuraA   = parseData(dataChiusuraA, true);
 
-        boolean filtroAttivo = ticketService.filtroAttivo(titolo, descrizione, categoria, stato, priorita, username, aperturaDa, aperturaA, chiusuraDa, chiusuraA, numCommenti);
+        boolean filtroAttivo = ticketService.filtroAttivo(titolo, descrizione, categoria, stato, priorita, username, aperturaDa, aperturaA, chiusuraDa, chiusuraA, numCommenti, created);
 
         Page<Ticket> tickets;
         if (filtroAttivo) {
-            tickets = ticketService.filtraTicket(titolo, descrizione, categoria, stato, priorita, username, aperturaDa, aperturaA, chiusuraDa, chiusuraA, numCommenti, PageRequest.of(pag, 20));
+            tickets = ticketService.filtraTicket(titolo, descrizione, categoria, stato, priorita, username, aperturaDa, aperturaA, chiusuraDa, chiusuraA, numCommenti, created, PageRequest.of(pag, 20));
         }else{
             tickets = ticketService.getAll(PageRequest.of(pag, 20));
         }
@@ -72,6 +73,7 @@ public class OperatorePageController {
         model.addAttribute("dataChiusuraDa", dataChiusuraDa);
         model.addAttribute("dataChiusuraA",  dataChiusuraA);
         model.addAttribute("numCommenti", numCommenti);
+        model.addAttribute("created", created);
         model.addAttribute("filtroAttivo", filtroAttivo);
         return "operatore/ticket_lista";
     }
