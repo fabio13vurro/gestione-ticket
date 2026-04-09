@@ -19,7 +19,7 @@ public class TicketSlaScheduler {
         this.jobProducer = jobProducer;
     }
 
-    //@Scheduled(fixedRateString = "${scheduler.fixedrate}")
+    //@Scheduled(fixedRateString = "${scheduler.check}")
     public void checkOverSlaTickets(){
         System.out.println("Controllo ticket over SLA");
 

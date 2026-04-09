@@ -10,6 +10,6 @@ import org.springframework.stereotype.Component;
 public class ControlloScadenze {
     private final TicketService ticketService;
 
-    @Scheduled(fixedRateString = "${scheduler.fixedrate}")
+    @Scheduled(fixedRateString = "${scheduler.check}")
     public void controlloScadenze(){ticketService.controlloScadenze();}
 }
