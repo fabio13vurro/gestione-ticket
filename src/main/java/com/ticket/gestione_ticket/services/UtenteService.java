@@ -171,6 +171,27 @@ public class UtenteService {
         utenteRepository.save(u);
     }
 
+    public void creazioneCliente(){
+        Utente u = new Utente();
+
+        String base = faker.name().firstName();
+        String username = base;
+
+        int tentativi = 0;
+        while (utenteRepository.existsByUsername(username)) {
+            username = base + faker.number().numberBetween(1, 9999);
+            if (++tentativi > 20) throw new RuntimeException("Impossibile generare username univoco");
+        }
+        u.setUsername(username);
+        u.setEmail(u.getUsername() + "@gmail.com");
+        u.setPassword(passwordEncoder.encode(u.getUsername()));
+        u.setRuolo(Ruolo.CLIENTE);
+        u.setTicketAssegnati(0);
+        u.setDeleted(false);
+        u.setAddress(capitalize(faker.address().streetAddress()) + ", " + capitalize(faker.address().city()));
+        utenteRepository.save(u);
+    }
+
     public Page<Utente> getAll(Pageable pageable){
         return utenteRepository.findAll(pageable);
     }

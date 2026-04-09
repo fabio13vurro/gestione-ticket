@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -38,13 +39,12 @@ public class TicketService {
         t.setOver_sla(false);
         t.setCreated(username);
         t.setDeleted(false);
-        t.setData_ora_scadenza(calcolaScadenza(priorita));
+        t.setData_ora_scadenza(calcolaScadenza(priorita, LocalDateTime.now()));
         assegnaTicket(t);
         return ticketRepository.save(t);
     }
 
-    public LocalDateTime calcolaScadenza(Integer priorita) {
-        LocalDateTime apertura = LocalDateTime.now();
+    public LocalDateTime calcolaScadenza(Integer priorita, LocalDateTime apertura) {
         return switch (priorita) {
             case 1 -> apertura.plusHours(12);
             case 2 -> apertura.plusDays(1);
@@ -147,7 +147,7 @@ public class TicketService {
                 break;
             case "SCADUTO":
                 statoNuovo = "APERTO";
-                t.setData_ora_scadenza(calcolaScadenza(t.getPriorita()));
+                t.setData_ora_scadenza(calcolaScadenza(t.getPriorita(), LocalDateTime.now()));
                 break;
             default:
                 statoNuovo = statoAttuale;
@@ -182,7 +182,20 @@ public class TicketService {
         if (clienti.isEmpty()) throw new RuntimeException("Nessun cliente disponibile");
         Utente cliente = clienti.get(faker.number().numberBetween(0, clienti.size()));
 
-        return create(titolo, descr, categoria, priorita, cliente.getUsername());
+        Ticket t = create(titolo, descr, categoria, priorita, cliente.getUsername());
+        LocalDateTime dataApertura = randomDataApertura();
+        t.setData_ora_apertura(dataApertura);
+        t.setData_ora_scadenza(calcolaScadenza(priorita, dataApertura));
+
+        return ticketRepository.save(t);
+    }
+
+    private LocalDateTime randomDataApertura() {
+        LocalDateTime start = LocalDateTime.of(2015, 1, 1, 0, 0);
+        LocalDateTime end   = LocalDateTime.of(2025, 12, 31, 23, 59);
+        long secondi = ChronoUnit.SECONDS.between(start, end);
+        long randomSecondi = faker.number().numberBetween(0, secondi);
+        return start.plusSeconds(randomSecondi);
     }
 
     public Page<Ticket> getAll(Pageable pageable) {

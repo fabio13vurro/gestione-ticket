@@ -16,9 +16,16 @@ public class ExternalTicketJob {
     private final TicketService ticketService;
     private final CommentoService commentoService;
 
-    @Scheduled(fixedDelayString = "${scheduler.fixedrate}")
+    //@Scheduled(fixedDelayString = "${scheduler.fixedrate}")
     public void creazioneTicket() {
+        for (int i = 1; i <= 100; i++) {
+            Ticket t = ticketService.creazioneTicket();
+            commentoService.creazioneCommenti(t);
+        }
+    }
 
+    @Scheduled(fixedDelayString = "${scheduler.fixedrate}")
+    public void creazioneTicketVecchi(){
         for (int i = 1; i <= 100; i++) {
             Ticket t = ticketService.creazioneTicket();
             commentoService.creazioneCommenti(t);
