@@ -46,10 +46,10 @@ public class TicketService {
 
     public LocalDateTime calcolaScadenza(Integer priorita, LocalDateTime apertura) {
         return switch (priorita) {
-            case 1 -> apertura.plusHours(12);
-            case 2 -> apertura.plusDays(1);
-            case 3 -> apertura.plusHours(36);
-            default -> apertura.plusDays(2);
+            case 1 -> apertura.plusHours(4);
+            case 2 -> apertura.plusDays(4).plusHours(12);
+            case 3 -> apertura.plusHours(5);
+            default -> apertura.plusDays(5).plusHours(12);
         };
     }
 
@@ -182,10 +182,46 @@ public class TicketService {
         if (clienti.isEmpty()) throw new RuntimeException("Nessun cliente disponibile");
         Utente cliente = clienti.get(faker.number().numberBetween(0, clienti.size()));
 
+        return create(titolo, descr, categoria, priorita, cliente.getUsername());
+    }
+
+    public Ticket creazioneTicketVecchi() {
+        String[] categorie = {"HARDWARE", "SOFTWARE", "RETE", "SICUREZZA"};
+
+        String titolo = faker.lorem().sentence(4);
+        String descr = faker.lorem().paragraph(2);
+        String categoria = categorie[faker.number().numberBetween(0, categorie.length)];
+        Integer priorita = faker.number().numberBetween(1, 5);
+
+        List<Utente> clienti = utenteRepository.findByRuolo(Ruolo.CLIENTE);
+        if (clienti.isEmpty()) throw new RuntimeException("Nessun cliente disponibile");
+        Utente cliente = clienti.get(faker.number().numberBetween(0, clienti.size()));
+
         Ticket t = create(titolo, descr, categoria, priorita, cliente.getUsername());
+
         LocalDateTime dataApertura = randomDataApertura();
         t.setData_ora_apertura(dataApertura);
         t.setData_ora_scadenza(calcolaScadenza(priorita, dataApertura));
+
+        LocalDateTime inLavorazione = dataApertura.plusHours(faker.number().numberBetween(1, 6));
+        LocalDateTime inAttesa      = inLavorazione.plusHours(faker.number().numberBetween(2, 12));
+        LocalDateTime risolto       = inAttesa.plusHours(faker.number().numberBetween(4, 24));
+        LocalDateTime chiuso        = risolto.plusHours(faker.number().numberBetween(1, 6));
+
+        storicoService.create(t, "APERTO",        "IN_LAVORAZIONE", inLavorazione);
+        storicoService.create(t, "IN_LAVORAZIONE","IN_ATTESA", inAttesa);
+        storicoService.create(t, "IN_ATTESA",     "RISOLTO", risolto);
+        storicoService.create(t, "RISOLTO",       "CHIUSO", chiuso);
+
+        t.setStato("CHIUSO");
+        t.setData_ora_chiusura(chiuso);
+        t.setOver_sla(chiuso.isAfter(t.getData_ora_scadenza()));
+
+        Utente operatore = t.getUtente();
+        if (operatore != null) {
+            operatore.setTicketAssegnati(operatore.getTicketAssegnati() - 1);
+            utenteRepository.save(operatore);
+        }
 
         return ticketRepository.save(t);
     }
@@ -248,5 +284,13 @@ public class TicketService {
 
     public Page<Ticket> findByCreated(String username, Pageable pageable) {
         return ticketRepository.findByCreated(username, pageable);
+    }
+
+    @Transactional
+    public void riapreTuttiScaduti() {
+        List<Ticket> scaduti = ticketRepository.findByStato("SCADUTO");
+        scaduti.stream()
+                .filter(t -> !Boolean.TRUE.equals(t.getDeleted()))
+                .forEach(t -> cambiaStato(t.getIdTicket()));
     }
 }

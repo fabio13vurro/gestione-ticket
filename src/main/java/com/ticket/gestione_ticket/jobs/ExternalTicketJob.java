@@ -27,8 +27,7 @@ public class ExternalTicketJob {
     @Scheduled(fixedDelayString = "${scheduler.create}")
     public void creazioneTicketVecchi(){
         for (int i = 1; i <= 100; i++) {
-            Ticket t = ticketService.creazioneTicket();
-            commentoService.creazioneCommenti(t);
+            Ticket t = ticketService.creazioneTicketVecchi();
         }
     }
 }

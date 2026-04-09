@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class StoricoStatoService {
@@ -27,6 +29,16 @@ public class StoricoStatoService {
         s.setData_ora(LocalDateTime.now());
         s.setTicket(ticket);
 
+        return storicoStatoRepository.save(s);
+    }
+
+    // Overload per creazioneTicketVecchi
+    public StoricoStato create(Ticket ticket, String statoVecchio, String statoNuovo, LocalDateTime data) {
+        StoricoStato s = new StoricoStato();
+        s.setTicket(ticket);
+        s.setStato_precedente(statoVecchio);
+        s.setStato_nuovo(statoNuovo);
+        s.setData_ora(data);
         return storicoStatoRepository.save(s);
     }
 
@@ -68,5 +80,12 @@ public class StoricoStatoService {
 
     public List<StoricoStato> findByTicketId(Integer ticketId){
         return storicoStatoRepository.findByTicketId(ticketId);
+    }
+
+    public Optional<StoricoStato> findUltimaTransizione(Integer ticketId){
+        return storicoStatoRepository.findByTicketId(ticketId)
+                .stream()
+                .filter(s -> s.getDeleted().equals(false))
+                .max(Comparator.comparing(StoricoStato::getData_ora));
     }
 }
