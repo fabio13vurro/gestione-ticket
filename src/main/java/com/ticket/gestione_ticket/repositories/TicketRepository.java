@@ -74,4 +74,7 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
     Page<Ticket> findAllWithCommenti(Pageable pageable);
 
     List<Ticket> findByUtenteAndStatoNot(Utente utente, String stato);
+
+    @Query("select t from Ticket t where t.stato in :stati and t.deleted = false")
+    List<Ticket> findAvanzabili(@Param("stati") List<String> stati);
 }

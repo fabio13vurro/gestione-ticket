@@ -286,11 +286,7 @@ public class TicketService {
         return ticketRepository.findByCreated(username, pageable);
     }
 
-    @Transactional
-    public void riapreTuttiScaduti() {
-        List<Ticket> scaduti = ticketRepository.findByStato("SCADUTO");
-        scaduti.stream()
-                .filter(t -> !Boolean.TRUE.equals(t.getDeleted()))
-                .forEach(t -> cambiaStato(t.getIdTicket()));
+    public List<Ticket> findAvanzabili(List<String> stati){
+        return ticketRepository.findAvanzabili(stati);
     }
 }
