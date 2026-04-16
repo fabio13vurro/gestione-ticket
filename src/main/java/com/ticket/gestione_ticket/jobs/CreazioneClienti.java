@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class CreazioneClienti {
     private final UtenteService utenteService;
 
-    @Scheduled(fixedDelayString = "${scheduler.create}")
+    //@Scheduled(fixedDelayString = "${scheduler.create}")
     public void creazioneClienti(){
         for (int i = 0; i<100; i++){
             utenteService.creazioneCliente();

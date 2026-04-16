@@ -24,11 +24,9 @@ public class CambiaStato {
     public void cambiaStato(){
         ticketService.controlloScadenze();
         List<Ticket> tickets = ticketService.findAvanzabili(List.of("APERTO", "IN_LAVORAZIONE", "IN_ATTESA", "RISOLTO"));
-        int avanzati = 0;
         for(Ticket t : tickets){
             if(deveAvanzare(t)){
                 ticketService.cambiaStato(t.getIdTicket());
-                avanzati++;
                 log.debug("Ticket " + t.getIdTicket() + " avanzato");
             }
         }

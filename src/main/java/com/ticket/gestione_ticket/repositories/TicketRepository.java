@@ -77,4 +77,31 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
 
     @Query("select t from Ticket t where t.stato in :stati and t.deleted = false")
     List<Ticket> findAvanzabili(@Param("stati") List<String> stati);
+
+    @Query("""
+        SELECT DISTINCT t FROM Ticket t
+        LEFT JOIN FETCH t.commenti
+        LEFT JOIN FETCH t.utente
+        WHERE t.deleted = false
+          AND t.stato = 'CHIUSO'
+          AND t.data_ora_chiusura IS NOT NULL
+          AND (
+            YEAR(t.data_ora_chiusura) <> YEAR(t.data_ora_apertura)
+            OR YEAR(t.data_ora_chiusura) <= :annoSoglia
+          )
+    """)
+    List<Ticket> findTicketDaArchiviareConCommenti(@Param("annoSoglia") int annoSoglia);
+
+    @Query("""
+        SELECT DISTINCT t FROM Ticket t
+        LEFT JOIN FETCH t.storici
+        WHERE t.deleted = false
+          AND t.stato = 'CHIUSO'
+          AND t.data_ora_chiusura IS NOT NULL
+          AND (
+            YEAR(t.data_ora_chiusura) <> YEAR(t.data_ora_apertura)
+            OR YEAR(t.data_ora_chiusura) <= :annoSoglia
+          )
+    """)
+    List<Ticket> findTicketDaArchiviareConStorici(@Param("annoSoglia") int annoSoglia);
 }
