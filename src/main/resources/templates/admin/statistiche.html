@@ -56,6 +56,62 @@
 
 <div class="row mb-4">
     <div class="col-md-6">
+        <div class="card shadow-sm mb-4 h-100">
+            <div class="card-header bg-white font-weight-bold">
+                <i class="bi bi-search text-primary"></i> Statistiche per operatore
+            </div>
+            <div class="card-body">
+                <form th:action="@{/admin/statistiche}" method="get">
+                    <div class="input-group mb-3" style="max-width: 400px;">
+                        <input type="text" class="form-control" name="username" placeholder="Cerca operatore" th:value="${username}">
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" type="submit" title="Cerca">
+                                <i class="bi bi-search"></i>
+                            </button>
+                            <a th:if="${username}" th:href="@{/admin/statistiche}" class="btn btn-outline-secondary" title="Reset filtro">
+                                <i class="bi bi-x-circle"></i>
+                            </a>
+                        </div>
+                    </div>
+                </form>
+
+                <div th:if="${datiOperatore != null}">
+                    <p class="text-muted small mb-2">
+                        Risultati per: <strong th:text="${username}">username</strong>
+                        &nbsp;
+                        <span class="text-muted small">
+                            (<span th:text="${datiOperatore.totale}">0</span> ticket totali)
+                        </span>
+                    </p>
+                    <div style="max-width: 500px; height: 260px;">
+                        <canvas id="chartOperatoreRicerca"></canvas>
+                    </div>
+                </div>
+
+                <div th:if="${username != null and datiOperatore == null}">
+                    <p class="text-muted">Nessun operatore trovato con username
+                        <strong th:text="${username}"></strong>.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-white font-weight-bold">
+                <i class="bi bi-people-fill text-info"></i> Operatori con chiusure vs totale
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="chartOperatori"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
         <div class="card shadow-sm">
             <div class="card-header bg-white font-weight-bold">
                 <i class="bi bi-bar-chart-fill text-primary"></i> Ticket totali vs chiusi per anno
@@ -75,21 +131,6 @@
             <div class="card-body">
                 <div class="chart-container">
                     <canvas id="chartPercAnno"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row mb-4">
-    <div class="col-md-6">
-        <div class="card shadow-sm">
-            <div class="card-header bg-white font-weight-bold">
-                <i class="bi bi-people-fill text-info"></i> Operatori con chiusure vs totale
-            </div>
-            <div class="card-body">
-                <div class="chart-container">
-                    <canvas id="chartOperatori"></canvas>
                 </div>
             </div>
         </div>
@@ -255,6 +296,61 @@
                         }
                     }
                 }
+            }
+        }
+    });
+</script>
+
+<script th:if="${datiOperatore != null}" th:inline="javascript">
+    const datiOp = /*[[${datiOperatore}]]*/ {};
+    const stati   = Object.keys(datiOp.ticketPerStato);
+    const valori  = Object.values(datiOp.ticketPerStato);
+    const totaleOp = datiOp.totale || 1;
+
+    const coloriStati = {
+        'APERTO':        'rgba(0,123,255,0.6)',
+        'IN_LAVORAZIONE':'rgba(255,193,7,0.6)',
+        'IN_ATTESA':     'rgba(23,162,184,0.6)',
+        'RISOLTO':       'rgba(111,66,193,0.6)',
+        'CHIUSO':        'rgba(40,167,69,0.6)',
+        'SCADUTO':       'rgba(220,53,69,0.6)'
+    };
+    const bordiStati = {
+        'APERTO':        '#007bff',
+        'IN_LAVORAZIONE':'#ffc107',
+        'IN_ATTESA':     '#17a2b8',
+        'RISOLTO':       '#6f42c1',
+        'CHIUSO':        '#28a745',
+        'SCADUTO':       '#dc3545'
+    };
+
+    new Chart(document.getElementById('chartOperatoreRicerca'), {
+        type: 'bar',
+        data: {
+            labels: stati,
+            datasets: [{
+                data: valori,
+                backgroundColor: stati.map(s => coloriStati[s] ||  'rgba(108,117,125,0.5)'),
+                borderColor: stati.map(s => bordiStati[s] || '#6c757d'),
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: ctx => {
+                            const perc = ((ctx.raw / totaleOp) * 100).toFixed(1);
+                            return ` ${ctx.raw} ticket (${perc}%)`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: { beginAtZero: true, ticks: { stepSize: 1 } }
             }
         }
     });

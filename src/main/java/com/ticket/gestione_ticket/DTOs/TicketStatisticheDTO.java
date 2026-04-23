@@ -35,4 +35,13 @@ public class TicketStatisticheDTO {
         private Long operatoriConTicketChiuso;
         private Double percentualeOperatori;
     }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class StatisticheOperatoreRicercaDTO {
+        private String username;
+        private long totale;
+        private Map<String, Long> ticketPerStato;
+    }
 }

@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.Year;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Service
@@ -38,5 +40,28 @@ public class TicketStatisticheService {
                 statisticheAnno,
                 new TicketStatisticheDTO.StatisticheOperatoriDTO(totaleOperatori, operatoriConChiusi, percOperatori)
         );
+    }
+
+    public TicketStatisticheDTO.StatisticheOperatoreRicercaDTO getStatisticheOperatore(String username){
+        List<Object[]> risultati = ticketRepository.ticketOperatorePerStato(username);
+        if (risultati.isEmpty()) return null;
+
+        Map<String, Long> ticketPerStato = new LinkedHashMap<>();
+        ticketPerStato.put("APERTO", 0L);
+        ticketPerStato.put("IN_LAVORAZIONE", 0L);
+        ticketPerStato.put("IN_ATTESA", 0L);
+        ticketPerStato.put("RISOLTO", 0L);
+        ticketPerStato.put("CHIUSO", 0L);
+        ticketPerStato.put("SCADUTO", 0L);
+
+        long totale = 0L;
+        for(Object[] row : risultati){
+            String stato = row[0].toString();
+            long count = (long) row[1];
+            ticketPerStato.put(stato, count);
+            totale += count;
+        }
+
+        return new TicketStatisticheDTO.StatisticheOperatoreRicercaDTO(username, totale, ticketPerStato);
     }
 }

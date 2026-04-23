@@ -138,10 +138,14 @@ public class AdminPageController {
     }
 
     @GetMapping("/statistiche")
-    public String statistiche(Model model){
+    public String statistiche(Model model, @RequestParam(required = false) String username){
         TicketStatisticheDTO dto = statisticheService.getStatistiche();
         model.addAttribute("statisticheAnno", dto.getStatistichePerAnno());
         model.addAttribute("statisticheOperatori", dto.getStatisticheOperatori());
+        model.addAttribute("username", username);
+        model.addAttribute("datiOperatore", (username != null && !username.isBlank())
+                ? statisticheService.getStatisticheOperatore(username) : null);
+
         return "admin/statistiche";
     }
 
