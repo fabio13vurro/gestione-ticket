@@ -1,9 +1,10 @@
 package com.ticket.gestione_ticket.controllers.pages;
 
+import com.ticket.gestione_ticket.DTOs.TicketStatisticheDTO;
 import com.ticket.gestione_ticket.entities.Ruolo;
-import com.ticket.gestione_ticket.entities.Ticket;
 import com.ticket.gestione_ticket.entities.Utente;
 import com.ticket.gestione_ticket.services.TicketService;
+import com.ticket.gestione_ticket.services.TicketStatisticheService;
 import com.ticket.gestione_ticket.services.UtenteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,6 +25,7 @@ public class AdminPageController {
 
     private final UtenteService utenteService;
     private final TicketService ticketService;
+    private final TicketStatisticheService statisticheService;
 
     @GetMapping("/utenti/crea")
     public String utentiCreaPage() { return "admin/utenti_crea"; }
@@ -133,6 +135,14 @@ public class AdminPageController {
     public String ticketScaduti(Model model, @RequestParam(defaultValue = "0") int pag){
         model.addAttribute("scaduti", ticketService.ticketScaduti(PageRequest.of(pag, 20)));
         return "admin/ticket_scaduti";
+    }
+
+    @GetMapping("/statistiche")
+    public String statistiche(Model model){
+        TicketStatisticheDTO dto = statisticheService.getStatistiche();
+        model.addAttribute("statisticheAnno", dto.getStatistichePerAnno());
+        model.addAttribute("statisticheOperatori", dto.getStatisticheOperatori());
+        return "admin/statistiche";
     }
 
     private String pulisci(String val){

@@ -104,4 +104,16 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
           )
     """)
     List<Ticket> findTicketDaArchiviareConStorici(@Param("annoSoglia") int annoSoglia);
+
+    @Query("SELECT COUNT(t) FROM Ticket t WHERE t.data_ora_apertura BETWEEN :start AND :end")
+    long countTicketPerAnno(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
+
+    @Query("SELECT COUNT(t) FROM Ticket t WHERE t.data_ora_apertura BETWEEN :start AND :end AND t.stato = :stato")
+    long countTicketChiusiPerAnno(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end, @Param("stato") String stato);
+
+    @Query("SELECT COUNT(DISTINCT t.utente.idUtente) FROM Ticket t WHERE t.stato = :stato")
+    long operatoriAttivi(@Param("stato") String stato);
+
+    @Query("SELECT COUNT(DISTINCT t.utente.idUtente) FROM Ticket t")
+    long totaleOperatori();
 }
