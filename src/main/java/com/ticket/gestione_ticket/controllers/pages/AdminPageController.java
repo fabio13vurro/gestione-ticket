@@ -68,29 +68,6 @@ public class AdminPageController {
         return "admin/utenti_lista";
     }
 
-    @GetMapping("/utenti/cerca")
-    public String utentiCercaPage() { return "admin/utenti_cerca"; }
-
-    @PostMapping("/utenti/cerca/id")
-    public String cercaById(@RequestParam Integer id, Model model) {
-        model.addAttribute("byId", utenteService.findById(id));
-        return "admin/utenti_cerca";
-    }
-
-    @PostMapping("/utenti/cerca/username")
-    public String cercaByUsername(@RequestParam String username, Model model) {
-        model.addAttribute(("usernameSelezionato"), username);
-        model.addAttribute("byUsername", utenteService.findByUsername(username));
-        return "admin/utenti_cerca";
-    }
-
-    @PostMapping("/utenti/cerca/ruolo")
-    public String cercaByRuolo(@RequestParam String ruolo, Model model) {
-        model.addAttribute(("ruoloSelezionato"), ruolo);
-        model.addAttribute("utentiByRuolo", utenteService.findByRuolo(Ruolo.valueOf(ruolo)));
-        return "admin/utenti_cerca";
-    }
-
     @GetMapping("/utenti/cancella")
     public String utentiCancellaPage(@RequestParam Integer id, Model model) {
         model.addAttribute("utente", utenteService.findById(id));

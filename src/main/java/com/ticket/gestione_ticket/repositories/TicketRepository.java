@@ -117,9 +117,6 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
     @Query("SELECT COUNT(DISTINCT t.utente.idUtente) FROM Ticket t")
     long totaleOperatori();
 
-    @Query("SELECT COUNT(t) FROM Ticket t WHERE t.utente.username = :username")
-    long totaleTicketOperatore(@Param("username") String username);
-
     @Query("SELECT t.stato, COUNT(t) FROM Ticket t WHERE t.utente.username = :username GROUP BY t.stato")
     List<Object[]> ticketOperatorePerStato(@Param("username") String username);
 }

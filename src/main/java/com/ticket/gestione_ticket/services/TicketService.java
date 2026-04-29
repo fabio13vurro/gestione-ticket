@@ -147,6 +147,7 @@ public class TicketService {
                 break;
             case "SCADUTO":
                 statoNuovo = "APERTO";
+                t.setOver_sla(false);
                 t.setData_ora_scadenza(calcolaScadenza(t.getPriorita(), LocalDateTime.now()));
                 break;
             default:

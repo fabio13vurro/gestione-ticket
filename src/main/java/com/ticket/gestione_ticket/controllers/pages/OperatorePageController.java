@@ -271,22 +271,6 @@ public class OperatorePageController {
         return "redirect:/operatore/commenti";
     }
 
-    @GetMapping("/commenti/cerca")
-    public String cercaCommentiPage() { return "operatore/commenti_cerca"; }
-
-    @PostMapping("/commenti/cerca/id")
-    public String cercaCommentiById(@RequestParam Integer id, Model model) {
-        model.addAttribute("byId", commentoService.findById(id));
-        return "operatore/commenti_cerca";
-    }
-
-    @PostMapping("/commenti/cerca/tipo")
-    public String findCommentoByTipo(@RequestParam String tipo, Model model) {
-        model.addAttribute(("tipoSelezionato"), tipo);
-        model.addAttribute("commentiByTipo", commentoService.findByTipo(Tipo.valueOf(tipo)));
-        return "operatore/commenti_cerca";
-    }
-
     private String pulisci(String val) {
         return (val != null && !val.trim().isEmpty()) ? val.trim() : null;
     }
