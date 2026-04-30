@@ -1,363 +1,322 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Statistiche Ticket</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <style>
-        body { font-family: Arial; padding: 20px; background-color: #f5f7fa; }
-        .chart-container { position: relative; height: 280px; }
-        .kpi-value { font-size: 2rem; font-weight: 700; }
-        .progress { height: 8px; }
-    </style>
-</head>
+<head th:replace="~{fragments/fragments :: head('Analytics Dashboard — Admin')}"></head>
 <body>
 
-<h2 class="text-center mb-4">
-    Statistiche Ticket &nbsp;
-    <a th:href="@{/home}" class="text-primary" style="text-decoration:none;">
-        <i class="bi bi-house-door-fill"></i>
-    </a>
-</h2>
+<nav th:replace="~{fragments/fragments :: navbar}"></nav>
 
-<div class="row mb-4" th:if="${statisticheOperatori != null}">
-    <div class="col-md-4">
-        <div class="card text-center shadow-sm">
-            <div class="card-body">
-                <p class="text-muted small text-uppercase mb-1">Operatori totali</p>
-                <div class="kpi-value text-primary"
-                     th:text="${statisticheOperatori.totaleOperatoriDistinti}">0</div>
-                <p class="text-muted small mb-0">operatori distinti con almeno un ticket assegnato</p>
-            </div>
+<main class="main-content">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <h1 class="mb-0">Analytics Dashboard</h1>
+            <p class="text-white-50">Approfondimenti statistici sulle performance del sistema di ticketing.</p>
+        </div>
+        <div class="text-end">
+            <span class="badge bg-light text-dark border px-3 py-2 fw-medium">
+                <i class="bi bi-clock-history me-2 text-primary"></i> Aggiornato in tempo reale
+            </span>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="card text-center shadow-sm">
-            <div class="card-body">
-                <p class="text-muted small text-uppercase mb-1">Operatori attivi</p>
-                <div class="kpi-value text-success"
-                     th:text="${statisticheOperatori.operatoriConTicketChiuso}">0</div>
-                <p class="text-muted small mb-0">hanno chiuso almeno un ticket</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card text-center shadow-sm">
-            <div class="card-body">
-                <p class="text-muted small text-uppercase mb-1">% operatori con chiusure</p>
-                <div class="kpi-value text-info"
-                     th:text="${statisticheOperatori.percentualeOperatori} + '%'">0%</div>
-                <p class="text-muted small mb-0">degli operatori totali ha chiuso almeno un ticket</p>
-            </div>
-        </div>
-    </div>
-</div>
 
-<div class="row mb-4">
-    <div class="col-md-6">
-        <div class="card shadow-sm mb-4 h-100">
-            <div class="card-header bg-white font-weight-bold">
-                <i class="bi bi-search text-primary"></i> Statistiche per operatore
-            </div>
-            <div class="card-body">
-                <form th:action="@{/admin/statistiche}" method="get">
-                    <div class="input-group mb-3" style="max-width: 400px;">
-                        <input type="text" class="form-control" name="username" placeholder="Cerca operatore" th:value="${username}">
-                        <div class="input-group-append">
-                            <button class="btn btn-primary" type="submit" title="Cerca">
-                                <i class="bi bi-search"></i>
-                            </button>
-                            <a th:if="${username}" th:href="@{/admin/statistiche}" class="btn btn-outline-secondary" title="Reset filtro">
-                                <i class="bi bi-x-circle"></i>
-                            </a>
-                        </div>
+    <!-- Top KPI Row -->
+    <div class="row g-4 mb-5" th:if="${statisticheOperatori != null}">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-lg h-100 overflow-hidden">
+                <div class="card-body p-4 position-relative">
+                    <div class="position-absolute top-0 end-0 p-3 opacity-10">
+                        <i class="bi bi-people fs-1"></i>
                     </div>
-                </form>
+                    <p class="text-muted small fw-bold text-uppercase mb-2">Team Operativo</p>
+                    <div class="kpi-value text-primary mb-1" th:text="${statisticheOperatori.totaleOperatoriDistinti}">0</div>
+                    <p class="text-muted small mb-0">Operatori unici assegnati</p>
+                </div>
+                <div class="bg-primary opacity-10 py-1"></div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-lg h-100 overflow-hidden">
+                <div class="card-body p-4 position-relative">
+                    <div class="position-absolute top-0 end-0 p-3 opacity-10 text-success">
+                        <i class="bi bi-check-circle fs-1"></i>
+                    </div>
+                    <p class="text-muted small fw-bold text-uppercase mb-2">Risolutori Attivi</p>
+                    <div class="kpi-value text-success mb-1" th:text="${statisticheOperatori.operatoriConTicketChiuso}">0</div>
+                    <p class="text-muted small mb-0">Operatori con almeno una chiusura</p>
+                </div>
+                <div class="bg-success opacity-10 py-1"></div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-lg h-100 overflow-hidden">
+                <div class="card-body p-4 position-relative">
+                    <div class="position-absolute top-0 end-0 p-3 opacity-10 text-info">
+                        <i class="bi bi-lightning fs-1"></i>
+                    </div>
+                    <p class="text-muted small fw-bold text-uppercase mb-2">Efficienza Team</p>
+                    <div class="kpi-value text-info mb-1" th:text="${statisticheOperatori.percentualeOperatori} + '%'">0%</div>
+                    <p class="text-muted small mb-0">Quota di operatori performanti</p>
+                </div>
+                <div class="bg-info opacity-10 py-1"></div>
+            </div>
+        </div>
+    </div>
 
-                <div th:if="${datiOperatore != null}">
-                    <p class="text-muted small mb-2">
-                        Risultati per: <strong th:text="${username}">username</strong>
-                        &nbsp;
-                        <span class="text-muted small">
-                            (<span th:text="${datiOperatore.totale}">0</span> ticket totali)
-                        </span>
-                    </p>
-                    <div style="max-width: 500px; height: 260px;">
+    <!-- Charts Row 1 -->
+    <div class="row g-4 mb-4">
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-lg h-100">
+                <div class="card-header bg-transparent border-0 pt-4 px-4">
+                    <h5 class="mb-0 text-dark">Performance per Operatore</h5>
+                    <p class="text-muted small mb-0">Analizza la distribuzione del carico per singolo membro del team.</p>
+                </div>
+                <div class="card-body px-4 pb-4">
+                    <form th:action="@{/admin/statistiche}" method="get" class="mb-4">
+                        <div class="input-group input-group-sm" style="max-width: 350px;">
+                            <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                            <input type="text" class="form-control border-start-0" name="username" placeholder="Cerca username..." th:value="${username}">
+                            <button class="btn btn-primary px-3" type="submit">Analizza</button>
+                            <a th:if="${username}" th:href="@{/admin/statistiche}" class="btn btn-outline-secondary"><i class="bi bi-x"></i></a>
+                        </div>
+                    </form>
+
+                    <div th:if="${datiOperatore != null}" style="height: 300px;">
                         <canvas id="chartOperatoreRicerca"></canvas>
                     </div>
-                </div>
 
-                <div th:if="${username != null and datiOperatore == null}">
-                    <p class="text-muted">Nessun operatore trovato con username
-                        <strong th:text="${username}"></strong>.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="card shadow-sm h-100">
-            <div class="card-header bg-white font-weight-bold">
-                <i class="bi bi-people-fill text-info"></i> Operatori con chiusure vs totale
-            </div>
-            <div class="card-body">
-                <div class="chart-container">
-                    <canvas id="chartOperatori"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row mb-4">
-    <div class="col-md-6">
-        <div class="card shadow-sm">
-            <div class="card-header bg-white font-weight-bold">
-                <i class="bi bi-bar-chart-fill text-primary"></i> Ticket totali vs chiusi per anno
-            </div>
-            <div class="card-body">
-                <div class="chart-container">
-                    <canvas id="chartAnno"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="card shadow-sm">
-            <div class="card-header bg-white font-weight-bold">
-                <i class="bi bi-graph-up text-success"></i> % ticket chiusi per anno
-            </div>
-            <div class="card-body">
-                <div class="chart-container">
-                    <canvas id="chartPercAnno"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="card shadow-sm mb-4" th:if="${statisticheAnno != null and !statisticheAnno.isEmpty()}">
-    <div class="card-header bg-white font-weight-bold">
-        <i class="bi bi-table text-secondary"></i> Dettaglio per anno
-    </div>
-    <div class="card-body p-0">
-        <table class="table table-bordered table-hover mb-0">
-            <thead class="thead-light">
-            <tr>
-                <th>Anno</th>
-                <th>Sorgente</th>
-                <th>Totale ticket</th>
-                <th>Ticket chiusi</th>
-                <th>% chiusi</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="a : ${statisticheAnno}">
-                <td th:text="${a.anno}">2024</td>
-                <td>
-                    <span th:if="${a.daMySQL}"  class="badge badge-warning">MySQL</span>
-                    <span th:if="${!a.daMySQL}" class="badge badge-secondary">MongoDB</span>
-                </td>
-                <td th:text="${a.totaleTicket}">0</td>
-                <td>
-                    <span class="badge badge-success" th:text="${a.ticketChiusi}">0</span>
-                </td>
-                <td style="min-width: 160px;">
-                    <div class="d-flex align-items-center" style="gap: 8px;">
-                        <div class="progress flex-grow-1">
-                            <div class="progress-bar bg-success"
-                                 th:style="'width:' + ${a.percentualeChiusi} + '%'"
-                                 role="progressbar">
-                            </div>
-                        </div>
-                        <span class="small" th:text="${a.percentualeChiusi} + '%'">0%</span>
+                    <div th:if="${username != null and datiOperatore == null}" class="text-center py-5">
+                        <i class="bi bi-person-x fs-1 text-muted opacity-25 d-block mb-2"></i>
+                        <p class="text-muted">Nessun dato trovato per l'operatore ricercato.</p>
                     </div>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+                    
+                    <div th:if="${username == null}" class="text-center py-5 border rounded-3 border-dashed">
+                        <i class="bi bi-graph-up fs-1 text-muted opacity-25 d-block mb-2"></i>
+                        <p class="text-muted mb-0 small">Digita lo username di un operatore per vedere i dettagli.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-lg h-100">
+                <div class="card-header bg-transparent border-0 pt-4 px-4">
+                    <h5 class="mb-0 text-dark">Ripartizione Operativa</h5>
+                    <p class="text-muted small mb-0">Attività relativa alla chiusura dei ticket.</p>
+                </div>
+                <div class="card-body p-4 d-flex align-items-center justify-content-center">
+                    <div style="height: 280px; width: 100%;">
+                        <canvas id="chartOperatori"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
 
+    <!-- Charts Row 2 -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-lg">
+                <div class="card-header bg-transparent border-0 pt-4 px-4">
+                    <h5 class="mb-0 text-dark">Trend Annuale</h5>
+                </div>
+                <div class="card-body p-4">
+                    <div style="height: 300px;">
+                        <canvas id="chartAnno"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card border-0 shadow-lg">
+                <div class="card-header bg-transparent border-0 pt-4 px-4">
+                    <h5 class="mb-0 text-dark">Tasso di Risoluzione</h5>
+                </div>
+                <div class="card-body p-4">
+                    <div style="height: 300px;">
+                        <canvas id="chartPercAnno"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Table -->
+    <div class="card border-0 shadow-lg mb-5 overflow-hidden" th:if="${statisticheAnno != null and !statisticheAnno.isEmpty()}">
+        <div class="card-header bg-white border-0 py-3 px-4">
+            <h5 class="mb-0 text-dark">Dettaglio Storico Dati</h5>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th class="ps-4">Anno di Riferimento</th>
+                        <th>Sorgente Dati</th>
+                        <th class="text-center">Totale Volume</th>
+                        <th class="text-center">Ticket Risolti</th>
+                        <th style="width: 30%">Performance Chiusura</th>
+                    </tr>
+                </thead>
+                <tbody class="border-top-0">
+                    <tr th:each="a : ${statisticheAnno}">
+                        <td class="ps-4 fw-bold" th:text="${a.anno}">2024</td>
+                        <td>
+                            <span th:if="${a.daMySQL}"  class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle">MySQL Engine</span>
+                            <span th:if="${!a.daMySQL}" class="badge bg-success-subtle text-success-emphasis border border-success-subtle">MongoDB Engine</span>
+                        </td>
+                        <td class="text-center fw-semibold" th:text="${a.totaleTicket}">0</td>
+                        <td class="text-center">
+                            <span class="badge bg-success bg-opacity-10 text-success border px-2 py-1" th:text="${a.ticketChiusi}">0</span>
+                        </td>
+                        <td class="pe-4">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="progress flex-grow-1" style="height: 6px;">
+                                    <div class="progress-bar bg-success" th:style="'width:' + ${a.percentualeChiusi} + '%'" role="progressbar"></div>
+                                </div>
+                                <span class="small fw-bold" th:text="${a.percentualeChiusi} + '%'">0%</span>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/fragments :: footer}"></footer>
+
+<!-- Chart.js Library -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<!-- Chart Logic -->
 <script th:inline="javascript">
     const annoData = /*[[${statisticheAnno}]]*/ [];
     const operData = /*[[${statisticheOperatori}]]*/ {};
 
-    const coloreTotale = annoData.map(a =>
-        a.daMySQL ? 'rgba(253,126,20,0.35)' : 'rgba(0,123,255,0.3)'
-    );
-    const borderTotale = annoData.map(a =>
-        a.daMySQL ? '#fd7e14' : '#007bff'
-    );
-    const coloreChiusi = annoData.map(a =>
-        a.daMySQL ? 'rgba(253,126,20,0.6)' : 'rgba(40,167,69,0.4)'
-    );
-    const borderChiusi = annoData.map(a =>
-        a.daMySQL ? '#e8690a' : '#28a745'
-    );
+    // Standard Colors based on Design System
+    const colorPrimary = 'rgba(108, 99, 255, 0.8)';
+    const colorSuccess = 'rgba(29, 209, 161, 0.8)';
+    const colorWarning = 'rgba(254, 202, 87, 0.8)';
+    const colorInfo = 'rgba(72, 219, 251, 0.8)';
 
+    Chart.defaults.font.family = "'Inter', sans-serif";
+    Chart.defaults.color = "#6b7280";
+
+    // Chart Anno (Bar)
     new Chart(document.getElementById('chartAnno'), {
         type: 'bar',
         data: {
             labels: annoData.map(a => a.anno),
             datasets: [
                 {
-                    label: 'Totale',
+                    label: 'Totale Ticket',
                     data: annoData.map(a => a.totaleTicket),
-                    backgroundColor: coloreTotale,
-                    borderColor: borderTotale,
-                    borderWidth: 1
+                    backgroundColor: colorPrimary,
+                    borderRadius: 6
                 },
                 {
-                    label: 'Chiusi',
+                    label: 'Ticket Chiusi',
                     data: annoData.map(a => a.ticketChiusi),
-                    backgroundColor: coloreChiusi,
-                    borderColor: borderChiusi,
-                    borderWidth: 1
+                    backgroundColor: colorSuccess,
+                    borderRadius: 6
                 }
             ]
         },
         options: {
             responsive: true, maintainAspectRatio: false,
-            scales: { y: { beginAtZero: true } },
-            plugins: {
-                tooltip: {
-                    callbacks: {
-                        title: ctx => {
-                            const a = annoData[ctx[0].dataIndex];
-                            return a.anno + (a.daMySQL ? ' (MySQL)' : ' (MongoDB)');
-                        }
-                    }
-                }
-            }
+            plugins: { legend: { position: 'top', align: 'end' } },
+            scales: { x: { grid: { display: false } }, y: { beginAtZero: true } }
         }
     });
 
-    const pointColors = annoData.map(a => a.daMySQL ? '#fd7e14' : '#28a745');
-    const pointRadius = annoData.map(a => a.daMySQL ? 6 : 4);
-
+    // Chart % Chiusi (Line)
     new Chart(document.getElementById('chartPercAnno'), {
         type: 'line',
         data: {
             labels: annoData.map(a => a.anno),
             datasets: [{
-                label: '% Chiusi',
+                label: 'Tasso di Risoluzione (%)',
                 data: annoData.map(a => a.percentualeChiusi),
-                borderColor: '#28a745',
-                backgroundColor: 'rgba(40,167,69,0.1)',
-                tension: 0.35,
+                borderColor: colorSuccess,
+                backgroundColor: 'rgba(29, 209, 161, 0.1)',
+                tension: 0.4,
                 fill: true,
-                pointBackgroundColor: pointColors,
-                pointRadius: pointRadius
+                pointBackgroundColor: '#fff',
+                pointBorderColor: colorSuccess,
+                pointBorderWidth: 2,
+                pointRadius: 5
             }]
         },
         options: {
             responsive: true, maintainAspectRatio: false,
-            scales: {
-                y: { min: 0, max: 100, ticks: { callback: v => v + '%' } }
+            plugins: { legend: { display: false } },
+            scales: { 
+                y: { min: 0, max: 100, ticks: { callback: v => v + '%' } },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+
+    // Chart Operatori (Doughnut)
+    if (operData.totaleOperatoriDistinti > 0) {
+        const conChiuso = operData.operatoriConTicketChiuso || 0;
+        const senzaChiuso = operData.totaleOperatoriDistinti - conChiuso;
+
+        new Chart(document.getElementById('chartOperatori'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Operativi', 'Inattivi'],
+                datasets: [{
+                    data: [conChiuso, senzaChiuso],
+                    backgroundColor: [colorSuccess, 'rgba(0,0,0,0.05)'],
+                    borderWidth: 0,
+                    cutout: '75%'
+                }]
             },
-            plugins: {
-                tooltip: {
-                    callbacks: {
-                        title: ctx => {
-                            const a = annoData[ctx[0].dataIndex];
-                            return a.anno + (a.daMySQL ? ' (MySQL)' : ' (MongoDB)');
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: {
+                        callbacks: {
+                            label: ctx => ` ${ctx.raw} operatori (${ctx.dataIndex === 0 ? operData.percentualeOperatori : 100 - operData.percentualeOperatori}%)`
                         }
                     }
                 }
             }
-        }
-    });
+        });
+    }
 
-    const conChiuso   = operData.operatoriConTicketChiuso || 0;
-    const senzaChiuso = (operData.totaleOperatoriDistinti || 0) - conChiuso;
-
-    new Chart(document.getElementById('chartOperatori'), {
-        type: 'doughnut',
-        data: {
-            labels: ['Con ticket chiuso', 'Senza ticket chiuso'],
-            datasets: [{
-                data: [conChiuso, senzaChiuso],
-                backgroundColor: ['#28a745', '#dee2e6'],
-                borderWidth: 2
-            }]
-        },
-        options: {
-            responsive: true, maintainAspectRatio: false,
-            plugins: {
-                legend: { position: 'right' },
-                tooltip: {
-                    callbacks: {
-                        label: ctx => {
-                            if (ctx.dataIndex === 0)
-                                return ` ${conChiuso} operatori (${operData.percentualeOperatori}%)`;
-                            return ` ${senzaChiuso} operatori`;
-                        }
-                    }
+    // Chart Operatore Ricerca (Bar Horizontal/Vertical)
+    if (document.getElementById('chartOperatoreRicerca')) {
+        const datiOp = /*[[${datiOperatore}]]*/ null;
+        if (datiOp) {
+            const stati = Object.keys(datiOp.ticketPerStato);
+            const valori = Object.values(datiOp.ticketPerStato);
+            
+            new Chart(document.getElementById('chartOperatoreRicerca'), {
+                type: 'bar',
+                data: {
+                    labels: stati,
+                    datasets: [{
+                        data: valori,
+                        backgroundColor: stati.map(s => {
+                            if (s === 'CHIUSO') return colorSuccess;
+                            if (s === 'SCADUTO') return 'rgba(220, 53, 69, 0.7)';
+                            if (s === 'IN_LAVORAZIONE') return colorWarning;
+                            return colorPrimary;
+                        }),
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    plugins: { legend: { display: false } },
+                    scales: { x: { beginAtZero: true, grid: { display: false } } }
                 }
-            }
+            });
         }
-    });
+    }
 </script>
 
-<script th:if="${datiOperatore != null}" th:inline="javascript">
-    const datiOp = /*[[${datiOperatore}]]*/ {};
-    const stati   = Object.keys(datiOp.ticketPerStato);
-    const valori  = Object.values(datiOp.ticketPerStato);
-    const totaleOp = datiOp.totale || 1;
-
-    const coloriStati = {
-        'APERTO':        'rgba(0,123,255,0.6)',
-        'IN_LAVORAZIONE':'rgba(255,193,7,0.6)',
-        'IN_ATTESA':     'rgba(23,162,184,0.6)',
-        'RISOLTO':       'rgba(111,66,193,0.6)',
-        'CHIUSO':        'rgba(40,167,69,0.6)',
-        'SCADUTO':       'rgba(220,53,69,0.6)'
-    };
-    const bordiStati = {
-        'APERTO':        '#007bff',
-        'IN_LAVORAZIONE':'#ffc107',
-        'IN_ATTESA':     '#17a2b8',
-        'RISOLTO':       '#6f42c1',
-        'CHIUSO':        '#28a745',
-        'SCADUTO':       '#dc3545'
-    };
-
-    new Chart(document.getElementById('chartOperatoreRicerca'), {
-        type: 'bar',
-        data: {
-            labels: stati,
-            datasets: [{
-                data: valori,
-                backgroundColor: stati.map(s => coloriStati[s] ||  'rgba(108,117,125,0.5)'),
-                borderColor: stati.map(s => bordiStati[s] || '#6c757d'),
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false },
-                tooltip: {
-                    callbacks: {
-                        label: ctx => {
-                            const perc = ((ctx.raw / totaleOp) * 100).toFixed(1);
-                            return ` ${ctx.raw} ticket (${perc}%)`;
-                        }
-                    }
-                }
-            },
-            scales: {
-                y: { beginAtZero: true, ticks: { stepSize: 1 } }
-            }
-        }
-    });
-</script>
-
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

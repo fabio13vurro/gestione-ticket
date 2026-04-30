@@ -1,33 +1,34 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Cancella storico stato</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <style>
-        body { font-family: Arial; padding: 20px; background-color: #f5f7fa}
-    </style>
-</head>
+<head th:replace="~{fragments/fragments :: head('Cancella Storico — Operatore')}"></head>
 <body>
-<div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
-    <div class="card p-4 shadow" style=" width: 350px; border-radius: 10px; background-color: #ffffff; border: 1px solid #dce3ed">
 
-        <h2 class="text-center mb-4">Confermare cancellazione storico</h2>
+<nav th:replace="~{fragments/fragments :: navbar}"></nav>
 
-        <form th:action="@{/operatore/storico/cancella}" method="post">
-
-            <div class="form-group mt-3">
-                <label class="field">
-                    ID Storico stato:
-                    <input type="number" name="id" th:value="${storico.getIdStoricoStato()}" readonly/>
-                </label>
+<main class="main-content d-flex justify-content-center align-items-center" style="min-height: 60vh;">
+    <div class="card border-0 shadow-lg p-4" style="max-width: 420px; width: 100%;">
+        <div class="card-body text-center">
+            <div class="bg-danger bg-opacity-10 d-inline-flex p-3 rounded-circle mb-3">
+                <i class="bi bi-exclamation-triangle text-danger fs-2"></i>
             </div>
-            <br>
-            <p class="text-center">
-                <a class="btn btn-secondary" th:href="@{/operatore/storico}" role="button">← Torna indietro</a>
-                <button class="btn btn-danger" type="submit" role="button">Cancella</button>
-            </p>
-        </form>
+            <h2 class="text-dark mb-2">Conferma Cancellazione</h2>
+            <p class="text-muted small">Stai per eliminare questa voce di storico.</p>
+
+            <form th:action="@{/operatore/storico/cancella}" method="post" class="mt-4">
+                <div class="mb-4 text-start">
+                    <label class="form-label small fw-bold text-muted">ID Storico Stato</label>
+                    <input type="number" class="form-control" name="id" th:value="${storico.getIdStoricoStato()}" readonly/>
+                </div>
+                <div class="d-flex gap-3">
+                    <a class="btn btn-outline-secondary flex-grow-1" th:href="@{/operatore/storico}">← Annulla</a>
+                    <button class="btn btn-danger flex-grow-1 fw-bold" type="submit">Cancella</button>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
+</main>
+
+<footer th:replace="~{fragments/fragments :: footer}"></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -1,114 +1,105 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Lista Ticket Scaduti</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <style>
-        body { font-family: Arial; padding: 20px; background-color: #f5f7fa}
-        h2 { text-align: center; }
-        table td, table th {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-    </style>
-</head>
+<head th:replace="~{fragments/fragments :: head('Ticket Scaduti — Admin')}"></head>
 <body>
-<h2 class="text-center mb-4">
-    Ticket scaduti &nbsp;
-    <a th:href="@{/home}" class="text-primary" style="text-decoration:none;">
-        <i class="bi bi-house-door-fill"></i>
-    </a>
-</h2>
 
-<div class="mb-3">
-    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#legenda">
-        Apri/Chiudi legenda
-    </button>
-</div>
+<nav th:replace="~{fragments/fragments :: navbar}"></nav>
 
-<div class="collapse mb-4" id="legenda">
-    <div class="card card-body d-flex flex-row align-items-center"
-         style="background-color: #ffffff; gap: 16px; flex-wrap: wrap; padding: 10px 16px;">
-        <div class="d-flex align-items-center" style="gap: 6px;"><span class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></span> Cancella ticket</div>
-        <div class="d-flex align-items-center" style="gap: 6px;"><span class="btn btn-success btn-sm"><i class="bi bi-arrow-repeat"></i></span> Ripristina ticket</div>
-        <div class="d-flex align-items-center" style="gap: 6px;"><span class="btn btn-success btn-sm"><i class="bi bi-file-plus"></i></span> Crea Commento</div>
-        <div class="d-flex align-items-center" style="gap: 6px;"><span class="btn btn-info btn-sm"><i class="bi bi-chat-square-text"></i></span> Vedi Commenti</div>
-        <div class="d-flex align-items-center" style="gap: 6px;"><span class="btn btn-warning btn-sm"><i class="bi bi-ticket-perforated"></i></span> Cambia Stato</div>
-        <div class="d-flex align-items-center" style="gap: 6px;"><span class="btn btn-secondary btn-sm"><i class="bi bi-archive"></i></span> Storico Stato</div>
+<main class="main-content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="mb-0">Ticket Scaduti</h1>
+            <p class="text-white-50">Ticket che hanno superato la data di scadenza prevista.</p>
+        </div>
+        <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#legenda">
+            <i class="bi bi-info-circle me-1"></i> Legenda
+        </button>
     </div>
-</div>
 
-<div class="table-responsive">
-    <table class="table table-bordered table-hover" style="table-layout: fixed; width: 100%;">
-        <thead>
-        <tr>
-            <th style="width: 5%">ID</th>
-            <th style="width: 10%">Titolo</th>
-            <th style="width: 10%">Descrizione</th>
-            <th style="width: 10%">Categoria</th>
-            <th style="width: 10%">Creato da</th> <th style="width: 12%">Data Apertura</th>
-            <th style="width: 12%">Data Scadenza</th>
-            <th style="width: 11%">Assegnato a</th>
-            <th style="width: 20%">Azioni</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:if="${scaduti.totalElements == 0}">
-            <td colspan="9" class="text-center text-muted">Non ci sono ticket scaduti.</td>
-        </tr>
-        <tr th:each="t : ${scaduti.content}">
-            <th scope="row" th:text="${t.idTicket}" th:title="${t.idTicket}">1</th>
-            <td th:text="${t.titolo}" th:title="${t.titolo}"></td>
-            <td th:text="${t.descrizione}" th:title="${t.descrizione}"></td>
-            <td th:text="${t.categoria}" th:title="${t.categoria}"></td>
-            <td th:text="${t.created}" th:title="${t.created}"></td>
-            <td th:text="${#temporals.format(t.data_ora_apertura, 'dd/MM/yyyy HH:mm')}"
-                th:title="${#temporals.format(t.data_ora_apertura, 'dd/MM/yyyy HH:mm')}"></td>
-            <td th:text="${#temporals.format(t.data_ora_scadenza, 'dd/MM/yyyy HH:mm')}"
-                th:title="${#temporals.format(t.data_ora_scadenza, 'dd/MM/yyyy HH:mm')}"></td>
-            <td th:text="${t.utente != null ? t.utente.username : 'N/D'}"
-                th:title="${t.utente != null ? t.utente.username : ''}"></td>
-            <td class="d-flex" style="gap: 2px;">
-                <a class="btn btn-danger btn-sm" title="Cancella ticket" th:href="@{/operatore/ticket/cancella (id=${t.idTicket})}" th:if="${!t.deleted}"><i class="bi bi-trash"></i></a>
-                <a class="btn btn-success btn-sm" title="Ripristina ticket" th:href="@{/operatore/ticket/ripristina (id=${t.idTicket})}" th:if="${t.deleted}"><i class="bi bi-arrow-repeat"></i></a>
-                <a class="btn btn-success btn-sm" title="Crea commento" th:href="@{/cliente/commenti/crea (ticketId=${t.idTicket})}"><i class="bi bi-file-plus"></i></a>
-                <a class="btn btn-info btn-sm" title="Vedi commenti" th:href="@{/operatore/ticket/commenti (id=${t.idTicket})}"><i class="bi bi-chat-square-text"></i></a>
-                <a class="btn btn-warning btn-sm" title="Cambia stato" th:href="@{/operatore/ticket/stato (id=${t.idTicket})}"><i class="bi bi-ticket-perforated"></i></a>
-                <a class="btn btn-secondary btn-sm" title="Storico stato" th:href="@{/operatore/ticket/storico (id=${t.idTicket})}"><i class="bi bi-archive"></i></a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+    <div class="card mb-4 border-0 shadow-sm overflow-hidden">
+        <div class="collapse" id="legenda">
+            <div class="card-body bg-light border-bottom py-2">
+                <div class="d-flex flex-wrap gap-3 small text-muted">
+                    <span><i class="bi bi-trash text-danger me-1"></i>Cancella</span>
+                    <span><i class="bi bi-arrow-repeat text-success me-1"></i>Ripristina</span>
+                    <span><i class="bi bi-file-plus text-success me-1"></i>Commento</span>
+                    <span><i class="bi bi-chat-square-text text-info me-1"></i>Commenti</span>
+                    <span><i class="bi bi-ticket-perforated text-warning me-1"></i>Stato</span>
+                    <span><i class="bi bi-archive text-secondary me-1"></i>Storico</span>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<div class="d-flex justify-content-center mt-4" th:if="${scaduti != null and scaduti.totalPages > 0}">
-    <nav aria-label="Page navigation">
-        <ul class="pagination">
-            <li class="page-item" th:classappend="${scaduti.first} ? 'disabled'">
-                <a class="page-link" th:href="${!scaduti.first} ? @{/admin/ticket-scaduti(pag=0)} : '#'"> &laquo;&laquo; </a>
-            </li>
-            <li class="page-item" th:classappend="${scaduti.first} ? 'disabled'">
-                <a class="page-link" th:href="${!scaduti.first} ? @{/admin/ticket-scaduti(pag=${scaduti.number - 1})} : '#'"> &laquo; </a>
-            </li>
-            <li class="page-item"
-                th:each="i : ${#numbers.sequence(T(java.lang.Math).max(0, scaduti.number - 3), T(java.lang.Math).min(scaduti.totalPages - 1, scaduti.number + 3))}"
-                th:classappend="${i == scaduti.number} ? 'active'">
-                <a class="page-link" th:text="${i + 1}" th:href="@{/admin/ticket-scaduti(pag=${i})}"></a>
-            </li>
-            <li class="page-item" th:classappend="${scaduti.last} ? 'disabled'">
-                <a class="page-link" th:href="${!scaduti.last} ? @{/admin/ticket-scaduti(pag=${scaduti.number + 1})} : '#'"> &raquo; </a>
-            </li>
-            <li class="page-item" th:classappend="${scaduti.last} ? 'disabled'">
-                <a class="page-link" th:href="${!scaduti.last} ? @{/admin/ticket-scaduti(pag=${scaduti.totalPages - 1})} : '#'"> &raquo;&raquo; </a>
-            </li>
-        </ul>
-    </nav>
-</div>
+    <div class="table-responsive shadow-lg rounded-4">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th class="ps-4" style="width: 5%">ID</th>
+                    <th style="width: 20%">Dettagli</th>
+                    <th style="width: 10%">Categoria</th>
+                    <th style="width: 10%">Creato da</th>
+                    <th style="width: 12%">Apertura</th>
+                    <th style="width: 12%">Scadenza</th>
+                    <th style="width: 11%">Assegnato a</th>
+                    <th class="text-end pe-4" style="width: 20%">Azioni</th>
+                </tr>
+            </thead>
+            <tbody class="border-top-0">
+                <tr th:if="${scaduti.totalElements == 0}">
+                    <td colspan="8" class="text-center py-5 text-muted">
+                        <i class="bi bi-check-circle fs-1 d-block mb-3 opacity-25"></i>
+                        Non ci sono ticket scaduti.
+                    </td>
+                </tr>
+                <tr th:each="t : ${scaduti.content}">
+                    <td class="ps-4 fw-bold text-muted" th:text="${t.idTicket}">1</td>
+                    <td>
+                        <div class="fw-semibold text-dark mb-1" th:text="${t.titolo}">Titolo</div>
+                        <div class="small text-muted text-truncate" style="max-width: 200px;" th:text="${t.descrizione}">Desc</div>
+                    </td>
+                    <td><span class="badge bg-light text-dark border fw-medium" th:text="${t.categoria}">Cat</span></td>
+                    <td class="small" th:text="${t.created}">utente</td>
+                    <td class="small text-muted" th:text="${#temporals.format(t.data_ora_apertura, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td class="small text-danger fw-bold" th:text="${#temporals.format(t.data_ora_scadenza, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td class="small" th:text="${t.utente != null ? t.utente.username : 'N/D'}"></td>
+                    <td class="text-end pe-4">
+                        <div class="btn-group btn-group-sm shadow-sm">
+                            <a th:if="${!t.deleted}" th:href="@{/operatore/ticket/cancella (id=${t.idTicket})}" class="btn btn-white border" title="Cancella"><i class="bi bi-trash text-danger"></i></a>
+                            <a th:if="${t.deleted}" th:href="@{/operatore/ticket/ripristina (id=${t.idTicket})}" class="btn btn-white border" title="Ripristina"><i class="bi bi-arrow-repeat text-success"></i></a>
+                            <a th:href="@{/cliente/commenti/crea (ticketId=${t.idTicket})}" class="btn btn-white border" title="Crea commento"><i class="bi bi-file-plus text-success"></i></a>
+                            <a th:href="@{/operatore/ticket/commenti (id=${t.idTicket})}" class="btn btn-white border" title="Commenti"><i class="bi bi-chat-square-text text-info"></i></a>
+                            <a th:href="@{/operatore/ticket/stato (id=${t.idTicket})}" class="btn btn-white border" title="Cambia stato"><i class="bi bi-ticket-perforated text-warning"></i></a>
+                            <a th:href="@{/operatore/ticket/storico (id=${t.idTicket})}" class="btn btn-white border" title="Storico"><i class="bi bi-archive text-secondary"></i></a>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <!-- Paginazione -->
+    <div class="d-flex justify-content-between align-items-center mt-4" th:if="${scaduti != null and scaduti.totalPages > 0}">
+        <div class="text-white-50 small">
+            Pagina <span th:text="${scaduti.number + 1}">1</span> di <span th:text="${scaduti.totalPages}">1</span>
+        </div>
+        <nav aria-label="Page navigation">
+            <ul class="pagination pagination-sm mb-0">
+                <li class="page-item" th:classappend="${scaduti.first} ? 'disabled'">
+                    <a class="page-link" th:href="@{/admin/ticket-scaduti(pag=0)}"><i class="bi bi-chevron-double-left"></i></a>
+                </li>
+                <li class="page-item" th:each="i : ${#numbers.sequence(T(java.lang.Math).max(0, scaduti.number - 2), T(java.lang.Math).min(scaduti.totalPages - 1, scaduti.number + 2))}" th:classappend="${i == scaduti.number} ? 'active'">
+                    <a class="page-link" th:text="${i + 1}" th:href="@{/admin/ticket-scaduti(pag=${i})}"></a>
+                </li>
+                <li class="page-item" th:classappend="${scaduti.last} ? 'disabled'">
+                    <a class="page-link" th:href="@{/admin/ticket-scaduti(pag=${scaduti.totalPages - 1})}"><i class="bi bi-chevron-double-right"></i></a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/fragments :: footer}"></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

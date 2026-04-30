@@ -1,279 +1,217 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Lista Ticket</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <style>
-        body {
-            font-family: Arial;
-            padding: 20px;
-            background-color: #f5f7fa
-        }
-
-        h1 {
-            text-align: center;
-        }
-
-        table td, table th {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-    </style>
-</head>
+<head th:replace="~{fragments/fragments :: head('Lista Ticket — Operatore')}"></head>
 <body>
-<h2 class="text-center mb-4">
-    Lista ticket &nbsp;
-    <a th:href="@{/home}" class="text-primary" style="text-decoration:none;">
-        <i class="bi bi-house-door-fill"></i>
-    </a>
-</h2>
 
-<div class="d-flex justify-content-between align-items-center mb-2">
-    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#legenda">
-        Apri/Chiudi legenda
-    </button>
+<nav th:replace="~{fragments/fragments :: navbar}"></nav>
 
-    <button class="btn btn-outline-primary" type="button" data-toggle="collapse" data-target="#filtri">
-        <i class="bi bi-funnel"></i> Filtri
-        <span th:if="${filtroAttivo}" class="badge badge-primary ml-1">attivi</span>
-    </button>
-</div>
-
-<div class="collapse mb-2" id="legenda">
-    <div class="card card-body d-flex flex-row align-items-center"
-         style="background-color: #f5f7fa; gap: 16px; flex-wrap: nowrap; padding: 10px 16px;">
-        <div class="d-flex align-items-center" style="white-space: nowrap; gap: 6px;">
-            <span class="btn btn-primary btn-sm"><i class="bi bi-pencil-square"></i></span>
-            Modifica ticket
+<main class="main-content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="mb-0">Gestione Ticket</h1>
+            <p class="text-white-50">Monitora e risolvi le richieste di assistenza in tempo reale.</p>
         </div>
-        <div class="d-flex align-items-center" style="white-space: nowrap; gap: 6px;">
-            <span class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></span>
-            Elimina ticket
-        </div>
-        <div class="d-flex align-items-center" style="white-space: nowrap; gap: 6px;">
-            <span class="btn btn-success btn-sm"><i class="bi bi-arrow-repeat"></i></span>
-            Ripristina ticket
-        </div>
-        <div class="d-flex align-items-center" style="white-space: nowrap; gap: 6px;">
-            <span class="btn btn-success btn-sm"><i class="bi bi-file-plus"></i></span>
-            Aggiungi commento
-        </div>
-        <div class="d-flex align-items-center" style="white-space: nowrap; gap: 6px;">
-            <span class="btn btn-info btn-sm"><i class="bi bi-chat-left-text"></i></span>
-            Visualizza commenti
-        </div>
-        <div class="d-flex align-items-center" style="white-space: nowrap; gap: 6px;">
-            <span class="btn btn-warning btn-sm"><i class="bi bi-ticket-perforated"></i></span>
-            Cambia stato
-        </div>
-        <div class="d-flex align-items-center" style="white-space: nowrap; gap: 6px;">
-            <span class="btn btn-secondary btn-sm"><i class="bi bi-archive"></i></span>
-            Visualizza storico
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#filtri">
+                <i class="bi bi-funnel me-1"></i> Filtri Avanzati
+                <span th:if="${filtroAttivo}" class="badge bg-primary ms-1">Attivi</span>
+            </button>
+            <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#legenda">
+                <i class="bi bi-info-circle me-1"></i> Legenda
+            </button>
         </div>
     </div>
-</div>
 
-<div class="collapse mb-3" id="filtri" th:classappend="${filtroAttivo} ? 'show'">
-    <div class="card card-body" style="background-color: #f5f7fa;">
-        <form th:action="@{/operatore/ticket}" method="get">
-            <div class="row">
-                <div class="col-md-2">
-                    <label class="small font-weight-bold text-muted mb-1">Titolo</label>
-                    <input type="text" class="form-control form-control-sm" name="titolo" th:value="${titolo}" placeholder="Cerca per titolo...">
-                </div>
-                <div class="col-md-2">
-                    <label class="small font-weight-bold text-muted mb-1">Descrizione</label>
-                    <input type="text" class="form-control form-control-sm" name="descrizione" th:value="${descrizione}" placeholder="Cerca per descrizione...">
-                </div>
-                <div class="col-md-2">
-                    <label class="small font-weight-bold text-muted mb-1">Categoria</label>
-                    <input type="text" class="form-control form-control-sm" name="categoria" th:value="${categoria}" placeholder="Cerca per categoria...">
-                </div>
-                <div class="col-md-2">
-                    <label class="small font-weight-bold text-muted mb-1">Stato</label>
-                    <select class="form-control form-control-sm" name="stato">
-                        <option value="">Tutti</option>
-                        <option value="APERTO"         th:selected="${stato == 'APERTO'}">Aperto</option>
-                        <option value="IN_LAVORAZIONE" th:selected="${stato == 'IN_LAVORAZIONE'}">In lavorazione</option>
-                        <option value="IN_ATTESA"      th:selected="${stato == 'IN_ATTESA'}">In attesa</option>
-                        <option value="CHIUSO"         th:selected="${stato == 'CHIUSO'}">Chiuso</option>
-                        <option value="SCADUTO"        th:selected="${stato == 'SCADUTO'}">Scaduto</option>
-                    </select>
-                </div>
-                <div class="col-md-1">
-                    <label class="small font-weight-bold text-muted mb-1">Priorità</label>
-                    <select class="form-control form-control-sm" name="priorita">
-                        <option value="">Tutte</option>
-                        <option value="1" th:selected="${priorita == '1'}">1</option>
-                        <option value="2" th:selected="${priorita == '2'}">2</option>
-                        <option value="3" th:selected="${priorita == '3'}">3</option>
-                        <option value="4" th:selected="${priorita == '4'}">4</option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <label class="small font-weight-bold text-muted mb-1">Operatore assegnato</label>
-                    <input type="text" class="form-control form-control-sm" name="username" th:value="${username}" placeholder="Cerca per operatore...">
-                </div>
-                <div class="col-md-2">
-                    <label class="small font-weight-bold text-muted mb-1">Apertura dal</label>
-                    <input type="date" class="form-control form-control-sm" name="dataAperturaDa" th:value="${dataAperturaDa}">
-                </div>
-                <div class="col-md-2">
-                    <label class="small font-weight-bold text-muted mb-1">Apertura al</label>
-                    <input type="date" class="form-control form-control-sm" name="dataAperturaA" th:value="${dataAperturaA}">
-                </div>
-                <div class="col-md-2">
-                    <label class="small font-weight-bold text-muted mb-1">Chiusura dal</label>
-                    <input type="date" class="form-control form-control-sm" name="dataChiusuraDa" th:value="${dataChiusuraDa}">
-                </div>
-                <div class="col-md-2">
-                    <label class="small font-weight-bold text-muted mb-1">Chiusura al</label>
-                    <input type="date" class="form-control form-control-sm" name="dataChiusuraA" th:value="${dataChiusuraA}">
-                </div>
-                <div class="col-md-1">
-                    <label class="small font-weight-bold text-muted mb-1">Commenti</label>
-                    <input type="number" class="form-control form-control-sm" name="numCommenti"
-                           th:value="${numCommenti}" min="0" placeholder="Numero commenti...">
-                </div>
-                <div class="col-md-1">
-                    <label class="small font-weight-bold text-muted mb-1">Creato da</label>
-                    <input type="text" class="form-control form-control-sm" name="created" th:value="${created}" placeholder="Creato da...">
-                </div>
-                <div class="col-md-1 d-flex align-items-end" style="gap: 6px;">
-                    <button class="btn btn-primary btn-sm" type="submit">
-                        <i class="bi bi-search"></i>
-                    </button>
-                    <a th:href="@{/operatore/ticket}" class="btn btn-outline-secondary btn-sm" th:if="${filtroAttivo}" title="Reset filtri">
-                        <i class="bi bi-x-circle"></i>
-                    </a>
+    <!-- Filtri e Legenda -->
+    <div class="card mb-4 border-0 shadow-sm overflow-hidden">
+        <div class="collapse" id="filtri" th:classappend="${filtroAttivo} ? 'show'">
+            <div class="card-body bg-light border-bottom">
+                <form th:action="@{/operatore/ticket}" method="get">
+                    <div class="row g-3">
+                        <div class="col-md-2">
+                            <label class="form-label small fw-bold">Titolo</label>
+                            <input type="text" class="form-control form-control-sm" name="titolo" th:value="${titolo}" placeholder="Cerca per titolo...">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label small fw-bold">Descrizione</label>
+                            <input type="text" class="form-control form-control-sm" name="descrizione" th:value="${descrizione}" placeholder="Cerca per descrizione...">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label small fw-bold">Categoria</label>
+                            <input type="text" class="form-control form-control-sm" name="categoria" th:value="${categoria}" placeholder="es. Hardware">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label small fw-bold">Stato</label>
+                            <select class="form-select form-select-sm" name="stato">
+                                <option value="">Tutti gli stati</option>
+                                <option value="APERTO" th:selected="${stato == 'APERTO'}">Aperto</option>
+                                <option value="IN_LAVORAZIONE" th:selected="${stato == 'IN_LAVORAZIONE'}">In lavorazione</option>
+                                <option value="IN_ATTESA" th:selected="${stato == 'IN_ATTESA'}">In attesa</option>
+                                <option value="CHIUSO" th:selected="${stato == 'CHIUSO'}">Chiuso</option>
+                                <option value="SCADUTO" th:selected="${stato == 'SCADUTO'}">Scaduto</option>
+                            </select>
+                        </div>
+                        <div class="col-md-1">
+                            <label class="form-label small fw-bold">Priorità</label>
+                            <select class="form-select form-select-sm" name="priorita">
+                                <option value="">Tutte</option>
+                                <option value="1" th:selected="${priorita == '1'}">1</option>
+                                <option value="2" th:selected="${priorita == '2'}">2</option>
+                                <option value="3" th:selected="${priorita == '3'}">3</option>
+                                <option value="4" th:selected="${priorita == '4'}">4</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label small fw-bold">Operatore assegnato</label>
+                            <input type="text" class="form-control form-control-sm" name="username" th:value="${username}" placeholder="Username...">
+                        </div>
+                        <div class="col-md-1">
+                            <label class="form-label small fw-bold">Commenti</label>
+                            <input type="number" class="form-control form-control-sm" name="numCommenti" th:value="${numCommenti}" min="0">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label small fw-bold">Apertura dal</label>
+                            <input type="date" class="form-control form-control-sm" name="dataAperturaDa" th:value="${dataAperturaDa}">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label small fw-bold">Apertura al</label>
+                            <input type="date" class="form-control form-control-sm" name="dataAperturaA" th:value="${dataAperturaA}">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label small fw-bold">Chiusura dal</label>
+                            <input type="date" class="form-control form-control-sm" name="dataChiusuraDa" th:value="${dataChiusuraDa}">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label small fw-bold">Chiusura al</label>
+                            <input type="date" class="form-control form-control-sm" name="dataChiusuraA" th:value="${dataChiusuraA}">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label small fw-bold">Creato da</label>
+                            <input type="text" class="form-control form-control-sm" name="created" th:value="${created}" placeholder="Creato da...">
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end gap-2">
+                            <button class="btn btn-primary btn-sm flex-grow-1" type="submit">Filtra</button>
+                            <a th:href="@{/operatore/ticket}" class="btn btn-outline-secondary btn-sm" th:if="${filtroAttivo}">Reset</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="collapse" id="legenda">
+            <div class="card-body bg-light border-bottom py-2">
+                <div class="d-flex flex-wrap gap-3 small text-muted">
+                    <span><i class="bi bi-pencil-square text-primary me-1"></i>Modifica</span>
+                    <span><i class="bi bi-file-plus text-success me-1"></i>Aggiungi commento</span>
+                    <span><i class="bi bi-chat-square-text text-info me-1"></i>Vedi commenti</span>
+                    <span><i class="bi bi-ticket-perforated text-warning me-1"></i>Cambia stato</span>
+                    <span><i class="bi bi-archive text-secondary me-1"></i>Storico</span>
+                    <span><i class="bi bi-trash text-danger me-1"></i>Elimina</span>
+                    <span><i class="bi bi-arrow-repeat text-success me-1"></i>Ripristina</span>
                 </div>
             </div>
-        </form>
+        </div>
     </div>
-</div>
 
-<div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${success}" class="alert alert-success d-flex align-items-center" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        <div th:text="${success}">Operazione completata con successo.</div>
+    </div>
 
-<table class="table table-bordered table-hover" style="table-layout: fixed; width: 100%;">
-    <thead>
-    <tr>
-        <th style="width: 4%">Id</th>
-        <th style="width: 8%">Titolo</th>
-        <th style="width: 9%">Descrizione</th>
-        <th style="width: 8%">Categoria</th>
-        <th style="width: 7%">Priorità</th>
-        <th style="width: 10%">Stato</th>
-        <th style="width: 9%">Commenti</th>
-        <th style="width: 10%">Data apertura</th>
-        <th style="width: 10%">Data chiusura</th>
-        <th style="width: 25%">Azioni</th>
-    </tr>
-    </thead>
+    <!-- Tabella Ticket -->
+    <div class="table-responsive shadow-lg rounded-4">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th class="ps-4" style="width: 5%">ID</th>
+                    <th style="width: 25%">Dettagli Ticket</th>
+                    <th style="width: 10%">Categoria</th>
+                    <th class="text-center" style="width: 8%">Priorità</th>
+                    <th style="width: 12%">Stato Corrente</th>
+                    <th class="text-center" style="width: 8%"><i class="bi bi-chat-dots" title="Commenti"></i></th>
+                    <th style="width: 12%">Apertura</th>
+                    <th class="text-end pe-4" style="width: 20%">Azioni</th>
+                </tr>
+            </thead>
+            <tbody class="border-top-0">
+                <tr th:if="${tickets.totalElements == 0}">
+                    <td colspan="8" class="text-center py-5 text-muted">
+                        <i class="bi bi-inbox fs-1 d-block mb-3 opacity-25"></i>
+                        Nessun ticket trovato.
+                    </td>
+                </tr>
+                <tr th:each="t : ${tickets.content}" th:classappend="${t.deleted} ? 'opacity-50'">
+                    <td class="ps-4 fw-bold text-muted" th:text="${t.idTicket}">1</td>
+                    <td>
+                        <div class="fw-semibold text-dark mb-1" th:text="${t.titolo}">Titolo</div>
+                        <div class="small text-muted text-truncate" style="max-width: 250px;" th:text="${t.descrizione}">Descrizione</div>
+                    </td>
+                    <td>
+                        <span class="badge bg-light text-dark border fw-medium" th:text="${t.categoria}">Hardware</span>
+                    </td>
+                    <td class="text-center">
+                        <span class="fw-bold" th:classappend="${t.priorita >= 3 ? 'text-danger' : 'text-primary'}" th:text="${t.priorita}">1</span>
+                    </td>
+                    <td>
+                        <span th:if="${t.stato == 'APERTO'}" class="badge-status status-aperto">
+                            <i class="bi bi-circle-fill" style="font-size: 0.5rem"></i> Aperto
+                        </span>
+                        <span th:if="${t.stato == 'IN_LAVORAZIONE'}" class="badge-status status-lavorazione">
+                            <i class="bi bi-play-fill"></i> In lavorazione
+                        </span>
+                        <span th:if="${t.stato == 'CHIUSO'}" class="badge-status status-chiuso">
+                            <i class="bi bi-check-lg"></i> Chiuso
+                        </span>
+                        <span th:if="${t.stato == 'SCADUTO'}" class="badge-status status-scaduto">
+                            <i class="bi bi-exclamation-triangle-fill"></i> Scaduto
+                        </span>
+                    </td>
+                    <td class="text-center">
+                        <span class="badge rounded-pill bg-secondary bg-opacity-10 text-secondary border px-2 py-1 small" th:text="${t.commenti != null ? t.commenti.size() : 0}">0</span>
+                    </td>
+                    <td class="small text-muted" th:text="${#temporals.format(t.data_ora_apertura, 'dd/MM/yyyy HH:mm')}">01/01/2026</td>
+                    <td class="text-end pe-4">
+                        <div class="btn-group btn-group-sm shadow-sm">
+                            <a th:href="@{/operatore/ticket/modifica (id=${t.idTicket})}" class="btn btn-white border" title="Modifica"><i class="bi bi-pencil-square text-primary"></i></a>
+                            <a th:href="@{/cliente/commenti/crea (ticketId=${t.idTicket})}" class="btn btn-white border" title="Aggiungi commento"><i class="bi bi-file-plus text-success"></i></a>
+                            <a th:href="@{/operatore/ticket/commenti (id=${t.idTicket})}" class="btn btn-white border" title="Vedi commenti"><i class="bi bi-chat-square-text text-info"></i></a>
+                            <a th:if="${t.stato != 'CHIUSO'}" th:href="@{/operatore/ticket/stato (id=${t.idTicket})}" class="btn btn-white border" title="Cambia Stato"><i class="bi bi-ticket-perforated text-warning"></i></a>
+                            <a th:href="@{/operatore/ticket/storico (id=${t.idTicket})}" class="btn btn-white border" title="Storico"><i class="bi bi-archive text-secondary"></i></a>
+                            <a th:if="${!t.deleted}" th:href="@{/operatore/ticket/cancella (id=${t.idTicket})}" class="btn btn-white border" title="Elimina"><i class="bi bi-trash text-danger"></i></a>
+                            <a th:if="${t.deleted}" th:href="@{/operatore/ticket/ripristina (id=${t.idTicket})}" class="btn btn-white border" title="Ripristina"><i class="bi bi-arrow-repeat text-success"></i></a>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
-    <tbody>
-    <tr th:if="${tickets.totalElements == 0}">
-        <td colspan="9" class="text-center text-muted">
-            Nessun risultato trovato
-        </td>
-    </tr>
-    <tr th:each="t : ${tickets.content}">
-        <th scope="row" th:text="${t.idTicket}" th:title="${t.idTicket}">1</th>
-        <td th:text="${t.titolo}" th:title="${t.titolo}">Titolo</td>
-        <td th:text="${t.descrizione}" th:title="${t.descrizione}">Descrizione</td>
-        <td th:text="${t.categoria}" th:title="${t.categoria}">Categoria</td>
-        <td th:text="${t.priorita}">Priorità</td>
-        <td th:text="${t.stato}">APERTO</td>
-        <td th:text="${t.commenti != null ? t.commenti.size() : 0}">Commenti</td>
-        <td th:text="${#temporals.format(t.data_ora_apertura, 'dd/MM/yyyy HH:mm')}"
-            th:title="${#temporals.format(t.data_ora_apertura, 'dd/MM/yyyy HH:mm')}"></td>
-        <td th:text="${t.data_ora_chiusura != null ? #temporals.format(t.data_ora_chiusura, 'dd/MM/yyyy HH:mm') : '-'}"
-            th:title="${t.data_ora_chiusura != null ? #temporals.format(t.data_ora_chiusura, 'dd/MM/yyyy HH:mm') : '-'}"></td>
-        <td>
-            <a class="btn btn-primary" title="Modifica ticket"
-               th:href="@{/operatore/ticket/modifica (id=${t.idTicket})}" role="button">
-                <i class="bi bi-pencil-square"></i></a>
-            <a class="btn btn-danger" title="Elimina ticket"
-               th:href="@{/operatore/ticket/cancella (id=${t.idTicket})}" th:if="${!t.deleted}"
-               role="button"><i class="bi bi-trash"></i></a>
-            <a class="btn btn-success" title="Ripristina ticket"
-               th:href="@{/operatore/ticket/ripristina (id=${t.idTicket})}" th:if="${t.deleted}"
-               role="button"><i class="bi bi-arrow-repeat"></i></a>
-            <a class="btn btn-success" title="Aggiungi commento"
-               th:href="@{/cliente/commenti/crea (ticketId=${t.idTicket})}" role="button"><i
-                    class="bi bi-file-plus"></i></a>
-            <a class="btn btn-info" title="Visualizza commenti"
-               th:href="@{/operatore/ticket/commenti (id=${t.idTicket})}" role="button"><i
-                    class="bi bi-chat-square-text"></i></a>
+    <!-- Paginazione -->
+    <div class="d-flex justify-content-between align-items-center mt-4" th:if="${tickets != null and tickets.totalPages > 0}">
+        <div class="text-white-50 small">
+            Mostrando pagina <span th:text="${tickets.number + 1}">1</span> di <span th:text="${tickets.totalPages}">1</span>
+        </div>
+        <nav aria-label="Page navigation">
+            <ul class="pagination pagination-sm mb-0">
+                <li class="page-item" th:classappend="${tickets.first} ? 'disabled'">
+                    <a class="page-link" th:href="@{/operatore/ticket(pag=0, titolo=${titolo}, descrizione=${descrizione}, categoria=${categoria}, stato=${stato}, priorita=${priorita}, username=${username})}">
+                        <i class="bi bi-chevron-double-left"></i>
+                    </a>
+                </li>
+                <li class="page-item" th:each="i : ${#numbers.sequence(T(java.lang.Math).max(0, tickets.number - 2), T(java.lang.Math).min(tickets.totalPages - 1, tickets.number + 2))}" th:classappend="${i == tickets.number} ? 'active'">
+                    <a class="page-link" th:text="${i + 1}" th:href="@{/operatore/ticket(pag=${i}, titolo=${titolo}, descrizione=${descrizione}, categoria=${categoria}, stato=${stato}, priorita=${priorita}, username=${username})}"></a>
+                </li>
+                <li class="page-item" th:classappend="${tickets.last} ? 'disabled'">
+                    <a class="page-link" th:href="@{/operatore/ticket(pag=${tickets.totalPages - 1}, titolo=${titolo}, descrizione=${descrizione}, categoria=${categoria}, stato=${stato}, priorita=${priorita}, username=${username})}">
+                        <i class="bi bi-chevron-double-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</main>
 
-            <a class="btn btn-warning" title="Cambia stato" th:if="${t.stato != 'CHIUSO'}"
-               th:href="@{/operatore/ticket/stato (id=${t.idTicket})}" role="button"><i
-                    class="bi bi-ticket-perforated"></i></a>
-            <a class="btn btn-secondary disabled"
-               th:if="${t.stato == 'CHIUSO'}"
-               role="button"
-               style="pointer-events: none;">
-                <i class="bi bi-ticket-perforated"></i>
-            </a>
+<footer th:replace="~{fragments/fragments :: footer}"></footer>
 
-            <a class="btn btn-secondary" title="Visualizza storico"
-               th:href="@{/operatore/ticket/storico (id=${t.idTicket})}" role="button"><i
-                    class="bi bi-archive"></i></a>
-        </td>
-    </tr>
-    </tbody>
-</table>
-
-<div class="d-flex justify-content-center mt-4" th:if="${tickets != null and tickets.totalPages > 0}">
-    <nav aria-label="Page navigation">
-        <ul class="pagination">
-
-            <li class="page-item" th:classappend="${tickets.first} ? 'disabled'">
-                <a class="page-link"
-                   th:href="${!tickets.first} ? @{/operatore/ticket(pag=0, titolo=${titolo}, descrizione=${descrizione}, categoria=${categoria}, stato=${stato}, priorita=${priorita}, username=${username}, dataAperturaDa=${dataAperturaDa}, dataAperturaA=${dataAperturaA}, dataChiusuraDa=${dataChiusuraDa}, dataChiusuraA=${dataChiusuraA}, numCommenti=${numCommenti})} : '#'">
-                    &laquo;&laquo;
-                </a>
-            </li>
-
-            <li class="page-item" th:classappend="${tickets.first} ? 'disabled'">
-                <a class="page-link"
-                   th:href="${!tickets.first} ? @{/operatore/ticket(pag=${tickets.number - 1}, titolo=${titolo}, descrizione=${descrizione}, categoria=${categoria}, stato=${stato}, priorita=${priorita}, username=${username}, dataAperturaDa=${dataAperturaDa}, dataAperturaA=${dataAperturaA}, dataChiusuraDa=${dataChiusuraDa}, dataChiusuraA=${dataChiusuraA}, numCommenti=${numCommenti})} : '#'">
-                    &laquo;
-                </a>
-            </li>
-
-            <li class="page-item"
-                th:each="i : ${#numbers.sequence(
-                    T(java.lang.Math).max(0, tickets.number - 5),
-                    T(java.lang.Math).min(tickets.totalPages - 1, tickets.number + 5))}"
-                th:classappend="${i == tickets.number} ? 'active'">
-                <a class="page-link"
-                   th:text="${i + 1}"
-                   th:href="@{/operatore/ticket(pag=${i}, titolo=${titolo}, descrizione=${descrizione}, categoria=${categoria}, stato=${stato}, priorita=${priorita}, username=${username}, dataAperturaDa=${dataAperturaDa}, dataAperturaA=${dataAperturaA}, dataChiusuraDa=${dataChiusuraDa}, dataChiusuraA=${dataChiusuraA}, numCommenti=${numCommenti})}">
-                </a>
-            </li>
-
-            <li class="page-item" th:classappend="${tickets.last} ? 'disabled'">
-                <a class="page-link"
-                   th:href="${!tickets.last} ? @{/operatore/ticket(pag=${tickets.number + 1}, titolo=${titolo}, descrizione=${descrizione}, categoria=${categoria}, stato=${stato}, priorita=${priorita}, username=${username}, dataAperturaDa=${dataAperturaDa}, dataAperturaA=${dataAperturaA}, dataChiusuraDa=${dataChiusuraDa}, dataChiusuraA=${dataChiusuraA}, numCommenti=${numCommenti})} : '#'">
-                    &raquo;
-                </a>
-            </li>
-
-            <li class="page-item" th:classappend="${tickets.last} ? 'disabled'">
-                <a class="page-link"
-                   th:href="${!tickets.last} ? @{/operatore/ticket(pag=${tickets.totalPages - 1}, titolo=${titolo}, descrizione=${descrizione}, categoria=${categoria}, stato=${stato}, priorita=${priorita}, username=${username}, dataAperturaDa=${dataAperturaDa}, dataAperturaA=${dataAperturaA}, dataChiusuraDa=${dataChiusuraDa}, dataChiusuraA=${dataChiusuraA}, numCommenti=${numCommenti})} : '#'">
-                    &raquo;&raquo;
-                </a>
-            </li>
-
-        </ul>
-    </nav>
-</div>
-
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

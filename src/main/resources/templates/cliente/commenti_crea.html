@@ -1,44 +1,53 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html"
+<html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="https://www.thymeleaf.org/extras/springsecurity">
-<head>
-  <meta charset="UTF-8">
-  <title>Register</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-  <style>
-    body{font-family: Arial; padding: 20px; background-color: #f5f7fa}
-  </style>
-</head>
+<head th:replace="~{fragments/fragments :: head('Crea Commento')}"></head>
 <body>
 
-<div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+<nav th:replace="~{fragments/fragments :: navbar}"></nav>
 
-  <div class="card p-4 shadow" style="width: 350px; border-radius: 10px; background-color: #ffffff; border: 1px solid #dce3ed">
+<main class="main-content">
+    <div class="row justify-content-center">
+        <div class="col-lg-5 col-md-7">
+            <div class="card border-0 shadow-lg p-2 p-md-4">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="bg-primary bg-gradient p-3 rounded-3 me-3">
+                            <i class="bi bi-chat-left-text text-white fs-4"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-dark mb-0 border-0 p-0">Nuovo Commento</h2>
+                            <p class="text-muted small mb-0">Aggiungi un commento al ticket selezionato.</p>
+                        </div>
+                    </div>
 
-    <h2 class="text-center mb-4">
-      Crea commento &nbsp;
-      <a th:href="@{/home}" class="text-primary" style="text-decoration:none;">
-        <i class="bi bi-house-door-fill"></i>
-      </a>
-    </h2>
+                    <form th:action="@{/cliente/commenti/crea}" method="post">
+                        <input type="hidden" name="ticketId" th:value="${ticketSelezionato.idTicket}">
+                        <div class="mb-3">
+                            <label for="testo" class="form-label fw-semibold">Testo del commento</label>
+                            <textarea class="form-control" id="testo" name="testo" rows="4" placeholder="Scrivi il tuo commento..." required></textarea>
+                        </div>
+                        <div class="mb-3" sec:authorize="hasAnyRole('OPERATORE','ADMIN')">
+                            <label for="tipo" class="form-label fw-semibold">Tipo</label>
+                            <select class="form-select" id="tipo" name="tipo">
+                                <option value="ESTERNO">Esterno (visibile al cliente)</option>
+                                <option value="INTERNO">Interno (solo operatori)</option>
+                            </select>
+                        </div>
+                        <div class="d-flex gap-3 justify-content-end mt-4">
+                            <a th:href="@{/home}" class="btn btn-outline-secondary px-4">Annulla</a>
+                            <button type="submit" class="btn btn-primary px-5 fw-bold shadow">
+                                Pubblica <i class="bi bi-send-fill ms-2"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
 
-    <form th:action="@{/cliente/commenti/crea}" method="post">
-      <input type="hidden" name="ticketId" th:value="${ticketSelezionato.idTicket}">
-      <div class="form-group">
-        <label for="testo">Testo</label>
-        <input type="text" class="form-control" id="testo" name="testo" required>
-      </div>
-      <div class="form-group" sec:authorize="hasAnyRole('OPERATORE','ADMIN')">
-        <label for="tipo">Tipo</label>
-        <select class="form-control" id="tipo" name="tipo">
-          <option value="ESTERNO">ESTERNO</option>
-          <option value="INTERNO">INTERNO</option>
-        </select>
-      </div>
-      <button type="submit" class="btn btn-primary btn-block mt-3">Crea</button>
-    </form>
-  </div>
-</div>
+<footer th:replace="~{fragments/fragments :: footer}"></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

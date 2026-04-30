@@ -36,7 +36,7 @@ public class UtenteServiceTest {
         given(utenteRepository.save(any(Utente.class)))
                 .willAnswer(inv -> inv.getArgument(0));
 
-        Utente result = utenteService.create("test", "email", "pass", "CLIENTE");
+        Utente result = utenteService.create("test", "email", "pass", "CLIENTE", "Via Bari", "Bari");
 
         ArgumentCaptor<Utente> captor = ArgumentCaptor.forClass(Utente.class);
         then(utenteRepository).should().save(captor.capture());
@@ -99,7 +99,7 @@ public class UtenteServiceTest {
         given(utenteRepository.findById(7)).willReturn(Optional.of(old));
         given(utenteRepository.save(any(Utente.class))).willAnswer(inv -> inv.getArgument(0));
 
-        Utente updated = utenteService.update(7,"username2", "email2", null);
+        Utente updated = utenteService.update(7,"username2", "email2", null, null, null);
         assertThat(updated.getEmail()).isEqualTo("email2");
         assertThat(updated.getUsername()).isEqualTo("username2");
         assertThat(updated.getPassword()).isEqualTo("PASSWORD");

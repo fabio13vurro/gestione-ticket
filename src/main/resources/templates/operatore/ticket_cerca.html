@@ -1,233 +1,172 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Cerca Ticket</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <style>
-        body{font-family: Arial; padding: 20px; background-color: #f5f7fa}
-        h1{text-align: center}
-    </style>
-</head>
+<head th:replace="~{fragments/fragments :: head('Cerca Ticket — Operatore')}"></head>
 <body>
-<h1>Cerca Ticket</h1>
-<hr>
 
-<h3 id="anchorId">Per ID</h3>
-<form th:action="@{/operatore/ticket/cerca/id}" method="get">
-    <input type="number" name="id" placeholder="ID" min="1" required>
-    <button type="submit">Cerca</button>
-</form>
+<nav th:replace="~{fragments/fragments :: navbar}"></nav>
 
-<div th:if="${byId}" class="table-responsive">
-    <table class="table table-bordered table-hover">
-        <thead>
-        <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Titolo</th>
-            <th scope="col">Descrizione</th>
-            <th scope="col">Categoria</th>
-            <th scope="col">Stato</th>
-            <th scope="col">Data apertura</th>
-            <th scope="col">Data chiusura</th>
-            <th scope="col">Priorità</th>
-            <th scope="col">Utente</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <th scope="row" th:text="${byId.idTicket}">1</th>
-            <td th:text="${byId.titolo}">Titolo</td>
-            <td th:text="${byId.descrizione}">Descrizione</td>
-            <td th:text="${byId.categoria}">Categoria</td>
-            <td th:text="${byId.stato}">APERTO</td>
-            <td th:text="${#temporals.format(byId.data_ora_apertura, 'dd/MM/yyyy HH:mm')}">20/01/2026 10:00</td>
-            <td th:text="${byId.data_ora_chiusura != null ? #temporals.format(byId.data_ora_chiusura, 'dd/MM/yyyy HH:mm') : '-'}"> - </td>
-            <td th:text="${byId.priorita}">1</td>
-            <td th:text="${byId.utente != null ? byId.utente.username : 'N/D'}">admin</td>
-        </tr>
-        </tbody>
-    </table>
-</div>
-<hr>
+<main class="main-content">
+    <div class="mb-4">
+        <h1 class="mb-0">Cerca Ticket</h1>
+        <p class="text-white-50">Cerca ticket nel sistema per ID, stato, categoria, priorità o utente.</p>
+    </div>
 
-<h3 id="anchorStato">Per stato</h3>
-<hr>
-<form th:action="@{/operatore/ticket/cerca/stato}" method="get">
-    <select name="stato"><option>APERTO</option><option>IN_LAVORAZIONE</option><option>IN_ATTESA</option><option>RISOLTO</option><option>CHIUSO</option></select>
-    <button type="submit">Cerca</button>
-</form>
-<br>
+    <!-- Cerca per ID -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-transparent border-0 py-3 px-4">
+            <h5 class="mb-0 text-dark" id="anchorId"><i class="bi bi-hash text-primary me-2"></i>Per ID</h5>
+        </div>
+        <div class="card-body px-4 pb-4">
+            <form th:action="@{/operatore/ticket/cerca/id}" method="get" class="d-flex gap-2" style="max-width: 300px;">
+                <input type="number" class="form-control form-control-sm" name="id" placeholder="ID Ticket" min="1" required>
+                <button type="submit" class="btn btn-primary btn-sm px-3">Cerca</button>
+            </form>
+            <div th:if="${byId}" class="table-responsive mt-3 rounded-3 border">
+                <table class="table table-hover mb-0">
+                    <thead><tr><th class="ps-3">ID</th><th>Titolo</th><th>Categoria</th><th>Stato</th><th>Priorità</th><th>Utente</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td class="ps-3 fw-bold" th:text="${byId.idTicket}">1</td>
+                            <td th:text="${byId.titolo}">Titolo</td>
+                            <td th:text="${byId.categoria}">Cat</td>
+                            <td th:text="${byId.stato}">APERTO</td>
+                            <td th:text="${byId.priorita}">1</td>
+                            <td th:text="${byId.utente != null ? byId.utente.username : 'N/D'}">admin</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
-<div th:if="${#lists.isEmpty(ticketsByStato) && statoSelezionato != null}">
-    <p th:text="'Nessun ticket trovato con stato ' + ${statoSelezionato}"></p>
-</div>
+    <!-- Cerca per Stato -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-transparent border-0 py-3 px-4">
+            <h5 class="mb-0 text-dark" id="anchorStato"><i class="bi bi-flag text-warning me-2"></i>Per Stato</h5>
+        </div>
+        <div class="card-body px-4 pb-4">
+            <form th:action="@{/operatore/ticket/cerca/stato}" method="get" class="d-flex gap-2" style="max-width: 300px;">
+                <select name="stato" class="form-select form-select-sm">
+                    <option>APERTO</option><option>IN_LAVORAZIONE</option><option>IN_ATTESA</option><option>RISOLTO</option><option>CHIUSO</option>
+                </select>
+                <button type="submit" class="btn btn-primary btn-sm px-3">Cerca</button>
+            </form>
+            <div th:if="${#lists.isEmpty(ticketsByStato) && statoSelezionato != null}" class="mt-3">
+                <p class="text-muted small" th:text="'Nessun ticket trovato con stato ' + ${statoSelezionato}"></p>
+            </div>
+            <div th:if="${!#lists.isEmpty(ticketsByStato)}" class="table-responsive mt-3 rounded-3 border">
+                <table class="table table-hover mb-0">
+                    <thead><tr><th class="ps-3">ID</th><th>Titolo</th><th>Categoria</th><th>Stato</th><th>Priorità</th><th>Utente</th></tr></thead>
+                    <tbody>
+                        <tr th:each="t : ${ticketsByStato}">
+                            <td class="ps-3 fw-bold" th:text="${t.idTicket}">1</td>
+                            <td th:text="${t.titolo}">Titolo</td>
+                            <td th:text="${t.categoria}">Cat</td>
+                            <td th:text="${t.stato}">APERTO</td>
+                            <td th:text="${t.priorita}">1</td>
+                            <td th:text="${t.utente != null ? t.utente.username : 'N/D'}">admin</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
-<div th:if="${!#lists.isEmpty(ticketsByStato)}" class="table-responsive">
-    <table class="table table-bordered table-hover">
-        <thead>
-        <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Titolo</th>
-            <th scope="col">Descrizione</th>
-            <th scope="col">Categoria</th>
-            <th scope="col">Stato</th>
-            <th scope="col">Data apertura</th>
-            <th scope="col">Data chiusura</th>
-            <th scope="col">Priorità</th>
-            <th scope="col">Utente</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="t : ${ticketsByStato}">
-            <th scope="row" th:text="${t.idTicket}">1</th>
-            <td th:text="${t.titolo}">Titolo</td>
-            <td th:text="${t.descrizione}">Descrizione</td>
-            <td th:text="${t.categoria}">Categoria</td>
-            <td th:text="${t.stato}">APERTO</td>
-            <td th:text="${#temporals.format(t.data_ora_apertura, 'dd/MM/yyyy HH:mm')}">30-01-2026 10:00</td>
-            <td th:text="${t.data_ora_chiusura != null ? #temporals.format(t.data_ora_chiusura, 'dd/MM/yyyy HH:mm') : '-'}"> - </td>
-            <td th:text="${t.priorita}">1</td>
-            <td th:text="${t.utente != null ? t.utente.username : 'N/D'}">admin</td>
-        </tr>
-        </tbody>
-    </table>
-</div>
-<hr>
+    <!-- Cerca per Categoria -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-transparent border-0 py-3 px-4">
+            <h5 class="mb-0 text-dark" id="anchorCategoria"><i class="bi bi-tag text-info me-2"></i>Per Categoria</h5>
+        </div>
+        <div class="card-body px-4 pb-4">
+            <form th:action="@{/operatore/ticket/cerca/categoria}" method="get" class="d-flex gap-2" style="max-width: 300px;">
+                <input type="text" class="form-control form-control-sm" name="categoria" placeholder="Categoria" required>
+                <button type="submit" class="btn btn-primary btn-sm px-3">Cerca</button>
+            </form>
+            <div th:if="${#lists.isEmpty(ticketsByCategoria) && categoriaSelezionata != null}" class="mt-3">
+                <p class="text-muted small" th:text="'Nessun ticket trovato per la categoria ' + ${categoriaSelezionata}"></p>
+            </div>
+            <div th:if="${!#lists.isEmpty(ticketsByCategoria)}" class="table-responsive mt-3 rounded-3 border">
+                <table class="table table-hover mb-0">
+                    <thead><tr><th class="ps-3">ID</th><th>Titolo</th><th>Categoria</th><th>Stato</th><th>Priorità</th><th>Utente</th></tr></thead>
+                    <tbody>
+                        <tr th:each="t : ${ticketsByCategoria}">
+                            <td class="ps-3 fw-bold" th:text="${t.idTicket}">1</td>
+                            <td th:text="${t.titolo}">Titolo</td>
+                            <td th:text="${t.categoria}">Cat</td>
+                            <td th:text="${t.stato}">APERTO</td>
+                            <td th:text="${t.priorita}">1</td>
+                            <td th:text="${t.utente != null ? t.utente.username : 'N/D'}">admin</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
-<h3 id="anchorCategoria">Per categoria</h3>
-<hr>
-<form th:action="@{/operatore/ticket/cerca/categoria}" method="get">
-    <input type="text" name="categoria" placeholder="categoria" required>
-    <button type="submit">Cerca</button>
-</form>
-<br>
+    <!-- Cerca per Priorità -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-transparent border-0 py-3 px-4">
+            <h5 class="mb-0 text-dark" id="anchorPriorita"><i class="bi bi-exclamation-diamond text-danger me-2"></i>Per Priorità</h5>
+        </div>
+        <div class="card-body px-4 pb-4">
+            <form th:action="@{/operatore/ticket/cerca/priorita}" method="get" class="d-flex gap-2" style="max-width: 300px;">
+                <input type="number" class="form-control form-control-sm" name="priorita" placeholder="1-4" min="1" max="4" required>
+                <button type="submit" class="btn btn-primary btn-sm px-3">Cerca</button>
+            </form>
+            <div th:if="${#lists.isEmpty(ticketsByPriorita) && prioritaSelezionata != null}" class="mt-3">
+                <p class="text-muted small" th:text="'Nessun ticket trovato con priorità ' + ${prioritaSelezionata}"></p>
+            </div>
+            <div th:if="${!#lists.isEmpty(ticketsByPriorita)}" class="table-responsive mt-3 rounded-3 border">
+                <table class="table table-hover mb-0">
+                    <thead><tr><th class="ps-3">ID</th><th>Titolo</th><th>Categoria</th><th>Stato</th><th>Priorità</th><th>Utente</th></tr></thead>
+                    <tbody>
+                        <tr th:each="t : ${ticketsByPriorita}">
+                            <td class="ps-3 fw-bold" th:text="${t.idTicket}">1</td>
+                            <td th:text="${t.titolo}">Titolo</td>
+                            <td th:text="${t.categoria}">Cat</td>
+                            <td th:text="${t.stato}">APERTO</td>
+                            <td th:text="${t.priorita}">1</td>
+                            <td th:text="${t.utente != null ? t.utente.username : 'N/D'}">utente</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
-<div th:if="${#lists.isEmpty(ticketsByCategoria) && categoriaSelezionata != null}">
-    <p th:text="'Nessun ticket trovato per la categoria ' + ${categoriaSelezionata}"></p>
-</div>
+    <!-- Cerca per Utente -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-transparent border-0 py-3 px-4">
+            <h5 class="mb-0 text-dark" id="anchorUtente"><i class="bi bi-person text-success me-2"></i>Per Utente</h5>
+        </div>
+        <div class="card-body px-4 pb-4">
+            <form th:action="@{/operatore/ticket/cerca/utente}" method="get" class="d-flex gap-2" style="max-width: 300px;">
+                <input type="text" class="form-control form-control-sm" name="username" placeholder="Username" required>
+                <button type="submit" class="btn btn-primary btn-sm px-3">Cerca</button>
+            </form>
+            <div th:if="${#lists.isEmpty(ticketsByUtente) && usernameSelezionato != null}" class="mt-3">
+                <p class="text-muted small" th:text="'Nessun ticket trovato per l\'utente ' + ${usernameSelezionato}"></p>
+            </div>
+            <div th:if="${!#lists.isEmpty(ticketsByUtente)}" class="table-responsive mt-3 rounded-3 border">
+                <table class="table table-hover mb-0">
+                    <thead><tr><th class="ps-3">ID</th><th>Titolo</th><th>Categoria</th><th>Stato</th><th>Priorità</th><th>Utente</th></tr></thead>
+                    <tbody>
+                        <tr th:each="t : ${ticketsByUtente}">
+                            <td class="ps-3 fw-bold" th:text="${t.idTicket}">1</td>
+                            <td th:text="${t.titolo}">Titolo</td>
+                            <td th:text="${t.categoria}">Cat</td>
+                            <td th:text="${t.stato}">APERTO</td>
+                            <td th:text="${t.priorita}">1</td>
+                            <td th:text="${t.utente.username}">utente</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
 
-<div th:if="${!#lists.isEmpty(ticketsByCategoria)}" class="table-responsive">
-    <table class="table table-bordered table-hover">
-        <thead>
-        <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Titolo</th>
-            <th scope="col">Descrizione</th>
-            <th scope="col">Categoria</th>
-            <th scope="col">Stato</th>
-            <th scope="col">Data apertura</th>
-            <th scope="col">Data chiusura</th>
-            <th scope="col">Priorità</th>
-            <th scope="col">Utente</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="t : ${ticketsByCategoria}">
-            <th scope="row" th:text="${t.idTicket}">1</th>
-            <td th:text="${t.titolo}">Titolo</td>
-            <td th:text="${t.descrizione}">Descrizione</td>
-            <td th:text="${t.categoria}">Categoria</td>
-            <td th:text="${t.stato}">APERTO</td>
-            <td th:text="${#temporals.format(t.data_ora_apertura, 'dd/MM/yyyy HH:mm')}">26/01/2026 10:00</td>
-            <td th:text="${t.data_ora_chiusura != null ? #temporals.format(t.data_ora_chiusura, 'dd/MM/yyyy HH:mm') : '-'}"> - </td>
-            <td th:text="${t.priorita}">1</td>
-            <td th:text="${t.utente != null ? t.utente.username : 'N/D'}">admin</td>
-        </tr>
-        </tbody>
-    </table>
-</div>
-<hr>
-
-<h3 id="anchorPriorita">Per priorità</h3>
-<hr>
-<form th:action="@{/operatore/ticket/cerca/priorita}" method="get">
-    <input type="number" name="priorita" placeholder="priorità" min="1" max="4" required>
-    <button type="submit">Cerca</button>
-</form>
-<br>
-
-<div th:if="${#lists.isEmpty(ticketsByPriorita) && prioritaSelezionata != null}">
-    <p th:text="'Nessun ticket trovato con priorità ' + ${prioritaSelezionata}"></p>
-</div>
-
-<div th:if="${!#lists.isEmpty(ticketsByPriorita)}" class="table-responsive">
-    <table class="table table-bordered table-hover">
-        <thead>
-        <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Titolo</th>
-            <th scope="col">Descrizione</th>
-            <th scope="col">Categoria</th>
-            <th scope="col">Stato</th>
-            <th scope="col">Data apertura</th>
-            <th scope="col">Data chiusura</th>
-            <th scope="col">Priorità</th>
-            <th scope="col">Utente</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="t : ${ticketsByPriorita}">
-            <th scope="row" th:text="${t.idTicket}">1</th>
-            <td th:text="${t.titolo}">Titolo</td>
-            <td th:text="${t.descrizione}">Descrizione</td>
-            <td th:text="${t.categoria}">Categoria</td>
-            <td th:text="${t.stato}">APERTO</td>
-            <td th:text="${#temporals.format(t.data_ora_apertura, 'dd/MM/yyyy HH:mm')}">26/01/2026 10:00</td>
-            <td th:text="${t.data_ora_chiusura != null ? #temporals.format(t.data_ora_chiusura, 'dd/MM/yyyy HH:mm') : '-'}"> - </td>
-            <td th:text="${t.priorita}">1</td>
-            <td th:text="${t.utente != null ? t.utente.username : 'N/D'}">utente</td>
-        </tr>
-        </tbody>
-    </table>
-</div>
-<hr>
-
-<h3 id="anchorUtente">Per utente</h3>
-<hr>
-<form th:action="@{/operatore/ticket/cerca/utente}" method="get">
-    <input type="text" name="username" placeholder="username" required>
-    <button type="submit">Cerca</button>
-</form>
-<br>
-
-<div th:if="${#lists.isEmpty(ticketsByUtente) && usernameSelezionato != null}">
-    <p th:text="'Nessun ticket trovato per l\'utente ' + ${usernameSelezionato}"></p>
-</div>
-
-<div th:if="${!#lists.isEmpty(ticketsByUtente)}" class="table-responsive">
-    <table class="table table-bordered table-hover">
-        <thead>
-        <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Titolo</th>
-            <th scope="col">Descrizione</th>
-            <th scope="col">Categoria</th>
-            <th scope="col">Stato</th>
-            <th scope="col">Data apertura</th>
-            <th scope="col">Data chiusura</th>
-            <th scope="col">Priorità</th>
-            <th scope="col">Utente</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="t : ${ticketsByUtente}">
-            <th scope="row" th:text="${t.idTicket}">1</th>
-            <td th:text="${t.titolo}">Titolo</td>
-            <td th:text="${t.descrizione}">Descrizione</td>
-            <td th:text="${t.categoria}">Categoria</td>
-            <td th:text="${t.stato}">APERTO</td>
-            <td th:text="${#temporals.format(t.data_ora_apertura, 'dd/MM/yyyy HH:mm')}">26/01/2026 10:00</td>
-            <td th:text="${t.data_ora_chiusura != null ? #temporals.format(t.data_ora_chiusura, 'dd/MM/yyyy HH:mm') : '-'}"> - </td>
-            <td th:text="${t.priorita}">1</td>
-            <td th:text="${ t.utente.username}">utente</td>
-        </tr>
-        </tbody>
-    </table>
-</div>
-<hr>
-
-<p><a class="btn btn-secondary" th:href="@{/home}" role="button">← Torna alla Home</a></p>
-
+<footer th:replace="~{fragments/fragments :: footer}"></footer>
 
 <script>
     if (window.location.href.includes("cerca/")) {
@@ -241,7 +180,6 @@
         }, 300);
     }
 </script>
-
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -1,33 +1,34 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-  <title>Cancella Ticket</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-  <style>
-    body { font-family: Arial; padding: 20px; background-color: #f5f7fa}
-  </style>
-</head>
+<head th:replace="~{fragments/fragments :: head('Cancella Ticket — Operatore')}"></head>
 <body>
-<div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
-  <div class="card p-4 shadow" style=" width: 350px; border-radius: 10px; background-color: #ffffff; border: 1px solid #dce3ed">
 
-    <h2 class="text-center mb-4">Confermare cancellazione ticket</h2>
+<nav th:replace="~{fragments/fragments :: navbar}"></nav>
 
-    <form th:action="@{/operatore/ticket/cancella}" method="post">
+<main class="main-content d-flex justify-content-center align-items-center" style="min-height: 60vh;">
+    <div class="card border-0 shadow-lg p-4" style="max-width: 420px; width: 100%;">
+        <div class="card-body text-center">
+            <div class="bg-danger bg-opacity-10 d-inline-flex p-3 rounded-circle mb-3">
+                <i class="bi bi-exclamation-triangle text-danger fs-2"></i>
+            </div>
+            <h2 class="text-dark mb-2">Conferma Cancellazione</h2>
+            <p class="text-muted small">Stai per eliminare questo ticket. Questa azione è reversibile.</p>
 
-      <div class="form-group mt-3">
-        <label class="field">
-          ID Ticket:
-          <input type="number" name="id" th:value="${ticket.getIdTicket()}" readonly/>
-        </label>
-      </div>
-      <br>
-      <p class="text-center">
-        <a class="btn btn-secondary" th:href="@{/operatore/ticket}" role="button">← Torna indietro</a>
-        <button class="btn btn-danger" type="submit" role="button">Cancella</button>
-      </p>
-    </form>
-  </div>
-</div>
+            <form th:action="@{/operatore/ticket/cancella}" method="post" class="mt-4">
+                <div class="mb-4 text-start">
+                    <label class="form-label small fw-bold text-muted">ID Ticket</label>
+                    <input type="number" class="form-control" name="id" th:value="${ticket.getIdTicket()}" readonly/>
+                </div>
+                <div class="d-flex gap-3">
+                    <a class="btn btn-outline-secondary flex-grow-1" th:href="@{/operatore/ticket}">← Annulla</a>
+                    <button class="btn btn-danger flex-grow-1 fw-bold" type="submit">Cancella</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/fragments :: footer}"></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

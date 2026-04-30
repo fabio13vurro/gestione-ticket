@@ -44,17 +44,19 @@ class AdminPageControllerTest {
     @WithMockUser(roles = "ADMIN")
     void utentiCreaSubmit() throws Exception {
 
-        given(utenteService.create(anyString(), anyString(), anyString(), anyString())).willReturn(new Utente());
+        given(utenteService.create(anyString(), anyString(), anyString(), anyString(), anyString(), anyString())).willReturn(new Utente());
 
         mockMvc.perform(post("/admin/utenti/crea")
                         .param("username", "mario")
                         .param("email", "mario@mail.com")
                         .param("password", "pass")
-                        .param("ruolo", "ADMIN"))
+                        .param("ruolo", "ADMIN")
+                        .param("via", "Via Bari")
+                        .param("citta", "Bari"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/admin/utenti"));
 
-        then(utenteService).should().create("mario", "mario@mail.com", "pass", "ADMIN");
+        then(utenteService).should().create("mario", "mario@mail.com", "pass", "ADMIN", "Via Bari", "Bari");
     }
 
     @Test
@@ -180,7 +182,7 @@ class AdminPageControllerTest {
     @WithMockUser(roles = "ADMIN")
     void utentiModificaSubmit() throws Exception {
 
-        given(utenteService.update(anyInt(), any(), any(), any(), any())).willReturn(new Utente());
+        given(utenteService.update(anyInt(), any(), any(), any(), any(), any())).willReturn(new Utente());
 
         mockMvc.perform(post("/admin/utenti/modifica")
                         .param("id", "1")
@@ -189,6 +191,6 @@ class AdminPageControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/admin/utenti"));
 
-        then(utenteService).should().update(1, "new", "mail@mail.com", null, null);
+        then(utenteService).should().update(1, "new", "mail@mail.com", null, null, null);
     }
 }

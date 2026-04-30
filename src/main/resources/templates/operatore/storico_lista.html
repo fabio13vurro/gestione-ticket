@@ -1,49 +1,57 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Storico Stati</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <style>
-        body{font-family: Arial; padding: 20px; background-color: #f5f7fa}
-        h1{text-align: center}
-    </style>
-</head>
+<head th:replace="~{fragments/fragments :: head('Storico Stati — Operatore')}"></head>
 <body>
-<h2 class="text-center">Storico Ticket #<span th:text="${ticketId}"></span></h2>
-<hr>
 
-<div th:if="${#lists.isEmpty(storico)}" class="alert alert-info">
-    Nessun storico presente per questo ticket.
-</div>
+<nav th:replace="~{fragments/fragments :: navbar}"></nav>
 
-<div th:if="${!#lists.isEmpty(storico)}" class="table-responsive">
-    <table class="table table-bordered table-hover">
-        <thead>
-        <tr>
-            <th scope="col">Id</th>
-            <th scope="col">Stato Precedente</th>
-            <th scope="col">Stato Nuovo</th>
-            <th scope="col">Data</th>
-            <th scope="col">Azioni</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="s : ${storico}">
-            <th scope="row" th:text="${s.idStoricoStato}">1</th>
-            <td th:text="${s.stato_precedente}">APERTO</td>
-            <td th:text="${s.stato_nuovo}">IN_LAVORAZIONE</td>
-            <td th:text="${#temporals.format(s.data_ora, 'dd/MM/yyyy HH:mm')}"></td>
-            <td>
-                <a class="btn btn-danger" th:href="@{/operatore/storico/cancella (id=${s.idStoricoStato})}" th:if="${!s.deleted}" role="button">Cancella</a>
-                <a class="btn btn-success" th:href="@{/operatore/storico/ripristina (id=${s.idStoricoStato})}" th:if="${s.deleted}" role="button">Ripristina</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
-<p class="text-center">
-    <a class="btn btn-secondary" th:href="@{/operatore/ticket}" role="button">← Torna ai Ticket</a>
-    <a class="btn btn-primary" th:href="@{/home}" role="button">Vai alla Home</a>
-</p>
+<main class="main-content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="mb-0">Storico Ticket #<span th:text="${ticketId}">0</span></h1>
+            <p class="text-white-50">Cronologia dei cambi di stato per questo ticket.</p>
+        </div>
+        <a th:href="@{/operatore/ticket}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i> Torna ai Ticket
+        </a>
+    </div>
+
+    <div class="table-responsive shadow-lg rounded-4">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th class="ps-4" style="width: 10%">ID</th>
+                    <th style="width: 25%">Stato Precedente</th>
+                    <th style="width: 25%">Stato Nuovo</th>
+                    <th style="width: 25%">Data Cambio</th>
+                    <th class="text-end pe-4" style="width: 15%">Azioni</th>
+                </tr>
+            </thead>
+            <tbody class="border-top-0">
+                <tr th:if="${#lists.isEmpty(storico)}">
+                    <td colspan="5" class="text-center py-5 text-muted">
+                        <i class="bi bi-clock-history fs-1 d-block mb-3 opacity-25"></i>
+                        Nessun storico presente per questo ticket.
+                    </td>
+                </tr>
+                <tr th:each="s : ${storico}" th:classappend="${s.deleted} ? 'opacity-50'">
+                    <td class="ps-4 fw-bold text-muted" th:text="${s.idStoricoStato}">1</td>
+                    <td th:text="${s.stato_precedente}">APERTO</td>
+                    <td th:text="${s.stato_nuovo}">IN_LAVORAZIONE</td>
+                    <td class="small text-muted" th:text="${#temporals.format(s.data_ora, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td class="text-end pe-4">
+                        <div class="btn-group btn-group-sm shadow-sm">
+                            <a th:if="${!s.deleted}" th:href="@{/operatore/storico/cancella (id=${s.idStoricoStato})}" class="btn btn-white border" title="Cancella"><i class="bi bi-trash text-danger"></i></a>
+                            <a th:if="${s.deleted}" th:href="@{/operatore/storico/ripristina (id=${s.idStoricoStato})}" class="btn btn-white border" title="Ripristina"><i class="bi bi-arrow-repeat text-success"></i></a>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/fragments :: footer}"></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

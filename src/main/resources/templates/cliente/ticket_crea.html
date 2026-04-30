@@ -1,47 +1,79 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
-<head>
-    <meta charset="UTF-8">
-    <title>Register</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <style>
-        body{font-family: Arial; padding: 20px; background-color: #f5f7fa}
-    </style>
-</head>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/fragments :: head('Nuovo Ticket — Supporto')}"></head>
 <body>
 
-<div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+<nav th:replace="~{fragments/fragments :: navbar}"></nav>
 
-    <div class="card p-4 shadow" style="width: 350px; border-radius: 10px; background-color: #ffffff; border: 1px solid #dce3ed">
+<main class="main-content">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-9">
+            <div class="card border-0 shadow-lg p-2 p-md-4">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="bg-primary bg-gradient p-3 rounded-3 me-3">
+                            <i class="bi bi-megaphone text-white fs-4"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-dark mb-0 border-0 p-0">Apri una Segnalazione</h2>
+                            <p class="text-muted small mb-0">Descrivi il tuo problema e il nostro team ti risponderà il prima possibile.</p>
+                        </div>
+                    </div>
 
-        <h2 class="text-center mb-4">
-            Crea ticket &nbsp;
-            <a th:href="@{/home}" class="text-primary" style="text-decoration:none;">
-                <i class="bi bi-house-door-fill"></i>
-            </a>
-        </h2>
+                    <form th:action="@{/cliente/ticket/crea}" method="post">
+                        <div class="row g-4">
+                            <div class="col-12">
+                                <label for="titolo" class="form-label fw-semibold">Titolo Sintetico</label>
+                                <input type="text" class="form-control" id="titolo" name="titolo" placeholder="es. Impossibile accedere alla mail aziendale" required>
+                                <div class="form-text small">Usa un titolo breve che riassuma chiaramente il problema.</div>
+                            </div>
 
-        <form th:action="@{/cliente/ticket/crea}" method="post">
-            <div class="form-group">
-                <label for="titolo">Titolo</label>
-                <input type="text" class="form-control" id="titolo" name="titolo" required>
+                            <div class="col-12">
+                                <label for="descr" class="form-label fw-semibold">Descrizione Dettagliata</label>
+                                <textarea class="form-control" id="descr" name="descrizione" rows="4" placeholder="Fornisci quanti più dettagli possibili (es. messaggi di errore, passi eseguiti...)" required></textarea>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="categoria" class="form-label fw-semibold">Categoria Problema</label>
+                                <select class="form-select" id="categoria" name="categoria" required>
+                                    <option value="" disabled selected>Scegli una categoria...</option>
+                                    <option value="Hardware">Hardware (PC, Stampanti, Monitor)</option>
+                                    <option value="Software">Software (Applicativi, OS)</option>
+                                    <option value="Network">Rete & Connettività (Wi-Fi, VPN)</option>
+                                    <option value="Account">Account & Password</option>
+                                    <option value="Altro">Altro</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="priorita" class="form-label fw-semibold">Urgenza Stimata</label>
+                                <select class="form-select" id="priorita" name="priorita" required>
+                                    <option value="1">Bassa (Attività non bloccata)</option>
+                                    <option value="2" selected>Media (Attività rallentata)</option>
+                                    <option value="3">Alta (Utenza bloccata)</option>
+                                    <option value="4">Critica (Intero ufficio/reparto bloccato)</option>
+                                </select>
+                            </div>
+
+                            <div class="col-12 mt-5">
+                                <hr class="my-4 opacity-10">
+                                <div class="d-flex gap-3 justify-content-end">
+                                    <a th:href="@{/home}" class="btn btn-outline-secondary px-4">Annulla</a>
+                                    <button type="submit" class="btn btn-primary px-5 fw-bold shadow">
+                                        Invia Segnalazione <i class="bi bi-send-fill ms-2"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="descr">Descrizione</label>
-                <input type="text" class="form-control" id="descr" name="descrizione" required>
-            </div>
-            <div class="form-group mt-3">
-                <label for="categoria">Categoria</label>
-                <input type="text" class="form-control" id="categoria" name="categoria" required>
-            </div>
-            <div class="form-group mt-3">
-                <label for="priorita">Priorità</label>
-                <input type="number" class="form-control" id="priorita" name="priorita" min="1" max="4" required>
-            </div>
-            <button type="submit" class="btn btn-primary btn-block mt-3">Crea</button>
-        </form>
+        </div>
     </div>
-</div>
+</main>
+
+<footer th:replace="~{fragments/fragments :: footer}"></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

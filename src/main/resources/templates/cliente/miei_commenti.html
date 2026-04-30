@@ -1,109 +1,74 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="it">
-<head>
-    <meta charset="UTF-8"/>
-    <title>I miei commenti</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <style>
-        body { font-family: Arial; padding: 20px; background-color: #f5f7fa }
-        table td, table th {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-    </style>
-</head>
+<head th:replace="~{fragments/fragments :: head('I Miei Commenti')}"></head>
 <body>
 
-<h2 class="text-center mb-4">
-    I miei commenti &nbsp;
-    <a th:href="@{/home}" class="text-primary" style="text-decoration:none;">
-        <i class="bi bi-house-door-fill"></i>
-    </a>
-</h2>
+<nav th:replace="~{fragments/fragments :: navbar}"></nav>
 
-<div th:if="${mieiCommenti.totalElements == 0}" class="alert alert-info">
-    Non hai ancora commenti.
-</div>
+<main class="main-content">
+    <div class="mb-4">
+        <h1 class="mb-0">I Miei Commenti</h1>
+        <p class="text-white-50">Storico di tutti i commenti che hai scritto sui ticket.</p>
+    </div>
 
-<table class="table table-bordered table-hover" style="table-layout: fixed; width: 100%;">
-    <thead class="thead-light">
-    <tr>
-        <th style="width: 5%">ID</th>
-        <th style="width: 15%">Data/Ora</th>
-        <th style="width: 10%">Tipo</th>
-        <th style="width: 30%">Testo</th>
-        <th style="width: 8%">ID Ticket</th>
-        <th style="width: 32%">Titolo Ticket</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:if="${mieiCommenti.totalElements == 0}">
-        <td colspan="6" class="text-center text-muted">Nessun risultato trovato</td>
-    </tr>
-    <tr th:each="c : ${mieiCommenti.content}">
-        <td th:text="${c.idCommento}" th:title="${c.idCommento}">1</td>
-        <td th:text="${#temporals.format(c.data_ora, 'dd/MM/yyyy HH:mm')}"
-            th:title="${#temporals.format(c.data_ora, 'dd/MM/yyyy HH:mm')}">01/01/2026 10:00</td>
-        <td th:text="${c.tipo}" th:title="${c.tipo}">ESTERNO</td>
-        <td th:text="${c.testo}" th:title="${c.testo}">Testo</td>
-        <td th:text="${c.ticket != null ? c.ticket.idTicket : '—'}">12</td>
-        <td th:text="${(c.ticket != null && c.ticket.titolo != null) ? c.ticket.titolo : '—'}"
-            th:title="${(c.ticket != null && c.ticket.titolo != null) ? c.ticket.titolo : '—'}">Titolo</td>
-    </tr>
-    </tbody>
-</table>
+    <div class="table-responsive shadow-lg rounded-4">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th class="ps-4" style="width: 5%">ID</th>
+                    <th style="width: 15%">Data / Ora</th>
+                    <th style="width: 10%">Tipo</th>
+                    <th style="width: 30%">Testo</th>
+                    <th class="text-center" style="width: 8%">ID Ticket</th>
+                    <th style="width: 32%">Titolo Ticket</th>
+                </tr>
+            </thead>
+            <tbody class="border-top-0">
+                <tr th:if="${mieiCommenti.totalElements == 0}">
+                    <td colspan="6" class="text-center py-5 text-muted">
+                        <i class="bi bi-chat-dots fs-1 d-block mb-3 opacity-25"></i>
+                        Non hai ancora commenti.
+                    </td>
+                </tr>
+                <tr th:each="c : ${mieiCommenti.content}">
+                    <td class="ps-4 fw-bold text-muted" th:text="${c.idCommento}">1</td>
+                    <td class="small text-muted" th:text="${#temporals.format(c.data_ora, 'dd/MM/yyyy HH:mm')}">01/01/2026 10:00</td>
+                    <td>
+                        <span th:if="${c.tipo == 'ESTERNO'}" class="badge bg-info-subtle text-info-emphasis border border-info-subtle px-2 py-1">ESTERNO</span>
+                        <span th:if="${c.tipo == 'INTERNO'}" class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-2 py-1">INTERNO</span>
+                    </td>
+                    <td th:text="${c.testo}" th:title="${c.testo}">Testo</td>
+                    <td class="text-center">
+                        <span class="badge rounded-pill bg-secondary bg-opacity-10 text-secondary border px-2 py-1" th:text="${c.ticket != null ? c.ticket.idTicket : '—'}">12</span>
+                    </td>
+                    <td th:text="${(c.ticket != null &amp;&amp; c.ticket.titolo != null) ? c.ticket.titolo : '—'}" th:title="${(c.ticket != null &amp;&amp; c.ticket.titolo != null) ? c.ticket.titolo : '—'}">Titolo</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
-<div class="d-flex justify-content-center mt-4" th:if="${mieiCommenti != null and mieiCommenti.totalPages > 0}">
-    <nav aria-label="Page navigation">
-        <ul class="pagination">
+    <!-- Paginazione -->
+    <div class="d-flex justify-content-between align-items-center mt-4" th:if="${mieiCommenti != null and mieiCommenti.totalPages > 0}">
+        <div class="text-white-50 small">
+            Pagina <span th:text="${mieiCommenti.number + 1}">1</span> di <span th:text="${mieiCommenti.totalPages}">1</span>
+        </div>
+        <nav aria-label="Page navigation">
+            <ul class="pagination pagination-sm mb-0">
+                <li class="page-item" th:classappend="${mieiCommenti.first} ? 'disabled'">
+                    <a class="page-link" th:href="@{/cliente/commenti(pag=0)}"><i class="bi bi-chevron-double-left"></i></a>
+                </li>
+                <li class="page-item" th:each="i : ${#numbers.sequence(T(java.lang.Math).max(0, mieiCommenti.number - 2), T(java.lang.Math).min(mieiCommenti.totalPages - 1, mieiCommenti.number + 2))}" th:classappend="${i == mieiCommenti.number} ? 'active'">
+                    <a class="page-link" th:text="${i + 1}" th:href="@{/cliente/commenti(pag=${i})}"></a>
+                </li>
+                <li class="page-item" th:classappend="${mieiCommenti.last} ? 'disabled'">
+                    <a class="page-link" th:href="@{/cliente/commenti(pag=${mieiCommenti.totalPages - 1})}"><i class="bi bi-chevron-double-right"></i></a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</main>
 
-            <li class="page-item" th:classappend="${mieiCommenti.first} ? 'disabled'">
-                <a class="page-link"
-                   th:href="${!mieiCommenti.first} ? @{/cliente/commenti(pag=0)} : '#'">
-                    &laquo;&laquo;
-                </a>
-            </li>
-
-            <li class="page-item" th:classappend="${mieiCommenti.first} ? 'disabled'">
-                <a class="page-link"
-                   th:href="${!mieiCommenti.first} ? @{/cliente/commenti(pag=${mieiCommenti.number - 1})} : '#'">
-                    &laquo;
-                </a>
-            </li>
-
-            <li class="page-item"
-                th:each="i : ${#numbers.sequence(
-                    T(java.lang.Math).max(0, mieiCommenti.number - 5),
-                    T(java.lang.Math).min(mieiCommenti.totalPages - 1, mieiCommenti.number + 5))}"
-                th:classappend="${i == mieiCommenti.number} ? 'active'">
-                <a class="page-link"
-                   th:text="${i + 1}"
-                   th:href="@{/cliente/commenti(pag=${i})}">
-                </a>
-            </li>
-
-            <li class="page-item" th:classappend="${mieiCommenti.last} ? 'disabled'">
-                <a class="page-link"
-                   th:href="${!mieiCommenti.last} ? @{/cliente/commenti(pag=${mieiCommenti.number + 1})} : '#'">
-                    &raquo;
-                </a>
-            </li>
-
-            <li class="page-item" th:classappend="${mieiCommenti.last} ? 'disabled'">
-                <a class="page-link"
-                   th:href="${!mieiCommenti.last} ? @{/cliente/commenti(pag=${mieiCommenti.totalPages - 1})} : '#'">
-                    &raquo;&raquo;
-                </a>
-            </li>
-
-        </ul>
-    </nav>
-</div>
-
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<footer th:replace="~{fragments/fragments :: footer}"></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
