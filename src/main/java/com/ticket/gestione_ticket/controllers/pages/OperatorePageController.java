@@ -2,10 +2,11 @@ package com.ticket.gestione_ticket.controllers.pages;
 
 import com.ticket.gestione_ticket.entities.Commento;
 import com.ticket.gestione_ticket.entities.Ticket;
-import com.ticket.gestione_ticket.entities.Tipo;
+import com.ticket.gestione_ticket.entities.Utente;
 import com.ticket.gestione_ticket.services.CommentoService;
 import com.ticket.gestione_ticket.services.StoricoStatoService;
 import com.ticket.gestione_ticket.services.TicketService;
+import com.ticket.gestione_ticket.services.UtenteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -30,6 +32,7 @@ public class OperatorePageController {
     private final TicketService ticketService;
     private final StoricoStatoService storicoService;
     private final CommentoService commentoService;
+    private final UtenteService utenteService;
 
     @GetMapping("/ticket")
     public String listaTicket(Model model, @RequestParam(defaultValue = "0") int pag, @RequestParam(required = false) String titolo,
@@ -83,44 +86,6 @@ public class OperatorePageController {
         model.addAttribute("ticketId", id);
         model.addAttribute("commenti", commentoService.findByTicketIdOrderByDataOraAsc(id, PageRequest.of(pag, 20)));
         return "operatore/ticket_commenti";
-    }
-
-    @GetMapping("/ticket/cerca")
-    public String cercaTicketPage() { return "operatore/ticket_cerca"; }
-
-    @GetMapping("/ticket/cerca/id")
-    public String cercaById(@RequestParam Integer id, Model model) {
-        model.addAttribute("idSelezionato", id);
-        model.addAttribute("byId", ticketService.findById(id));
-        return "operatore/ticket_cerca";
-    }
-
-    @GetMapping("/ticket/cerca/stato")
-    public String cercaByStato(@RequestParam String stato, Model model) {
-        model.addAttribute("statoSelezionato", stato);
-        model.addAttribute("ticketsByStato", ticketService.findByStato(stato));
-        return "operatore/ticket_cerca";
-    }
-
-    @GetMapping("/ticket/cerca/categoria")
-    public String cercaByCategoria(@RequestParam String categoria, Model model) {
-        model.addAttribute("categoriaSelezionata", categoria);
-        model.addAttribute("ticketsByCategoria", ticketService.findByCategoria(categoria));
-        return "operatore/ticket_cerca";
-    }
-
-    @GetMapping("/ticket/cerca/priorita")
-    public String cercaByPriorita(@RequestParam Integer priorita, Model model) {
-        model.addAttribute("prioritaSelezionata", priorita);
-        model.addAttribute("ticketsByPriorita", ticketService.findByPriorita(priorita));
-        return "operatore/ticket_cerca";
-    }
-
-    @GetMapping("/ticket/cerca/utente")
-    public String cercaByUtente(@RequestParam String username, Model model) {
-        model.addAttribute("usernameSelezionato", username);
-        model.addAttribute("ticketsByUtente", ticketService.findByCreated(username));
-        return "operatore/ticket_cerca";
     }
 
     @GetMapping("/ticket/cancella")
@@ -269,6 +234,15 @@ public class OperatorePageController {
     public String commentiRipristinaSubmit(@RequestParam Integer id) {
         commentoService.ripristina(id);
         return "redirect:/operatore/commenti";
+    }
+
+    @GetMapping("/ticket/miei")
+    public String mieiTicket(Model model, @RequestParam(defaultValue = "0") int pag, Principal principal) {
+        Utente u = utenteService.findByUsername(principal.getName());
+        Page<Ticket> tickets = ticketService.getByUtente(u, PageRequest.of(pag, 20));
+        model.addAttribute("tickets", tickets);
+        model.addAttribute("miei", true);
+        return "operatore/miei_ticket";
     }
 
     private String pulisci(String val) {

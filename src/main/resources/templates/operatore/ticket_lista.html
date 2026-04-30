@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="~{fragments/fragments :: head('Lista Ticket — Operatore')}"></head>
 <body>
 
@@ -174,7 +174,10 @@
                             <a th:href="@{/operatore/ticket/modifica (id=${t.idTicket})}" class="btn btn-white border" title="Modifica"><i class="bi bi-pencil-square text-primary"></i></a>
                             <a th:href="@{/cliente/commenti/crea (ticketId=${t.idTicket})}" class="btn btn-white border" title="Aggiungi commento"><i class="bi bi-file-plus text-success"></i></a>
                             <a th:href="@{/operatore/ticket/commenti (id=${t.idTicket})}" class="btn btn-white border" title="Vedi commenti"><i class="bi bi-chat-square-text text-info"></i></a>
-                            <a th:if="${t.stato != 'CHIUSO'}" th:href="@{/operatore/ticket/stato (id=${t.idTicket})}" class="btn btn-white border" title="Cambia Stato"><i class="bi bi-ticket-perforated text-warning"></i></a>
+                            <th:block sec:authorize="hasRole('ADMIN')">
+                                <a th:if="${t.stato != 'CHIUSO'}" th:href="@{/operatore/ticket/stato (id=${t.idTicket})}" class="btn btn-white border" title="Cambia Stato"><i class="bi bi-ticket-perforated text-warning"></i></a>
+                                <button th:if="${t.stato == 'CHIUSO'}" class="btn btn-white border opacity-50" title="Ticket Chiuso" disabled><i class="bi bi-ticket-perforated text-warning"></i></button>
+                            </th:block>
                             <a th:href="@{/operatore/ticket/storico (id=${t.idTicket})}" class="btn btn-white border" title="Storico"><i class="bi bi-archive text-secondary"></i></a>
                             <a th:if="${!t.deleted}" th:href="@{/operatore/ticket/cancella (id=${t.idTicket})}" class="btn btn-white border" title="Elimina"><i class="bi bi-trash text-danger"></i></a>
                             <a th:if="${t.deleted}" th:href="@{/operatore/ticket/ripristina (id=${t.idTicket})}" class="btn btn-white border" title="Ripristina"><i class="bi bi-arrow-repeat text-success"></i></a>

@@ -61,8 +61,9 @@ public class TicketService {
                 continue;
             } else {
                 if (t.getData_ora_scadenza() != null && now.isAfter(t.getData_ora_scadenza())) {
-                    t.setOver_sla(true);
+                    storicoService.create(t, t.getStato(), "SCADUTO");
                     t.setStato("SCADUTO");
+                    t.setOver_sla(true);
                     ticketRepository.save(t);
                 }
             }
@@ -250,6 +251,10 @@ public class TicketService {
                 || numCommenti != null || created != null;
     }
 
+    public Page<Ticket> getByUtente(Utente utente, Pageable pageable) {
+        return ticketRepository.findByUtente(utente, pageable);
+    }
+
     public List<Ticket> findAll() {
         return ticketRepository.findAll();
     }
@@ -265,22 +270,6 @@ public class TicketService {
 
     public Ticket findByTitolo(String titolo) {
         return ticketRepository.findByTitolo(titolo);
-    }
-
-    public List<Ticket> findByStato(String stato) {
-        return ticketRepository.findByStato(stato);
-    }
-
-    public List<Ticket> findByPriorita(int priorita) {
-        return ticketRepository.findByPriorita(priorita);
-    }
-
-    public List<Ticket> findByCategoria(String categoria) {
-        return ticketRepository.findByCategoria(categoria);
-    }
-
-    public List<Ticket> findByCreated(String username) {
-        return ticketRepository.findByCreated(username);
     }
 
     public Page<Ticket> findByCreated(String username, Pageable pageable) {

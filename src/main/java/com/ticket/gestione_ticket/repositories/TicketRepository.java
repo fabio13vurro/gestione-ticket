@@ -31,15 +31,6 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
             """)
     List<Ticket> findAllWithCommentiAndStorico();
 
-    List<Ticket> findByStato(String stato);
-
-    List<Ticket> findByPriorita(int priorita);
-
-    List<Ticket> findByCategoria(String categoria);
-
-    @Query("SELECT t FROM Ticket t WHERE t.created = :username")
-    List<Ticket> findByCreated(String username);
-
     @Query("SELECT t FROM Ticket t WHERE t.created = :username")
     Page<Ticket> findByCreated(String username, Pageable pageable);
 
@@ -73,6 +64,7 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
     @Query("SELECT DISTINCT t FROM Ticket t LEFT JOIN FETCH t.commenti")
     Page<Ticket> findAllWithCommenti(Pageable pageable);
 
+    Page<Ticket> findByUtente(Utente utente, Pageable pageable);
     List<Ticket> findByUtenteAndStatoNot(Utente utente, String stato);
 
     @Query("select t from Ticket t where t.stato in :stati and t.deleted = false")
