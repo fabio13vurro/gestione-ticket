@@ -1,7 +1,6 @@
 package com.ticket.gestione_ticket.Models;
 
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 
 @Data
 public class UserGraphQLModel {

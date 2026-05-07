@@ -187,7 +187,7 @@ public class TicketService {
         return create(titolo, descr, categoria, priorita, cliente.getUsername());
     }
 
-    public Ticket creazioneTicketVecchi() {
+    public void creazioneTicketVecchi() {
         String[] categorie = {"HARDWARE", "SOFTWARE", "RETE", "SICUREZZA"};
 
         String titolo = faker.lorem().sentence(4);
@@ -225,7 +225,7 @@ public class TicketService {
             utenteRepository.save(operatore);
         }
 
-        return ticketRepository.save(t);
+        ticketRepository.save(t);
     }
 
     private LocalDateTime randomDataApertura() {

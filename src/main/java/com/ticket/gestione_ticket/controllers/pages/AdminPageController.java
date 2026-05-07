@@ -1,7 +1,6 @@
 package com.ticket.gestione_ticket.controllers.pages;
 
 import com.ticket.gestione_ticket.DTOs.TicketStatisticheDTO;
-import com.ticket.gestione_ticket.entities.Ruolo;
 import com.ticket.gestione_ticket.entities.Utente;
 import com.ticket.gestione_ticket.services.TicketService;
 import com.ticket.gestione_ticket.services.TicketStatisticheService;

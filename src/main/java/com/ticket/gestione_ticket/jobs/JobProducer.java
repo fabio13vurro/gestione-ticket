@@ -1,6 +1,5 @@
 package com.ticket.gestione_ticket.jobs;
 
-import com.ticket.gestione_ticket.config.JobQueueConfig;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.stereotype.Service;
 

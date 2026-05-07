@@ -14,7 +14,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class MongoWorker {
     private final OverSlaTicketRepository mongoRepository;
     private final ObjectMapper objectMapper;
-    private final JobProducer jobProducer;
 
     @RabbitListener(queues = JobQueueConfig.MONGO_QUEUE)
     public void processSnapshot(String json) {

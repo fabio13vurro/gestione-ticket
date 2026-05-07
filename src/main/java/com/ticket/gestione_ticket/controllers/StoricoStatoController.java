@@ -2,7 +2,6 @@ package com.ticket.gestione_ticket.controllers;
 
 import com.ticket.gestione_ticket.DTOs.creates.StoricoStatoCreateDTO;
 import com.ticket.gestione_ticket.entities.StoricoStato;
-import com.ticket.gestione_ticket.entities.Ticket;
 import com.ticket.gestione_ticket.services.StoricoStatoService;
 import org.springframework.web.bind.annotation.*;
 

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:fragment="head(title)">
     <meta charset="UTF-8">
@@ -17,11 +17,17 @@
                 <i class="bi bi-ticket-perforated-fill"></i>
                 <span>TicketManager</span>
             </a>
-            
+
             <div sec:authorize="isAuthenticated()">
-                    <a th:href="@{/home}" class="nav-link">
-                        <i class="bi bi-house-door"></i> Home
-                    </a>
+                <span th:if="${currentPage == 'home'}"
+                      class="nav-link disabled text-white-50"
+                      style="cursor: default;">
+                    <i class="bi bi-house-door-fill"></i> Home
+                </span>
+                <a th:unless="${currentPage == 'home'}"
+                   th:href="@{/home}" class="nav-link">
+                    <i class="bi bi-house-door"></i> Home
+                </a>
             </div>
         </div>
 

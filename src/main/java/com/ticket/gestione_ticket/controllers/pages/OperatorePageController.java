@@ -129,7 +129,6 @@ public class OperatorePageController {
 
     @GetMapping("/ticket/stato")
     public String cambiaStato(@RequestParam Integer id, RedirectAttributes redirectAttributes) {
-        Ticket t = ticketService.findById(id);
         ticketService.cambiaStato(id);
         redirectAttributes.addFlashAttribute("success", "Stato del ticket modificato con successo.");
         return "redirect:/operatore/ticket";
