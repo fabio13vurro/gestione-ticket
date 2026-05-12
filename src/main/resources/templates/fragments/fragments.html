@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:fragment="head(title)">
     <meta charset="UTF-8">
@@ -31,18 +31,28 @@
             </div>
         </div>
 
-        <div sec:authorize="isAuthenticated()" class="d-flex align-items-center">
-            <div class="user-profile">
+        <div sec:authorize="isAuthenticated()" class="d-flex align-items-center gap-2">
+            <a th:href="@{/profilo}" class="user-profile text-decoration-none" title="Il mio profilo">
+                <!-- Avatar: immagine reale se presente, altrimenti iniziale -->
+                <div class="navbar-avatar">
+                    <img th:if="${currentUtente != null and currentUtente.fileData != null}"
+                         th:src="'data:image/jpeg;base64,' + ${currentUtente.fileData}"
+                         class="navbar-avatar-img" alt="Avatar">
+                    <span th:unless="${currentUtente != null and currentUtente.fileData != null}"
+                          class="navbar-avatar-initials"
+                          sec:authentication="name"
+                          th:text="${currentUtente != null ? #strings.substring(currentUtente.username,0,1).toUpperCase() : '?'}">U</span>
+                </div>
                 <div class="user-info">
                     <span class="user-name" sec:authentication="name">Username</span>
                     <span class="user-role" sec:authorize="hasRole('ADMIN')">Admin</span>
                     <span class="user-role" sec:authorize="hasRole('OPERATORE')">Operatore</span>
                     <span class="user-role" sec:authorize="hasRole('CLIENTE')">Cliente</span>
                 </div>
-                <a th:href="@{/logout}" class="btn btn-outline-light btn-sm ms-3 shadow-none border-0" title="Logout">
-                    <i class="bi bi-box-arrow-right fs-5"></i>
-                </a>
-            </div>
+            </a>
+            <a th:href="@{/logout}" class="btn btn-outline-light btn-sm shadow-none border-0" title="Logout">
+                <i class="bi bi-box-arrow-right fs-5"></i>
+            </a>
         </div>
     </div>
 </nav>

@@ -624,3 +624,171 @@ body > a.btn {
     color: #dc3545 !important;
     border: 1px solid rgba(220, 53, 69, 0.3) !important;
 }
+
+/* ── Navbar Avatar ──────────────────────────────────────────── */
+.navbar-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid rgba(255, 255, 255, 0.35);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--accent), #5a52d5);
+    transition: border-color var(--transition), box-shadow var(--transition);
+}
+.navbar-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.navbar-avatar-initials {
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.9rem;
+    line-height: 1;
+}
+.user-profile:hover .navbar-avatar {
+    border-color: var(--accent-light);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+/* ── Profile Page ────────────────────────────────────────────── */
+.profile-left-card {
+    position: sticky;
+    top: 20px;
+}
+
+/* Avatar wrapper */
+.profile-avatar-wrapper {
+    position: relative;
+    display: inline-block;
+}
+.profile-avatar-ring {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 4px solid transparent;
+    background: linear-gradient(white, white) padding-box,
+                linear-gradient(135deg, var(--accent), #5a52d5) border-box;
+    box-shadow: 0 8px 32px rgba(108, 99, 255, 0.35);
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: box-shadow var(--transition);
+}
+.profile-avatar-ring:hover {
+    box-shadow: 0 12px 40px rgba(108, 99, 255, 0.5);
+}
+.profile-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.profile-avatar-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--accent), #5a52d5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.profile-avatar-placeholder span {
+    color: #fff;
+    font-size: 3rem;
+    font-weight: 800;
+}
+
+/* Camera button */
+.profile-camera-btn {
+    position: absolute;
+    bottom: 4px;
+    right: calc(50% - 65px);
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), #5a52d5);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 10px rgba(108,99,255,0.4);
+    transition: transform var(--transition), box-shadow var(--transition);
+    font-size: 0.85rem;
+}
+.profile-camera-btn:hover {
+    transform: scale(1.15);
+    box-shadow: 0 4px 16px rgba(108,99,255,0.55);
+}
+
+/* Role badges */
+.profile-role-badge {
+    padding: 4px 16px;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+.role-admin {
+    background: rgba(108,99,255,0.15);
+    color: var(--accent);
+    border: 1px solid rgba(108,99,255,0.3);
+}
+.role-operatore {
+    background: rgba(0,210,211,0.15);
+    color: #00d2d3;
+    border: 1px solid rgba(0,210,211,0.3);
+}
+.role-cliente {
+    background: rgba(254,202,87,0.15);
+    color: #f39c12;
+    border: 1px solid rgba(254,202,87,0.3);
+}
+
+/* Info items inside card */
+.profile-info-item {
+    background: rgba(108,99,255,0.04);
+    border: 1px solid rgba(108,99,255,0.1);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    transition: background var(--transition);
+}
+.profile-info-item:hover {
+    background: rgba(108,99,255,0.08);
+}
+.profile-info-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+}
+.profile-info-value {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    word-break: break-word;
+}
+
+/* Icon box header */
+.profile-icon-box {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--accent), #5a52d5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 15px var(--accent-glow);
+}

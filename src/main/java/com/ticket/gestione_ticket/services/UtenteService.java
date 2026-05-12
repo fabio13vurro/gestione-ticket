@@ -203,4 +203,10 @@ public class UtenteService {
     public boolean filtroAttivo(String username, String email, String ruolo, String ticketAssegnati, String address){
         return username != null || email != null || ruolo != null || ticketAssegnati != null || address != null;
     }
+
+    public void rimuoviImmagine(String username) {
+        Utente u = findByUsername(username);
+        u.setFileData(null);
+        utenteRepository.save(u);
+    }
 }
