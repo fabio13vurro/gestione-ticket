@@ -110,9 +110,9 @@
                     </td>
                     <td th:text="${u.email}">admin@mail.it</td>
                     <td>
-                        <span th:if="${u.ruolo == 'ADMIN'}" class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-2">ADMIN</span>
-                        <span th:if="${u.ruolo == 'OPERATORE'}" class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-3 py-2">OPERATORE</span>
-                        <span th:if="${u.ruolo == 'CLIENTE'}" class="badge bg-info-subtle text-info-emphasis border border-info-subtle px-3 py-2">CLIENTE</span>
+                        <span th:if="${u.ruolo.name == 'ADMIN'}" class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-2">ADMIN</span>
+                        <span th:if="${u.ruolo.name == 'OPERATORE'}" class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-3 py-2">OPERATORE</span>
+                        <span th:if="${u.ruolo.name == 'CLIENTE'}" class="badge bg-info-subtle text-info-emphasis border border-info-subtle px-3 py-2">CLIENTE</span>
                     </td>
                     <td class="text-center">
                         <span class="fw-bold" th:text="${u.ticketAssegnati}">0</span>

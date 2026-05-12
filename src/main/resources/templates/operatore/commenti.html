@@ -100,8 +100,8 @@
                     <td class="ps-4 fw-bold text-muted" th:text="${c.idCommento}">1</td>
                     <td th:text="${c.testo}" th:title="${c.testo}">testo</td>
                     <td>
-                        <span th:if="${c.tipo == 'ESTERNO'}" class="badge bg-info-subtle text-info-emphasis border border-info-subtle px-2 py-1">ESTERNO</span>
-                        <span th:if="${c.tipo == 'INTERNO'}" class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-2 py-1">INTERNO</span>
+                        <span th:if="${c.tipo.name == 'ESTERNO'}" class="badge bg-info-subtle text-info-emphasis border border-info-subtle px-2 py-1">ESTERNO</span>
+                        <span th:if="${c.tipo.name == 'INTERNO'}" class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-2 py-1">INTERNO</span>
                     </td>
                     <td th:text="${c.created}">utente</td>
                     <td class="small text-muted" th:text="${#temporals.format(c.data_ora, 'dd/MM/yyyy HH:mm')}">data</td>

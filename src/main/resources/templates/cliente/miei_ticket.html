@@ -73,13 +73,13 @@
         <nav aria-label="Page navigation">
             <ul class="pagination pagination-sm mb-0">
                 <li class="page-item" th:classappend="${mieiTicket.first} ? 'disabled'">
-                    <a class="page-link" th:href="@{/cliente/ticket(pag=0)}"><i class="bi bi-chevron-double-left"></i></a>
+                    <a class="page-link" th:href="@{/cliente/miei-ticket(pag=0)}"><i class="bi bi-chevron-double-left"></i></a>
                 </li>
                 <li class="page-item" th:each="i : ${#numbers.sequence(T(java.lang.Math).max(0, mieiTicket.number - 2), T(java.lang.Math).min(mieiTicket.totalPages - 1, mieiTicket.number + 2))}" th:classappend="${i == mieiTicket.number} ? 'active'">
-                    <a class="page-link" th:text="${i + 1}" th:href="@{/cliente/ticket(pag=${i})}"></a>
+                    <a class="page-link" th:text="${i + 1}" th:href="@{/cliente/miei-ticket(pag=${i})}"></a>
                 </li>
                 <li class="page-item" th:classappend="${mieiTicket.last} ? 'disabled'">
-                    <a class="page-link" th:href="@{/cliente/ticket(pag=${mieiTicket.totalPages - 1})}"><i class="bi bi-chevron-double-right"></i></a>
+                    <a class="page-link" th:href="@{/cliente/miei-ticket(pag=${mieiTicket.totalPages - 1})}"><i class="bi bi-chevron-double-right"></i></a>
                 </li>
             </ul>
         </nav>

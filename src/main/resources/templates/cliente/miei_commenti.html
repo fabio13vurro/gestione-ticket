@@ -34,8 +34,8 @@
                     <td class="ps-4 fw-bold text-muted" th:text="${c.idCommento}">1</td>
                     <td class="small text-muted" th:text="${#temporals.format(c.data_ora, 'dd/MM/yyyy HH:mm')}">01/01/2026 10:00</td>
                     <td>
-                        <span th:if="${c.tipo == 'ESTERNO'}" class="badge bg-info-subtle text-info-emphasis border border-info-subtle px-2 py-1">ESTERNO</span>
-                        <span th:if="${c.tipo == 'INTERNO'}" class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-2 py-1">INTERNO</span>
+                        <span th:if="${c.tipo.name == 'ESTERNO'}" class="badge bg-info-subtle text-info-emphasis border border-info-subtle px-2 py-1">ESTERNO</span>
+                        <span th:if="${c.tipo.name == 'INTERNO'}" class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-2 py-1">INTERNO</span>
                     </td>
                     <td th:text="${c.testo}" th:title="${c.testo}">Testo</td>
                     <td class="text-center">
@@ -55,13 +55,13 @@
         <nav aria-label="Page navigation">
             <ul class="pagination pagination-sm mb-0">
                 <li class="page-item" th:classappend="${mieiCommenti.first} ? 'disabled'">
-                    <a class="page-link" th:href="@{/cliente/commenti(pag=0)}"><i class="bi bi-chevron-double-left"></i></a>
+                    <a class="page-link" th:href="@{/cliente/miei-commenti(pag=0)}"><i class="bi bi-chevron-double-left"></i></a>
                 </li>
                 <li class="page-item" th:each="i : ${#numbers.sequence(T(java.lang.Math).max(0, mieiCommenti.number - 2), T(java.lang.Math).min(mieiCommenti.totalPages - 1, mieiCommenti.number + 2))}" th:classappend="${i == mieiCommenti.number} ? 'active'">
-                    <a class="page-link" th:text="${i + 1}" th:href="@{/cliente/commenti(pag=${i})}"></a>
+                    <a class="page-link" th:text="${i + 1}" th:href="@{/cliente/miei-commenti(pag=${i})}"></a>
                 </li>
                 <li class="page-item" th:classappend="${mieiCommenti.last} ? 'disabled'">
-                    <a class="page-link" th:href="@{/cliente/commenti(pag=${mieiCommenti.totalPages - 1})}"><i class="bi bi-chevron-double-right"></i></a>
+                    <a class="page-link" th:href="@{/cliente/miei-commenti(pag=${mieiCommenti.totalPages - 1})}"><i class="bi bi-chevron-double-right"></i></a>
                 </li>
             </ul>
         </nav>
