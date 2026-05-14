@@ -50,6 +50,8 @@
                     <td>
                         <span th:if="${t.stato == 'APERTO'}" class="badge-status status-aperto"><i class="bi bi-circle-fill" style="font-size: 0.5rem"></i> Aperto</span>
                         <span th:if="${t.stato == 'IN_LAVORAZIONE'}" class="badge-status status-lavorazione"><i class="bi bi-play-fill"></i> In lavorazione</span>
+                        <span th:if="${t.stato == 'IN_ATTESA'}" class="badge-status status-attesa"><i class="bi bi-pause-fill"></i> In attesa</span>
+                        <span th:if="${t.stato == 'RISOLTO'}" class="badge-status status-risolto"><i class="bi bi-check-all"></i> Risolto</span>
                         <span th:if="${t.stato == 'CHIUSO'}" class="badge-status status-chiuso"><i class="bi bi-check-lg"></i> Chiuso</span>
                         <span th:if="${t.stato == 'SCADUTO'}" class="badge-status status-scaduto"><i class="bi bi-exclamation-triangle-fill"></i> Scaduto</span>
                     </td>

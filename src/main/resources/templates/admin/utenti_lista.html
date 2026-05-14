@@ -6,13 +6,20 @@
 <nav th:replace="~{fragments/fragments :: navbar}"></nav>
 
 <main class="main-content">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
         <div>
             <h1 class="mb-0">Gestione Utenti</h1>
-            <p class="text-white-50">Visualizza e gestisci tutti gli utenti registrati nel sistema.</p>
+            <p class="text-white-50 mb-0">Visualizza e gestisci tutti gli utenti registrati nel sistema.</p>
         </div>
-        <div>
-            <a th:href="@{/admin/utenti/crea}" class="btn btn-primary">
+        <div class="d-flex gap-2 align-items-center">
+            <button class="btn btn-outline-light btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#filtri">
+                <i class="bi bi-funnel me-1"></i> Filtri Avanzati
+                <span th:if="${filtroAttivo}" class="badge bg-primary ms-1">Attivi</span>
+            </button>
+            <button class="btn btn-outline-light btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#legenda">
+                <i class="bi bi-info-circle me-1"></i> Legenda Azioni
+            </button>
+            <a th:href="@{/admin/utenti/crea}" class="btn btn-primary ms-2">
                 <i class="bi bi-person-plus-fill me-2"></i> Nuovo Utente
             </a>
         </div>
@@ -20,41 +27,36 @@
 
     <!-- Filtri e Legenda -->
     <div class="card mb-4 border-0 shadow-sm overflow-hidden">
-        <div class="card-body py-2 px-3 d-flex flex-wrap gap-2 border-bottom">
-            <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#filtri">
-                <i class="bi bi-funnel me-1"></i> Filtri Avanzati
-                <span th:if="${filtroAttivo}" class="badge bg-primary ms-1">Attivi</span>
-            </button>
-            <button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#legenda">
-                <i class="bi bi-info-circle me-1"></i> Legenda Azioni
-            </button>
-        </div>
 
         <!-- Filtri Collapse -->
         <div class="collapse" id="filtri" th:classappend="${filtroAttivo} ? 'show'">
             <div class="card-body bg-light border-bottom">
                 <form th:action="@{/admin/utenti}" method="get">
                     <div class="row g-3">
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <label class="form-label small fw-bold">Username</label>
-                            <input type="text" class="form-control form-control-sm" name="username" th:value="${username}" placeholder="Cerca username...">
+                            <input type="text" class="form-control form-control-sm" name="username" th:value="${username}" placeholder="Username...">
                         </div>
                         <div class="col-md-3">
                             <label class="form-label small fw-bold">Email</label>
-                            <input type="text" class="form-control form-control-sm" name="email" th:value="${email}" placeholder="Cerca email...">
+                            <input type="text" class="form-control form-control-sm" name="email" th:value="${email}" placeholder="Email...">
                         </div>
                         <div class="col-md-2">
                             <label class="form-label small fw-bold">Ruolo</label>
                             <select class="form-select form-select-sm" name="ruolo">
-                                <option value="">Tutti i ruoli</option>
+                                <option value="">Tutti</option>
                                 <option value="ADMIN" th:selected="${ruolo == 'ADMIN'}">Admin</option>
                                 <option value="OPERATORE" th:selected="${ruolo == 'OPERATORE'}">Operatore</option>
                                 <option value="CLIENTE" th:selected="${ruolo == 'CLIENTE'}">Cliente</option>
                             </select>
                         </div>
-                        <div class="col-md-2">
-                            <label class="form-label small fw-bold">Ticket Assegnati</label>
+                        <div class="col-md-1">
+                            <label class="form-label small fw-bold">Ticket</label>
                             <input type="number" class="form-control form-control-sm" name="ticketAssegnati" th:value="${ticketAssegnati}">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label small fw-bold">Città</label>
+                            <input type="text" class="form-control form-control-sm" name="address" th:value="${address}" placeholder="Città...">
                         </div>
                         <div class="col-md-2 d-flex align-items-end gap-2">
                             <button class="btn btn-primary btn-sm flex-grow-1" type="submit">Applica</button>

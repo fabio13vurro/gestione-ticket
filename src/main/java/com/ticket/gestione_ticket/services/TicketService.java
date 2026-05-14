@@ -244,6 +244,10 @@ public class TicketService {
         return ticketRepository.filtraTicket(titolo, descrizione, categoria, stato, priorita, username, dataAperturaDa, dataAperturaA, dataChiusuraDa, dataChiusuraA, numCommenti, created, pageable);
     }
 
+    public Page<Ticket> filtraTicketMiei(String operatoreExact, String titolo, String descrizione, String categoria, String stato, String priorita, LocalDateTime dataAperturaDa, LocalDateTime dataAperturaA, LocalDateTime dataChiusuraDa, LocalDateTime dataChiusuraA, Integer numCommenti, String created, Pageable pageable) {
+        return ticketRepository.filtraTicketMiei(operatoreExact, titolo, descrizione, categoria, stato, priorita, dataAperturaDa, dataAperturaA, dataChiusuraDa, dataChiusuraA, numCommenti, created, pageable);
+    }
+
     public boolean filtroAttivo(String titolo, String descrizione, String categoria, String stato, String priorita, String username, LocalDateTime dataAperturaDa, LocalDateTime dataAperturaA, LocalDateTime dataChiusuraDa, LocalDateTime dataChiusuraA, Integer numCommenti, String created) {
         return titolo != null || descrizione != null || categoria != null
                 || stato != null || priorita != null || username != null || dataAperturaDa != null

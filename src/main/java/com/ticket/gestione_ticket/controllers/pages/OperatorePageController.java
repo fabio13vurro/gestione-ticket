@@ -8,6 +8,7 @@ import com.ticket.gestione_ticket.services.StoricoStatoService;
 import com.ticket.gestione_ticket.services.TicketService;
 import com.ticket.gestione_ticket.services.UtenteService;
 import lombok.RequiredArgsConstructor;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -128,9 +129,19 @@ public class OperatorePageController {
     }
 
     @GetMapping("/ticket/stato")
-    public String cambiaStato(@RequestParam Integer id, RedirectAttributes redirectAttributes) {
+    public String cambiaStato(@RequestParam Integer id, @RequestParam(required = false) String returnUrl,
+                             HttpServletRequest request, RedirectAttributes redirectAttributes) {
         ticketService.cambiaStato(id);
         redirectAttributes.addFlashAttribute("success", "Stato del ticket modificato con successo.");
+
+        if (returnUrl != null && !returnUrl.isEmpty()) {
+            return "redirect:" + returnUrl;
+        }
+
+        String referer = request.getHeader("Referer");
+        if (referer != null) {
+            return "redirect:" + referer;
+        }
         return "redirect:/operatore/ticket";
     }
 
@@ -236,10 +247,45 @@ public class OperatorePageController {
     }
 
     @GetMapping("/ticket/miei")
-    public String mieiTicket(Model model, @RequestParam(defaultValue = "0") int pag, Principal principal) {
-        Utente u = utenteService.findByUsername(principal.getName());
-        Page<Ticket> tickets = ticketService.getByUtente(u, PageRequest.of(pag, 20));
+    public String mieiTicket(Model model, @RequestParam(defaultValue = "0") int pag, Principal principal,
+                             @RequestParam(required = false) String titolo, @RequestParam(required = false) String descrizione,
+                             @RequestParam(required = false) String categoria, @RequestParam(required = false) String stato,
+                             @RequestParam(required = false) String priorita, @RequestParam(required = false) String dataAperturaDa,
+                             @RequestParam(required = false) String dataAperturaA, @RequestParam(required = false) String dataChiusuraDa,
+                             @RequestParam(required = false) String dataChiusuraA, @RequestParam(required = false) Integer numCommenti,
+                             @RequestParam(required = false) String created) {
+
+        titolo = pulisci(titolo);
+        descrizione = pulisci(descrizione);
+        categoria   = pulisci(categoria);
+        stato       = pulisci(stato);
+        priorita    = pulisci(priorita);
+        String usernameExact = principal.getName();
+        created     = pulisci(created);
+
+        LocalDateTime aperturaDa  = parseData(dataAperturaDa, false);
+        LocalDateTime aperturaA   = parseData(dataAperturaA, true);
+        LocalDateTime chiusuraDa  = parseData(dataChiusuraDa, false);
+        LocalDateTime chiusuraA   = parseData(dataChiusuraA, true);
+
+        // Il filtro è attivo se almeno uno dei campi di ricerca (escluso l'operatore stesso) è popolato
+        boolean filtroAttivo = ticketService.filtroAttivo(titolo, descrizione, categoria, stato, priorita, null, aperturaDa, aperturaA, chiusuraDa, chiusuraA, numCommenti, created);
+
+        Page<Ticket> tickets = ticketService.filtraTicketMiei(usernameExact, titolo, descrizione, categoria, stato, priorita, aperturaDa, aperturaA, chiusuraDa, chiusuraA, numCommenti, created, PageRequest.of(pag, 20));
+
         model.addAttribute("tickets", tickets);
+        model.addAttribute("titolo", titolo);
+        model.addAttribute("descrizione", descrizione);
+        model.addAttribute("categoria", categoria);
+        model.addAttribute("stato", stato);
+        model.addAttribute("priorita", priorita);
+        model.addAttribute("dataAperturaDa", dataAperturaDa);
+        model.addAttribute("dataAperturaA",  dataAperturaA);
+        model.addAttribute("dataChiusuraDa", dataChiusuraDa);
+        model.addAttribute("dataChiusuraA",  dataChiusuraA);
+        model.addAttribute("numCommenti", numCommenti);
+        model.addAttribute("created", created);
+        model.addAttribute("filtroAttivo", filtroAttivo);
         model.addAttribute("miei", true);
         return "operatore/miei_ticket";
     }

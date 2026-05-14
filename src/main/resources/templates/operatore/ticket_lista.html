@@ -47,6 +47,7 @@
                                 <option value="APERTO" th:selected="${stato == 'APERTO'}">Aperto</option>
                                 <option value="IN_LAVORAZIONE" th:selected="${stato == 'IN_LAVORAZIONE'}">In lavorazione</option>
                                 <option value="IN_ATTESA" th:selected="${stato == 'IN_ATTESA'}">In attesa</option>
+                                <option value="RISOLTO" th:selected="${stato == 'RISOLTO'}">Risolto</option>
                                 <option value="CHIUSO" th:selected="${stato == 'CHIUSO'}">Chiuso</option>
                                 <option value="SCADUTO" th:selected="${stato == 'SCADUTO'}">Scaduto</option>
                             </select>
@@ -158,6 +159,12 @@
                         <span th:if="${t.stato == 'IN_LAVORAZIONE'}" class="badge-status status-lavorazione">
                             <i class="bi bi-play-fill"></i> In lavorazione
                         </span>
+                        <span th:if="${t.stato == 'IN_ATTESA'}" class="badge-status status-attesa">
+                            <i class="bi bi-pause-fill"></i> In attesa
+                        </span>
+                        <span th:if="${t.stato == 'RISOLTO'}" class="badge-status status-risolto">
+                            <i class="bi bi-check-all"></i> Risolto
+                        </span>
                         <span th:if="${t.stato == 'CHIUSO'}" class="badge-status status-chiuso">
                             <i class="bi bi-check-lg"></i> Chiuso
                         </span>
@@ -175,7 +182,7 @@
                             <a th:href="@{/cliente/commenti/crea (ticketId=${t.idTicket})}" class="btn btn-white border" title="Aggiungi commento"><i class="bi bi-file-plus text-success"></i></a>
                             <a th:href="@{/operatore/ticket/commenti (id=${t.idTicket})}" class="btn btn-white border" title="Vedi commenti"><i class="bi bi-chat-square-text text-info"></i></a>
                             <th:block sec:authorize="hasRole('ADMIN')">
-                                <a th:if="${t.stato != 'CHIUSO'}" th:href="@{/operatore/ticket/stato (id=${t.idTicket})}" class="btn btn-white border" title="Cambia Stato"><i class="bi bi-ticket-perforated text-warning"></i></a>
+                                <a th:if="${t.stato != 'CHIUSO'}" th:href="@{/operatore/ticket/stato (id=${t.idTicket}, returnUrl=${currentUrl})}" class="btn btn-white border" title="Cambia Stato"><i class="bi bi-ticket-perforated text-warning"></i></a>
                                 <button th:if="${t.stato == 'CHIUSO'}" class="btn btn-white border opacity-50" title="Ticket Chiuso" disabled><i class="bi bi-ticket-perforated text-warning"></i></button>
                             </th:block>
                             <a th:href="@{/operatore/ticket/storico (id=${t.idTicket})}" class="btn btn-white border" title="Storico"><i class="bi bi-archive text-secondary"></i></a>
